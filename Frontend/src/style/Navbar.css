@@ -1,0 +1,56 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between; /* Space between brand and menu */
+  align-items: center;
+  padding: 0 5px;
+  height: 60px; /* Set a fixed height */
+}
+
+.navbar-brand {
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+.navbar-brand a {
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.navbar-menu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 30px; /* Space between menu items */
+}
+
+.navbar-menu li {
+  margin: 0;
+}
+
+.navbar-menu a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  padding: 10px 15px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.navbar-menu a:hover {
+  background-color: #f0f0f0;
+}
+
+/* Add padding to body to prevent content from hiding behind navbar */
+body {
+  padding-top: 60px; /* Same as navbar height */
+  margin: 0;
+}

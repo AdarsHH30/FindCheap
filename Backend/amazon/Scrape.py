@@ -57,6 +57,7 @@ async def main(userInput: str):
                 "attribute": "src",
             },
         ],
+        "limit": 5,
     }
 
     extraction = JsonCssExtractionStrategy(schema)
@@ -67,24 +68,25 @@ async def main(userInput: str):
     filter = LLMContentFilter(
         llm_config=gemini_config,  # or your preferred provider
         instruction="""
-Your task is to extract detailed product information from Amazon search result listings. Focus on capturing the following data points for each product:
+            Your task is to extract detailed product information from Amazon search result listings. Focus on capturing the following data points for each product:
+            -**Product no **: A unique identifier for each product in the listing (e.g., "Product 1", "Product 2").
+            - **Product Title**: The full name of the product as listed.
+            - **Price**: The current price shown, including any currency symbols. If a deal or discount is applied, include the final price.
+            - **Offer/Discount**: If available, extract any promotional offer (e.g., percentage off, “Deal of the Day”, “Limited Time Deal”).
+            - **Delivery Information**: Extract estimated delivery dates, shipping methods (e.g., "Free Delivery", "Prime"), and any delivery charges.
+            - **Description**: A brief product description or key bullet points that highlight features, material, use case, or specifications.
+            - **Rating**: Star rating (e.g., "4.3 out of 5 stars").
+            - **Review Count**: Number of customer reviews.
+            - **Product Link**: A direct link to the product detail page (append the domain if relative). add "https://www.amazon.com" to the link if it is relative.
+            - **Image URL**: High-quality image source link.
 
-- **Product Title**: The full name of the product as listed.
-- **Price**: The current price shown, including any currency symbols. If a deal or discount is applied, include the final price.
-- **Offer/Discount**: If available, extract any promotional offer (e.g., percentage off, “Deal of the Day”, “Limited Time Deal”).
-- **Delivery Information**: Extract estimated delivery dates, shipping methods (e.g., "Free Delivery", "Prime"), and any delivery charges.
-- **Description**: A brief product description or key bullet points that highlight features, material, use case, or specifications.
-- **Rating**: Star rating (e.g., "4.3 out of 5 stars").
-- **Review Count**: Number of customer reviews.
-- **Product Link**: A direct link to the product detail page (append the domain if relative).
-- **Image URL**: High-quality image source link.
-
-Make sure the extracted data:
-- Is **clean** and **human-readable** (strip unnecessary whitespace or HTML).
-- Preserves **relevant formatting** for Markdown or JSON output.
-- Only includes **valid products** (filter out ads, sponsored content, and empty listings).
+            Make sure the extracted data:
+            - return the data in a structured DataFrame format.
+            - Is **clean** and **human-readable** (strip unnecessary whitespace or HTML).
+            - Preserves **relevant formatting** for Markdown or JSON output.
+            - Only includes **valid products** (filter out ads, sponsored content, and empty listings).
 """,
-        chunk_token_threshold=500,  # Adjust based on your needs
+        chunk_token_threshold=600,  # Adjust based on your needs
         verbose=False,  # Set to True for debugging
     )
     md_generator = DefaultMarkdownGenerator(
@@ -104,10 +106,11 @@ Make sure the extracted data:
             config=run_conf,
         )
 
-        if result.success:
-            print("Extracted content:", result.extracted_content)
-        else:
-            print("Error:", result.error_message)
+        # if result.success:
+        #     print("Extracted content:", result.extracted_content)
+        # else:
+        #     print("Error:", result.error_message)
+        return result.extracted_content
 
     # async with AsyncWebCrawler(config=browser_conf) as crawler:
     #     result = await crawler.arun(
@@ -145,6 +148,7 @@ Make sure the extracted data:
     #         f.write(markdown_output)
 
 
-if __name__ == "__main__":
-    user_input = input("Enter search term: ")
-    asyncio.run(main(user_input))  # Run the main function with user input
+# if __name__ == "__main__":
+#     user_input = input("Enter search term: ")
+
+#     asyncio.run(main(user_input))  # Run the main function with user input

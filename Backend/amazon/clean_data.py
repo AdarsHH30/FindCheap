@@ -57,6 +57,9 @@ def __Groq(data, user_input):
 
 
 def save_to_json(data, filename):
+    # Create the directory if it doesn't exist
+    # os.makedirs(os.path.dirname(filename), exist_ok=True)
+
     with open(filename, "w") as f:
         json.dump(data, f, indent=4)
     print(f"Data saved to {filename}")
@@ -99,8 +102,18 @@ async def scrape_multiple_sites(user_input):
         return_exceptions=True,
     )
 
+    # Check if snapdeal_data is an exception and handle it
+    # if isinstance(snapdeal_data, Exception):
+    #     print(f"Snapdeal scraping failed: {snapdeal_data}")
+    #     snapdeal_data = {"products": [], "error": str(snapdeal_data)}
+
     print("Raw Snapdeal data:")
     save_to_json(snapdeal_data, "snapdeal_data.json")
+
+    # Check if flipkart_data is an exception and handle it
+    # if isinstance(flipkart_data, Exception):
+    #     print(f"Flipkart scraping failed: {flipkart_data}")
+    #     flipkart_data = {"products": [], "error": str(flipkart_data)}
 
     print("Raw Flipkart data:")
     # data = pd.DataFrame(flipkart_data)
@@ -108,6 +121,12 @@ async def scrape_multiple_sites(user_input):
     save_to_json(flipkart_data, "flipkart_data.json")
 
     # data = __Groq(data, user_input)
+
+    # Check if amazon_data is an exception and handle it
+    # if isinstance(amazon_data, Exception):
+    #     print(f"Amazon scraping failed: {amazon_data}")
+    #     amazon_data = {"products": [], "error": str(amazon_data)}
+
     print("Raw Amazon data:")
     save_to_json(amazon_data, "amazon_data.json")
     # data = pd.DataFrame(amazon_data)

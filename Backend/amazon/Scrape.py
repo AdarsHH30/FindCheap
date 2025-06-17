@@ -1,7 +1,9 @@
 from crawl4ai import AsyncWebCrawler, BrowserConfig, CrawlerRunConfig, CacheMode
 from crawl4ai.extraction_strategy import JsonCssExtractionStrategy
+from Proxy_rotator import ProxyManager
 import asyncio
 import json
+import random
 
 
 class ScraperConfig:
@@ -53,7 +55,7 @@ class ScraperConfig:
                 "fields": [
                     {
                         "name": "title",
-                        "selector": "a[title], .s1Q9rs, ._4rR01T",
+                        "selector": "a.wjcEIp, a[title], ._4rR01T, .s1Q9rs, .B_NuCI",
                         "type": "text",
                     },
                     {
@@ -125,6 +127,9 @@ class ScraperConfig:
         return JsonCssExtractionStrategy(schema)
 
     async def scraper(self, url: str):
+        PM = ProxyManager()
+        proxy = PM.get_proxy()
+
         browser_conf = BrowserConfig(
             browser_type="chromium",
             headless=True,
@@ -144,6 +149,7 @@ class ScraperConfig:
                 "--disable-sync",
                 "--disable-translate",
             ],
+            # proxy=proxy,  # Use the proxy from ProxyManager
         )
 
         run_conf = CrawlerRunConfig(

@@ -11,3 +11,5 @@ wheels/
 .git
 venv
 .env
+
+test/

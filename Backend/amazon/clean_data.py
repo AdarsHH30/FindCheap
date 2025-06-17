@@ -18,24 +18,15 @@ def __Groq(data, user_input):
                 "content": f"""
 
                         You are a smart filtering agent. Your task is to return the 5 most relevant and cheapest items based on the user's search input.
-
                         Instructions:
                         Input Matching Priority:
-
                         First, return items that closely match the user's input ({user_input}) in title or keywords.
-
                         Second, among those matches, return the 5 items with the lowest non-zero prices.
-
                         If exact matches are fewer than 5, fill remaining slots with similar items (closely related keywords).
-
                         Data Handling:
-
                         Input data is provided in {data}.
-
                         Skip items that have missing, zero, or invalid prices.
-
                         Avoid duplicates based on title or link.
-
                         Output Format:
                         Return only the result — no extra text. Use this exact format:
                         item 1: {{title: "title", price: "price", link: "link"}}
@@ -102,60 +93,29 @@ async def scrape_multiple_sites(user_input):
         return_exceptions=True,
     )
 
-    # Check if snapdeal_data is an exception and handle it
-    # if isinstance(snapdeal_data, Exception):
-    #     print(f"Snapdeal scraping failed: {snapdeal_data}")
-    #     snapdeal_data = {"products": [], "error": str(snapdeal_data)}
+    if isinstance(snapdeal_data, Exception):
+        print(f"Snapdeal scraping failed: {snapdeal_data}")
+        snapdeal_data = {"products": [], "error": str(snapdeal_data)}
 
     print("Raw Snapdeal data:")
     save_to_json(snapdeal_data, "snapdeal_data.json")
 
-    # Check if flipkart_data is an exception and handle it
-    # if isinstance(flipkart_data, Exception):
-    #     print(f"Flipkart scraping failed: {flipkart_data}")
-    #     flipkart_data = {"products": [], "error": str(flipkart_data)}
+    if isinstance(flipkart_data, Exception):
+        print(f"Flipkart scraping failed: {flipkart_data}")
+        flipkart_data = {"products": [], "error": str(flipkart_data)}
 
     print("Raw Flipkart data:")
-    # data = pd.DataFrame(flipkart_data)
-    # print(data)
     save_to_json(flipkart_data, "flipkart_data.json")
 
-    # data = __Groq(data, user_input)
-
-    # Check if amazon_data is an exception and handle it
-    # if isinstance(amazon_data, Exception):
-    #     print(f"Amazon scraping failed: {amazon_data}")
-    #     amazon_data = {"products": [], "error": str(amazon_data)}
+    if isinstance(amazon_data, Exception):
+        print(f"Amazon scraping failed: {amazon_data}")
+        amazon_data = {"products": [], "error": str(amazon_data)}
 
     print("Raw Amazon data:")
     save_to_json(amazon_data, "amazon_data.json")
-    # data = pd.DataFrame(amazon_data)
-    # data = __Groq(data, user_input)
-    # print(data)
-    # print(data)
-
-    # # Process the data correctly
-    # if isinstance(flipkart_data, dict) and "products" in flipkart_data:
-    #     flipkart_df = pd.DataFrame(flipkart_data["products"])
-    #     print("\n\nFlipkart data \n")
-    #     print(flipkart_df)
-    # elif isinstance(flipkart_data, Exception):
-    #     print(f"Flipkart scraping failed: {flipkart_data}")
-    # else:
-    #     print("Flipkart data format issue:", type(flipkart_data))
-
-    # if isinstance(amazon_data, dict) and "products" in amazon_data:
-    #     amazon_df = pd.DataFrame(amazon_data["products"])
-    #     print("\nAmazon data \n")
-    #     print(amazon_df)
-    # elif isinstance(amazon_data, Exception):
-    #     print(f"Amazon scraping failed: {amazon_data}")
-    # else:
-    #     print("Amazon data format issue:", type(amazon_data))
 
 
 if __name__ == "__main__":
-
     input_args = sys.argv[1:]
     string = "+".join(input_args)
     print("Input arguments:", string)

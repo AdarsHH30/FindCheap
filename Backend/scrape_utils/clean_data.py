@@ -1,4 +1,4 @@
-from config import Scrape
+from .config import Scrape
 import asyncio
 import sys
 import json
@@ -22,6 +22,7 @@ def __Groq(data, user_input):
         ],
         model="llama-3.3-70b-versatile",
     )
+    print("Chat completion response:", chat_completion)
     return convert_to_json(chat_completion.choices[0].message.content)
 
 
@@ -91,7 +92,8 @@ async def scrape_multiple_sites(user_input):
 
     data = data.drop_duplicates(subset=["title", "link"], keep="first")
     print(data)
-    # val = __Groq(data, user_input)
+    val = __Groq(data, user_input)
+    print('["val"]:', val)
 
     return amazon_data
 

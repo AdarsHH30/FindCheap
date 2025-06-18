@@ -1,6 +1,6 @@
 from crawl4ai import AsyncWebCrawler, BrowserConfig, CrawlerRunConfig, CacheMode
 from crawl4ai.extraction_strategy import JsonCssExtractionStrategy
-from config import Proxy_rotator
+from . import Proxy_rotator
 import asyncio
 import json
 import random

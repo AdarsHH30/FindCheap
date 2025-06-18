@@ -1,6 +1,6 @@
 from crawl4ai import AsyncWebCrawler, BrowserConfig, CrawlerRunConfig, CacheMode
 from crawl4ai.extraction_strategy import JsonCssExtractionStrategy
-from Proxy_rotator import ProxyManager
+from amazon import Proxy_rotator
 import asyncio
 import json
 import random
@@ -127,7 +127,7 @@ class ScraperConfig:
         return JsonCssExtractionStrategy(schema)
 
     async def scraper(self, url: str):
-        PM = ProxyManager()
+        PM = Proxy_rotator.ProxyManager()
         proxy = PM.get_proxy()
 
         browser_conf = BrowserConfig(

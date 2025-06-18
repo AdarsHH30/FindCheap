@@ -1,4 +1,4 @@
-import Scrape
+from amazon import Scrape
 import asyncio
 import sys
 import json
@@ -113,6 +113,8 @@ async def scrape_multiple_sites(user_input):
 
     print("Raw Amazon data:")
     save_to_json(amazon_data, "amazon_data.json")
+
+    return amazon_data
 
 
 if __name__ == "__main__":

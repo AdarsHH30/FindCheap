@@ -1,4 +1,10 @@
 import random
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()
+PROXY_LIST = os.getenv("PROXY_LIST", "").split(",")
 
 
 class ProxyManager:

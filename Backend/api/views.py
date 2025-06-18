@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from amazon import clean_data
+from scrape_utils import clean_data
 
 
 def handle_client_search_request(request):
@@ -51,4 +51,4 @@ async def display_scraped_data(request):
         "wireless earbuds with noise cancellation"
     )
 
-    return JsonResponse(data, safe=False)
+    return JsonResponse(data, safe=False, json_dumps_params={"indent": 2})

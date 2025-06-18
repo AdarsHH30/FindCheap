@@ -1,68 +1,188 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+/* @tailwind base; @tailwind components; */ 
+@tailwind utilities; 
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+/* Custom styles */ 
+:root {   
+  --warning: oklch(0.84 0.16 84);   
+  --warning-foreground: oklch(0.28 0.07 46); 
+}  
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+.dark {   
+  --warning: oklch(0.41 0.11 46);   
+  --warning-foreground: oklch(0.99 0.02 95); 
+}  
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
+@theme inline {   
+  --color-warning: var(--warning);   
+  --color-warning-foreground: var(--warning-foreground); 
+}   
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+:root {   
+  --radius: 0.625rem;   
+  --background: oklch(0.98 0.01 180);   /* Light teal-gray background */
+  --foreground: oklch(0.25 0.02 200);   /* Dark teal-gray text */
+  --card: oklch(1 0 0);   
+  --card-foreground: oklch(0.25 0.02 200);   
+  --popover: oklch(1 0 0);   
+  --popover-foreground: oklch(0.25 0.02 200);   
+  --primary: oklch(0.55 0.15 180);   /* Main teal color */
+  --primary-foreground: oklch(0.98 0.01 180);   
+  --secondary: oklch(0.45 0.12 180);   /* Darker teal */
+  --secondary-foreground: oklch(0.98 0.01 180);   
+  --muted: oklch(0.94 0.02 180);   /* Light teal-gray */
+  --muted-foreground: oklch(0.5 0.05 200);   
+  --accent: oklch(0.6 0.18 180);   /* Brighter teal accent */
+  --accent-foreground: oklch(0.98 0.01 180);   
+  --destructive: oklch(0.577 0.245 27.325);   
+  --border: oklch(0.88 0.03 180);   /* Teal-tinted border */
+  --input: oklch(0.96 0.02 180);   /* Light teal input background */
+  --ring: oklch(0.55 0.15 180);   /* Teal focus ring */
+  --chart-1: oklch(0.55 0.15 180);   /* Primary teal */
+  --chart-2: oklch(0.45 0.12 180);   /* Secondary teal */
+  --chart-3: oklch(0.65 0.18 180);   /* Light teal */
+  --chart-4: oklch(0.35 0.1 180);    /* Dark teal */
+  --chart-5: oklch(0.75 0.2 180);    /* Very light teal */
+  --sidebar: oklch(0.96 0.02 180);   
+  --sidebar-foreground: oklch(0.25 0.02 200);   
+  --sidebar-primary: oklch(0.55 0.15 180);   
+  --sidebar-primary-foreground: oklch(0.98 0.01 180);   
+  --sidebar-accent: oklch(0.92 0.03 180);   
+  --sidebar-accent-foreground: oklch(0.25 0.02 200);   
+  --sidebar-border: oklch(0.88 0.03 180);   
+  --sidebar-ring: oklch(0.55 0.15 180); 
+}  
+
+.dark {   
+  --background: oklch(0.15 0.02 200);   /* Dark teal-gray background */
+  --foreground: oklch(0.92 0.02 180);   /* Light teal-gray text */
+  --card: oklch(0.2 0.03 200);   
+  --card-foreground: oklch(0.92 0.02 180);   
+  --popover: oklch(0.22 0.03 200);   
+  --popover-foreground: oklch(0.92 0.02 180);   
+  --primary: oklch(0.65 0.18 180);   /* Bright teal for dark mode */
+  --primary-foreground: oklch(0.15 0.02 200);   
+  --secondary: oklch(0.25 0.04 200);   
+  --secondary-foreground: oklch(0.92 0.02 180);   
+  --muted: oklch(0.25 0.04 200);   
+  --muted-foreground: oklch(0.7 0.08 180);   
+  --accent: oklch(0.45 0.12 180);   /* Darker teal accent for dark mode */
+  --accent-foreground: oklch(0.92 0.02 180);   
+  --destructive: oklch(0.704 0.191 22.216);   
+  --border: oklch(0.3 0.05 200);   /* Dark teal border */
+  --input: oklch(0.25 0.04 200);   
+  --ring: oklch(0.65 0.18 180);   
+  --chart-1: oklch(0.65 0.18 180);   /* Bright teal */
+  --chart-2: oklch(0.55 0.15 180);   /* Medium teal */
+  --chart-3: oklch(0.75 0.2 180);    /* Light teal */
+  --chart-4: oklch(0.45 0.12 180);   /* Dark teal */
+  --chart-5: oklch(0.35 0.1 180);    /* Very dark teal */
+  --sidebar: oklch(0.2 0.03 200);   
+  --sidebar-foreground: oklch(0.92 0.02 180);   
+  --sidebar-primary: oklch(0.65 0.18 180);   
+  --sidebar-primary-foreground: oklch(0.15 0.02 200);   
+  --sidebar-accent: oklch(0.25 0.04 200);   
+  --sidebar-accent-foreground: oklch(0.92 0.02 180);   
+  --sidebar-border: oklch(0.3 0.05 200);   
+  --sidebar-ring: oklch(0.5 0.12 180); 
+}     
+
+a {   
+  font-weight: 500;   
+  color: oklch(0.55 0.15 180);   /* Teal links */
+  text-decoration: inherit; 
+} 
+
+a:hover {   
+  color: oklch(0.45 0.12 180);   /* Darker teal on hover */
+}  
+
+body {   
+  margin: 0;   
+  display: flex;   
+  place-items: center;   
+  min-width: 320px;   
   min-height: 100vh;
-}
+  background-color: oklch(0.98 0.01 180);   /* Light teal background */
+  color: oklch(0.25 0.02 200);   /* Dark teal text */
+}  
 
-h1 {
-  font-size: 3.2em;
+h1 {   
+  font-size: 3.2em;   
   line-height: 1.1;
+  color: oklch(0.25 0.02 200);   /* Dark teal headings */
+}  
+
+button {   
+  border-radius: 8px;   
+  border: 1px solid transparent;   
+  padding: 0.6em 1.2em;   
+  font-size: 1em;   
+  font-weight: 500;   
+  font-family: inherit;   
+  background-color: oklch(0.55 0.15 180);   /* Teal button background */
+  color: oklch(0.98 0.01 180);   /* Light teal button text */
+  cursor: pointer;   
+  transition: all 0.25s ease; 
+} 
+
+button:hover {   
+  background-color: oklch(0.45 0.12 180);   /* Darker teal on hover */
+  border-color: oklch(0.35 0.1 180);   /* Even darker teal border */
+  transform: translateY(-1px);   /* Subtle lift effect */
+} 
+
+button:focus, 
+button:focus-visible {   
+  outline: 2px solid oklch(0.65 0.18 180);   /* Bright teal focus outline */
+  outline-offset: 2px;
+}  
+
+@media (prefers-color-scheme: light) {   
+  :root {     
+    color: oklch(0.25 0.02 200);     
+    background-color: oklch(0.98 0.01 180);   
+  }   
+  
+  a:hover {     
+    color: oklch(0.35 0.08 180);   
+  }   
+  
+  button {     
+    background-color: oklch(0.55 0.15 180);   
+  } 
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/* Additional utility classes for the teal theme */
+.btn-primary {
+  background-color: oklch(0.55 0.15 180);
+  color: oklch(0.98 0.01 180);
+  border: 1px solid oklch(0.55 0.15 180);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.btn-primary:hover {
+  background-color: oklch(0.45 0.12 180);
+  border-color: oklch(0.45 0.12 180);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: oklch(0.55 0.15 180);
+  border: 1px solid oklch(0.55 0.15 180);
+}
+
+.btn-secondary:hover {
+  background-color: oklch(0.55 0.15 180);
+  color: oklch(0.98 0.01 180);
+}
+
+.text-primary {
+  color: oklch(0.55 0.15 180);
+}
+
+.bg-primary {
+  background-color: oklch(0.55 0.15 180);
+}
+
+.border-primary {
+  border-color: oklch(0.55 0.15 180);
 }

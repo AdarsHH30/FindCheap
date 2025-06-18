@@ -7,21 +7,36 @@
   background-color: white;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   display: flex;
-  justify-content: space-between; /* Space between brand and menu */
+  justify-content: space-between;
   align-items: center;
-  padding: 0 5px;
-  height: 60px; /* Set a fixed height */
+  padding: 0 40px; /* Increased padding for better spacing */
+  height: 70px; /* Reduced height to match design */
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  height: 50%;
+  padding: 0;
 }
 
 .navbar-brand {
-  flex-shrink: 0; /* Prevent shrinking */
+  flex-shrink: 0; 
+  display: flex;
+  align-items: center;
+  padding: 0;
+  height: 100%; 
 }
 
-.navbar-brand a {
+.navbar-brand h2 {
   text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Small gap between logo and text */
+  margin: 0; /* Remove margin-bottom */
   font-weight: bold;
   font-size: 1.5rem;
-  color: #333;
+  color: #333; /* Changed to match design */
 }
 
 .navbar-menu {
@@ -29,28 +44,82 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 30px; /* Space between menu items */
+  gap: 40px; /* Increased gap between menu items */
+  margin-right: 60px; /* Adjusted margin for better spacing */
+  align-items: center;
 }
 
 .navbar-menu li {
   margin: 0;
+
+}
+
+.navbar-menu button {
+  background: none;
+  border: none;
+  color: #666; /* Gray color for menu items */
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 8px 12px;
+  transition: color 0.3s ease;
+}
+
+.navbar-menu button:hover {
+  color: #333;
+}
+
+/* Style for the Sign Up button */
+.navbar-login button {
+  background-color: var(--primary) !important; /* Teal color */
+  color: white !important;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px; /* Rounded pill shape */
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  margin-left: 20px; /* Add space before the login button */
+}
+
+.navbar-login button:hover {
+  background-color: var(--foreground) !important;
+
+}
+
+/* Remove specific styling from contact button */
+.navbar-contact button {
+  background-color: transparent !important;
+  color: #666 !important;
+  box-shadow: none;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navbar-contact button:hover {
+  color: #333 !important;
 }
 
 .navbar-menu a {
   text-decoration: none;
-  color: #333;
+  color: #666;
   font-weight: 500;
-  padding: 10px 15px;
+  padding: 8px 12px;
   border-radius: 4px;
-  transition: background-color 0.3s ease;
+  transition: color 0.3s ease;
+  margin: 0;
 }
 
 .navbar-menu a:hover {
-  background-color: #f0f0f0;
+  color: #333;
 }
 
-/* Add padding to body to prevent content from hiding behind navbar */
 body {
-  padding-top: 60px; /* Same as navbar height */
+  padding-top: 70px; /* Match navbar height */
   margin: 0;
 }

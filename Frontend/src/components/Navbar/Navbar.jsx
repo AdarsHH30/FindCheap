@@ -1,28 +1,42 @@
 import React from "react";
-import "../../style/Navbar.css"; // Assuming you have a CSS file for styling
+import "../../style/Navbar.css";
+
 export const Navbar = () => {
   return (
-    <nav className="navbar ">
+    <nav className="navbar">
       <div className="navbar-brand">
         <img
           src="/shopping-cart-logo.svg"
           alt="Shopping Logo"
           className="navbar-logo"
         />
-        <a href="/">MyApp</a>
+        <h2>FindCheap</h2>
       </div>
       <ul className="navbar-menu">
-        <li>
-          <a href="/home">Home</a>
+        <li className="navbar-categories">
+          <button onClick={() => (window.location.href = "/categories")}>
+            Categories
+          </button>
+        </li>
+        <li className="navbar-home">
+          <button onClick={() => (window.location.href = "/how-it-works")}>
+            How it Works
+          </button>
+        </li>
+        <li className="navbar-contact">
+          <button onClick={() => (window.location.href = "/about")}>
+            About
+          </button>
         </li>
         <li>
-          <a href="/about">Categories</a>
+          <button onClick={() => (window.location.href = "/signup")}>
+            Sign Up
+          </button>
         </li>
-        <li>
-          <a href="/contact">Contact</a>
-        </li>
-        <li className="navbar-login flex gap-2">
-          <a href="/login">Login</a>
+        <li className="navbar-login">
+          <button onClick={() => (window.location.href = "/signup")}>
+            Sign Up
+          </button>
         </li>
       </ul>
     </nav>

@@ -1,5 +1,5 @@
 import React from "react";
-import "./App.css";
+// import "./App.css";
 import Api from "./components/api.jsx"; // Changed from { Api } to Api
 import Search from "./components/search.jsx";
 import { Navbar } from "./components/Navbar/Navbar.jsx";
@@ -9,7 +9,9 @@ function App() {
   return (
     <div className="App">
       <Navbar />
-      <Hero />
+      <div className="flex flex-col right-0 top-0">
+        <Hero />
+      </div>
     </div>
   );
 }

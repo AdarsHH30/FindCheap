@@ -1,4 +1,4 @@
-from .config import Scrape
+from config import Scrape
 import asyncio
 import sys
 import json
@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 instructions = os.getenv("GROQ_INSTRUCTIONS")
+print("GROQ_INSTRUCTIONS:", instructions)
 
 
 def __Groq(data, user_input):
@@ -17,8 +18,14 @@ def __Groq(data, user_input):
     )
     chat_completion = client.chat.completions.create(
         messages=[
-            {"role": "system", "content": f"{instructions} "},
-            {"role": "user", "content": f"{user_input}{data}"},
+            {
+                "role": "user",
+                "content": f" Just return the JSON data not any other extra data.{instructions}",
+            },
+            {
+                "role": "user",
+                "content": f"{user_input}{data}",
+            },
         ],
         model="llama-3.3-70b-versatile",
     )
@@ -89,11 +96,15 @@ async def scrape_multiple_sites(user_input):
         amazon_data = {"products": [], "error": str(amazon_data)}
 
     data = pd.DataFrame(amazon_data["products"])
-
-    data = data.drop_duplicates(subset=["title", "link"], keep="first")
+    # Save the DataFrame to a CSV file
+    csv_filename = "amazon_scraped_data.csv"
+    data.to_csv(csv_filename, index=False)
+    print(f"DataFrame saved to {csv_filename}")
     print(data)
+
     val = __Groq(data, user_input)
     print('["val"]:', val)
+    save_to_json(val, "amazon_data.json")
 
     return amazon_data
 

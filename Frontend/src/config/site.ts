@@ -4,7 +4,6 @@ export const siteConfig = {
   description:
     "Find Cheap is a platform to find the cheapest products across various categories and platforms.",
   links: {
-    twitter: "https://twitter.com/shadcn",
     github: "https://https://github.com/AdarsHH30/FindCheap",
   },
 };

@@ -49,18 +49,18 @@ FindCheap/
 
 ### Backend Setup
 
-python -m venv venv
-
 1. Navigate to the Backend directory:
 
-   ```
-   cd Backend
-   ```
+python -m venv venv
+
+```
+cd Backend
+```
 
 2. Install dependencies:
 
    ```
-   uv pip install -r requirement.txt
+   uv pip install -r requirements.txt
    ```
 
 3. Run database migrations:

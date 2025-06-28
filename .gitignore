@@ -66,3 +66,11 @@ migrations/
 test/
 
 db.sqlite3
+*amazon_data.json
+*amazon_scraped_data.csv
+
+*flipkart_data.json
+*flipkart_scraped_data.csv
+
+*snapdeal_data.json
+*snapdeal_scraped_data.csv

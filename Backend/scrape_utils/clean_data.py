@@ -1,4 +1,5 @@
-from config import Scrape
+from .config import Scrape
+from .config import Filter
 import asyncio
 import sys
 import json
@@ -9,7 +10,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 instructions = os.getenv("GROQ_INSTRUCTIONS")
-print("GROQ_INSTRUCTIONS:", instructions)
 
 
 def __Groq(data, user_input):
@@ -57,7 +57,9 @@ async def scrape_multiple_sites(user_input):
     """
     This function takes the user input and sends it to th
     e scraper with different URLs.
+
     """
+
     amazon_url = f"https://www.amazon.in/s?k={user_input}"
     flipkart_url = f"https://www.flipkart.com/search?q={user_input}"
     snapdeal_url = f"https://www.snapdeal.com/search?keyword={user_input}"
@@ -76,37 +78,13 @@ async def scrape_multiple_sites(user_input):
         snapdeal_task,
         return_exceptions=True,
     )
-
-    # if isinstance(snapdeal_data, Exception):
-    #     print(f"Snapdeal scraping failed: {snapdeal_data}")
-    #     snapdeal_data = {"products": [], "error": str(snapdeal_data)}
-
-    # print("Raw Snapdeal data:")
-    # save_to_json(snapdeal_data, "snapdeal_data.json")
-
-    # if isinstance(flipkart_data, Exception):
-    #     print(f"Flipkart scraping failed: {flipkart_data}")
-    #     flipkart_data = {"products": [], "error": str(flipkart_data)}
-
-    # print("Raw Flipkart data:")
-    # save_to_json(flipkart_data, "flipkart_data.json")
-
-    if isinstance(amazon_data, Exception):
-        print(f"Amazon scraping failed: {amazon_data}")
-        amazon_data = {"products": [], "error": str(amazon_data)}
-
-    data = pd.DataFrame(amazon_data["products"])
-    # Save the DataFrame to a CSV file
-    csv_filename = "amazon_scraped_data.csv"
-    data.to_csv(csv_filename, index=False)
-    print(f"DataFrame saved to {csv_filename}")
-    print(data)
-
-    val = __Groq(data, user_input)
-    print('["val"]:', val)
-    save_to_json(val, "amazon_data.json")
-
-    return amazon_data
+    flipkart = Filter.filter_data(flipkart_data, "flipkart")
+    amazon = Filter.filter_data(amazon_data, "amazon")
+    snapdeal = Filter.filter_data(snapdeal_data, "snapdeal")
+    print("Flipkart Data:", flipkart)
+    flipkart = json.loads(flipkart)
+    print("Flipkart Data Type:", type(flipkart))
+    return flipkart
 
 
 if __name__ == "__main__":

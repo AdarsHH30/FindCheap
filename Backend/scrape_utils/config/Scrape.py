@@ -160,6 +160,14 @@ class ScraperConfig:
 
         async with AsyncWebCrawler(config=browser_conf) as crawler:
             result = await crawler.arun(url=url, config=run_conf)
+            # check what e-commnerce site is being scraped
+            e_commerce = ""
+            if "amazon" in url.lower():
+                e_commerce = "amazon"
+            elif "flipkart" in url.lower():
+                e_commerce = "flipkart"
+            elif "snapdeal" in url.lower():
+                e_commerce = "snapdeal"
 
             if result.success:
                 print(f"Extraction successful for {url}")
@@ -167,7 +175,7 @@ class ScraperConfig:
                     try:
                         extracted_data = json.loads(result.extracted_content)
                         return {
-                            "products": (
+                            f"{e_commerce}": (
                                 extracted_data
                                 if isinstance(extracted_data, list)
                                 else [extracted_data]

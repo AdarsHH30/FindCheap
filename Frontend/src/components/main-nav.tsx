@@ -12,9 +12,7 @@ export function MainNav() {
     <div className="mr-4 hidden md:flex w-full justify-between">
       <Link href="/" className="mr-4 flex items-center gap-2 lg:mr-6">
         {/* TODO:  Add logo here. Better configure logo in the icons component */}
-        <Link href="/">
-          <Icons.logo />
-        </Link>
+        <Icons.logo />
         <span className="hidden text-2xl font-semibold lg:inline-block">
           {siteConfig.name}
         </span>

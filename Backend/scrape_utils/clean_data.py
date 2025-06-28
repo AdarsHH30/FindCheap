@@ -12,45 +12,47 @@ load_dotenv()
 instructions = os.getenv("GROQ_INSTRUCTIONS")
 
 
-def __Groq(data, user_input):
-    client = Groq(
-        api_key=os.environ.get("GROQ_API_KEY"),
-    )
-    chat_completion = client.chat.completions.create(
-        messages=[
-            {
-                "role": "user",
-                "content": f" Just return the JSON data not any other extra data.{instructions}",
-            },
-            {
-                "role": "user",
-                "content": f"{user_input}{data}",
-            },
-        ],
-        model="llama-3.3-70b-versatile",
-    )
-    print("Chat completion response:", chat_completion)
-    return convert_to_json(chat_completion.choices[0].message.content)
+# def __Groq(data, user_input):
+#     client = Groq(
+#         api_key=os.environ.get("GROQ_API_KEY"),
+#     )
+#     chat_completion = client.chat.completions.create(
+#         messages=[
+#             {
+#                 "role": "user",
+#                 "content": f" Just return the JSON data not any other extra data.{instructions}",
+#             },
+#             {
+#                 "role": "user",
+#                 "content": f"{user_input}{data}",
+#             },
+#         ],
+#         model="llama-3.3-70b-versatile",
+#     )
+#     print("Chat completion response:", chat_completion)
+#     return convert_to_json(chat_completion.choices[0].message.content)
+
+
+def convert_to_json(data):
+    if isinstance(data, str):
+        try:
+            return json.loads(data)
+        except json.JSONDecodeError:
+            print("Error decoding JSON from string")
+            return []
+    elif isinstance(data, list):
+        return data
+    elif isinstance(data, dict):
+        return [data]
+    else:
+        print("Unsupported data type for conversion to JSON")
+        return []
 
 
 def save_to_json(data, filename):
     with open(filename, "w") as f:
         json.dump(data, f, indent=2)
     print(f"Data saved to {filename}")
-
-
-def convert_to_json(raw_data):
-    data = []
-    for line in raw_data.strip().split("\n"):
-        line = line.strip()
-        if not line:
-            continue
-        try:
-            data.append(json.loads(line))
-        except json.JSONDecodeError:
-            # Optionally log or print the bad line
-            continue
-    return data
 
 
 async def scrape_multiple_sites(user_input):
@@ -81,10 +83,13 @@ async def scrape_multiple_sites(user_input):
     flipkart = Filter.filter_data(flipkart_data, "flipkart")
     amazon = Filter.filter_data(amazon_data, "amazon")
     snapdeal = Filter.filter_data(snapdeal_data, "snapdeal")
-    print("Flipkart Data:", flipkart)
-    flipkart = json.loads(flipkart)
-    print("Flipkart Data Type:", type(flipkart))
-    return flipkart
+
+    # Convert to JSON
+    flipkart_json = convert_to_json(flipkart)
+    amazon_json = convert_to_json(amazon)
+    snapdeal_json = convert_to_json(snapdeal)
+
+    return flipkart_json, amazon_json, snapdeal_json
 
 
 if __name__ == "__main__":

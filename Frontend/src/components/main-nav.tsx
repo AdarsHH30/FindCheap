@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
-
+import { Icons } from "./icons";
 export function MainNav() {
   const pathname = usePathname();
 
@@ -13,7 +12,9 @@ export function MainNav() {
     <div className="mr-4 hidden md:flex w-full justify-between">
       <Link href="/" className="mr-4 flex items-center gap-2 lg:mr-6">
         {/* TODO:  Add logo here. Better configure logo in the icons component */}
-        <div className="bg-primary w-[40px] h-[40px] rounded-md" />
+        <Link href="/">
+          <Icons.logo />
+        </Link>
         <span className="hidden text-2xl font-semibold lg:inline-block">
           {siteConfig.name}
         </span>

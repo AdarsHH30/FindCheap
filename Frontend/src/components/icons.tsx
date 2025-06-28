@@ -1,7 +1,12 @@
 type IconProps = React.HTMLAttributes<SVGElement>;
+type ImageIconProps = React.HTMLAttributes<HTMLImageElement>;
+import Image from "next/image";
 
 // TODO: Remove unwanted icons
 export const Icons = {
+  logo: (props: ImageIconProps) => (
+    <Image src="/logo_256.png" alt="Logo" width={40} height={40} {...props} />
+  ),
   twitter: (props: IconProps) => (
     <svg
       {...props}

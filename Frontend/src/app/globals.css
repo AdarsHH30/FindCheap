@@ -43,6 +43,12 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+@media (min-width: 768px) {
+  :root {
+    --navbar-height: 97px !important;
+  }
+}
+
 :root {
   --radius: 0.625rem;
   --background: oklch(0.98 0.01 180); /* Light teal-gray background */

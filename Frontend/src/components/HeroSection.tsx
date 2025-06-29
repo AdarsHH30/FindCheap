@@ -15,8 +15,8 @@ const HeroSection = () => {
         <SearchComponent />
         <p>Wireless earbuds - smartwatch - yoga mat</p>
         <InfiniteScrollingLogosAnimation />
-        {/* TODO: Add that scrolling feature Adarsh said */}
       </div>
+      {/* what is the point of this div? */}
       <div className="bg-teal-500 opacity-50 backdrop-blur-2xl h-full w-1/4" />
     </section>
   );

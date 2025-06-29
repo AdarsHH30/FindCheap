@@ -128,7 +128,9 @@ class ScraperConfig:
 
     async def scraper(self, url: str):
         PM = Proxy_rotator.ProxyManager()
-        proxy = PM.get_proxy()
+        p = PM.get_proxy()
+        print(f"Using proxy: {p}")
+        print(p)
 
         browser_conf = BrowserConfig(
             browser_type="chromium",
@@ -149,7 +151,7 @@ class ScraperConfig:
                 "--disable-sync",
                 "--disable-translate",
             ],
-            # proxy=proxy,  # Use the proxy from ProxyManager
+            # proxy="http://103.180.198.164:3128",
         )
 
         run_conf = CrawlerRunConfig(

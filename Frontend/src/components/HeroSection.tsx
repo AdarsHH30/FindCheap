@@ -1,5 +1,6 @@
 import React from "react";
 import SearchComponent from "./search-component";
+import InfiniteScrollingLogosAnimation from "./ui/Infinite-Scrolling-Logos-Animation";
 
 const HeroSection = () => {
   return (
@@ -13,6 +14,7 @@ const HeroSection = () => {
         </p>
         <SearchComponent />
         <p>Wireless earbuds - smartwatch - yoga mat</p>
+        <InfiniteScrollingLogosAnimation />
         {/* TODO: Add that scrolling feature Adarsh said */}
       </div>
       <div className="bg-teal-500 opacity-50 backdrop-blur-2xl h-full w-1/4" />

@@ -1,29 +1,65 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
+import json
+import logging
+
+# Set up logging
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
-# Function to filter data based on e-commerce site
-# and return the top 10 most similar products based on title
-# using TF-IDF and cosine similarity
-# This function assumes that the data is a dictionary with e-commerce site names as keys
-# and each value is a list of dictionaries containing product information.
-def filter_data(data, e_commerce):
-    print(data)
-    data = pd.DataFrame(data[e_commerce])
-    print(data)
-    TF = TfidfVectorizer(stop_words="english")
-    tfmatrix = TF.fit_transform(data["title"].fillna(""))
+def filter_data(data, e_commerce, search_query=None, top_n=10):
+    """
+    Filter and rank products based on relevance to search query or e-commerce site name.
 
-    query = [e_commerce]
-    query_vector = TF.transform(query)
+    Args:
+        data (dict): Dictionary with e-commerce site names as keys and lists of product dictionaries as values
+        e_commerce (str): Name of the e-commerce site to filter by
+        search_query (str, optional): Query to compare product titles against. If None, uses e-commerce name.
+        top_n (int, optional): Number of top results to return. Defaults to 10.
 
-    similarities = cosine_similarity(query_vector, tfmatrix).flatten()
+    Returns:
+        str: JSON string of the top filtered results
+    """
+    try:
+        # Validate inputs
+        if e_commerce not in data:
+            logger.error(f"E-commerce site '{e_commerce}' not found in data")
+            return json.dumps([])
 
-    data["similarity_score"] = similarities
+        # Convert to DataFrame
+        df = pd.DataFrame(data[e_commerce])
 
-    df = data.sort_values(by="similarity_score", ascending=False).head(10)
+        if df.empty:
+            logger.warning(f"No data found for {e_commerce}")
+            return json.dumps([])
 
-    filter_data = df.to_json(orient="records", indent=2, force_ascii=False)
+        # Use search query if provided, otherwise use e-commerce name
+        query = [search_query if search_query else e_commerce]
 
-    return filter_data
+        # Handle missing titles
+        if df["title"].isnull().all():
+            logger.error("All titles are null, cannot compute similarity.")
+            return json.dumps([])
+
+        # Calculate TF-IDF and similarity scores
+        vectorizer = TfidfVectorizer(stop_words="english")
+        title_matrix = vectorizer.fit_transform(df["title"].fillna(""))
+        query_vector = vectorizer.transform(query)
+        similarities = cosine_similarity(query_vector, title_matrix).flatten()
+
+        # Add scores and sort
+        df["similarity_score"] = similarities
+        result_df = df.sort_values(by="similarity_score", ascending=False).head(top_n)
+
+        # Convert to JSON
+        filtered_data = result_df.to_json(orient="records", indent=2, force_ascii=False)
+
+        return filtered_data
+
+    except Exception as e:
+        logger.error(f"Error in filter_data: {str(e)}")
+        return json.dumps([])

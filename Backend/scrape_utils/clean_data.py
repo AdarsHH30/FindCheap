@@ -70,33 +70,37 @@ async def scrape_multiple_sites(user_input):
     s = Scrape.ScraperConfig(user_input, 5)
 
     # Get coroutine objects (DO NOT await here)
-    # flipkart_task = s.scraper(flipkart_url)
-    # amazon_task = s.scraper(amazon_url)
-    # snapdeal_task = s.scraper(snapdeal_url)
+    flipkart_task = s.scraper(flipkart_url)
+    amazon_task = s.scraper(amazon_url)
+    snapdeal_task = s.scraper(snapdeal_url)
     jiomart_task = s.scraper(jiomart_url)
     print(jiomart_task)
 
     # Run them concurrently
-    # flipkart_data, amazon_data, snapdeal_data,
-    jiomart_data = await asyncio.gather(
-        # flipkart_task,
-        # amazon_task,
-        # snapdeal_task,
+    flipkart_data, amazon_data, snapdeal_data, jiomart_data = await asyncio.gather(
+        flipkart_task,
+        amazon_task,
+        snapdeal_task,
         jiomart_task,
         return_exceptions=True,
     )
-    # flipkart = Filter.filter_data(flipkart_data, "flipkart")
-    # amazon = Filter.filter_data(amazon_data, "amazon")
-    # snapdeal = Filter.filter_data(snapdeal_data, "snapdeal")
+    flipkart = Filter.filter_data(flipkart_data, "flipkart")
+    amazon = Filter.filter_data(amazon_data, "amazon")
+    snapdeal = Filter.filter_data(snapdeal_data, "snapdeal")
     jiomart = Filter.filter_data(jiomart_data, "jiomart")
 
     # Convert to JSON
-    # flipkart_json = convert_to_json(flipkart)
-    # amazon_json = convert_to_json(amazon)
-    # snapdeal_json = convert_to_json(snapdeal)
+    flipkart_json = convert_to_json(flipkart)
+    amazon_json = convert_to_json(amazon)
+    snapdeal_json = convert_to_json(snapdeal)
     jiomart_json = convert_to_json(jiomart)
 
-    return jiomart_json
+    return {
+        "flipkart": flipkart_json,
+        "amazon": amazon_json,
+        "snapdeal": snapdeal_json,
+        "jiomart": jiomart_json,
+    }
 
 
 if __name__ == "__main__":

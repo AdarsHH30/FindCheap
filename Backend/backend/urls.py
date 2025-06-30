@@ -21,5 +21,5 @@ from api import views
 
 urlpatterns = [
     # path("admin/", admin.site.urls),
-    path("products/", views.display_scraped_data, name="display_scraped_data"),
+    path("", views.display_scraped_data, name="display_scraped_data"),
 ]

@@ -120,6 +120,56 @@ class ScraperConfig:
                 ],
                 "limit": max_products,
             }
+            # TODO:fix the jio mart schema
+        elif "jiomart" in link:
+            schema = {
+                "name": "JioMartProducts",
+                "baseSelector": ".plp-card-container",
+                "fields": [
+                    {
+                        "name": "title",
+                        "selector": ".plp-card-details-name",
+                        "type": "text",
+                    },
+                    {
+                        "name": "price",
+                        "selector": ".plp-card-details-price span.jm-heading-xxs",
+                        "type": "text",
+                    },
+                    {
+                        "name": "original_price",
+                        "selector": ".plp-card-details-price .line-through",
+                        "type": "text",
+                    },
+                    {
+                        "name": "discount",
+                        "selector": ".plp-card-details-discount .jm-badge",
+                        "type": "text",
+                    },
+                    {
+                        "name": "image",
+                        "selector": ".plp-card-image img",
+                        "type": "attribute",
+                        "attribute": "src",
+                    },
+                    {
+                        "name": "bank_offer",
+                        "selector": ".payment_tag .jm-badge-offer",
+                        "type": "text",
+                    },
+                    {
+                        "name": "exchange_offer",
+                        "selector": ".plp-exchange-offer .jm-badge-offer",
+                        "type": "text",
+                    },
+                    {
+                        "name": "limited_deal",
+                        "selector": ".deal_of_day",
+                        "type": "text",
+                    },
+                ],
+                "limit": max_products,
+            }
 
         else:
             raise ValueError(f"Unsupported website: {URL}")
@@ -137,7 +187,7 @@ class ScraperConfig:
             headless=True,
             extra_args=[
                 "--disable-blink-features=AutomationControlled",
-                "--disable-infobars",  # Fixed typo: was "--disable-info-bars"
+                "--disable-infobars",
                 "--no-sandbox",
                 "--disable-dev-shm-usage",
                 "--disable-gpu",
@@ -150,6 +200,9 @@ class ScraperConfig:
                 "--disable-background-networking",
                 "--disable-sync",
                 "--disable-translate",
+                "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "--disable-features=VizDisplayCompositor",
+                "--disable-ipc-flooding-protection",
             ],
             # proxy="http://103.180.198.164:3128",
         )
@@ -158,6 +211,7 @@ class ScraperConfig:
             extraction_strategy=self.schema_setup(url),
             cache_mode=CacheMode.BYPASS,
             word_count_threshold=10,
+            delay_before_return_html=3,
         )  # Fixed missing closing parenthesis
 
         async with AsyncWebCrawler(config=browser_conf) as crawler:
@@ -170,6 +224,8 @@ class ScraperConfig:
                 e_commerce = "flipkart"
             elif "snapdeal" in url.lower():
                 e_commerce = "snapdeal"
+            elif "jiomart" in url.lower():
+                e_commerce = "jiomart"
 
             if result.success:
                 print(f"Extraction successful for {url}")
@@ -184,11 +240,13 @@ class ScraperConfig:
                             )
                         }
                     except json.JSONDecodeError as e:
+                        print(f"Failed to parse extracted content: {str(e)}")
                         return {
                             "products": [],
                             "error": f"Failed to parse extracted content: {str(e)}",
                         }
                 else:
+                    print("No content extracted")
                     return {"products": [], "message": "No content extracted"}
             else:
                 return {"error": result.error_message, "products": []}

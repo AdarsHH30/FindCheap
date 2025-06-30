@@ -9,10 +9,11 @@ import pandas as pd
 # This function assumes that the data is a dictionary with e-commerce site names as keys
 # and each value is a list of dictionaries containing product information.
 def filter_data(data, e_commerce):
+    print(data)
     data = pd.DataFrame(data[e_commerce])
-
+    print(data)
     TF = TfidfVectorizer(stop_words="english")
-    tfmatrix = TF.fit_transform(data["title"])
+    tfmatrix = TF.fit_transform(data["title"].fillna(""))
 
     query = [e_commerce]
     query_vector = TF.transform(query)

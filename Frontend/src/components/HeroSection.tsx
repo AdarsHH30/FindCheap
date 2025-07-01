@@ -5,6 +5,7 @@ import SearchComponent from "./search-component";
 import { ReactTyped } from "react-typed";
 import InfiniteScrollingLogosAnimation from "./ui/Infinite-Scrolling-Logos-Animation";
 import { motion } from "framer-motion";
+import ModelViewer from "./ModelViewer";
 
 const HeroSection = () => {
   return (
@@ -31,7 +32,28 @@ const HeroSection = () => {
         </motion.p>
         <InfiniteScrollingLogosAnimation />
       </div>
-      <div className="bg-teal-500 opacity-50 backdrop-blur-2xl h-full w-1/4" />
+      {/* <div className="bg-teal-500 opacity-50 backdrop-blur-2xl h-full w-1/4" /> */}
+      <div className="relative w-1/4 h-full">
+        <ModelViewer />
+        {/* Floating Card */}
+        <div className="absolute top-[60%] left-[40%] -translate-y-1/2 bg-white/95 rounded-xl shadow-xl px-4 py-3 w-52">
+          <h3 className="text-sm font-semibold text-gray-700 mb-2">
+            wireless earbuds
+          </h3>
+          <ul className="text-sm text-gray-600 space-y-1">
+            <li className="flex justify-between">
+              <span>eBay</span>{" "}
+              <span className="text-primary font-semibold">$124</span>
+            </li>
+            <li className="flex justify-between">
+              <span>Amazon</span> <span>$189</span>
+            </li>
+            <li className="flex justify-between">
+              <span>Target</span> <span>$149</span>
+            </li>
+          </ul>
+        </div>
+      </div>
     </section>
   );
 };

@@ -18,8 +18,13 @@ const CompanyLogoData: Array<{ src: string; alt: string }> = [
 const InfiniteScrollingLogosAnimation = () => {
   // TODO:Fix the animation break
   return (
-    <div className="container p-5">
-      <div className="flex relative overflow-hidden before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-10  before:to-transparent before:content-[''] after:absolute after:right-0 after:top-0 after:h-full after:w-10 after:to-transparent after:content-['']">
+    <div className="container p-5 overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, x: -300 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex relative overflow-hidden before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-10  before:to-transparent before:content-[''] after:absolute after:right-0 after:top-0 after:h-full after:w-10 after:to-transparent after:content-['']"
+      >
         <motion.div
           transition={{
             duration: 8,
@@ -55,7 +60,7 @@ const InfiniteScrollingLogosAnimation = () => {
             </React.Fragment>
           ))}
         </motion.div>
-      </div>
+      </motion.div>
     </div>
   );
 };

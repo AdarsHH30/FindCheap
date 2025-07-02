@@ -65,7 +65,7 @@
   --muted-foreground: oklch(0.5 0.05 200);
   --accent: oklch(0.6 0.18 180); /* Brighter teal accent */
   --accent-foreground: oklch(0.98 0.01 180);
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: oklch(59.808% 0.19814 23.094);
   --border: oklch(0.88 0.03 180); /* Teal-tinted border */
   --input: oklch(0.96 0.02 180); /* Light teal input background */
   --ring: oklch(0.55 0.15 180); /* Teal focus ring */

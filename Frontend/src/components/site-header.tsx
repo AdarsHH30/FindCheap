@@ -1,12 +1,27 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { MainNav } from "@/components/main-nav";
 import { MobileNav } from "@/components/mobile-nav";
 import { ModeSwitcher } from "@/components/mode-switcher";
-import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { createClient } from "@/utils/supabase/client";
+import { User } from "@supabase/supabase-js";
+import LoginComponent from "./LoginComponent";
 
 const SiteHeader = () => {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const supabase = createClient();
+      const { data } = await supabase.auth.getUser();
+      setUser(data.user);
+    };
+
+    fetchUser();
+  }, []);
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -18,9 +33,8 @@ const SiteHeader = () => {
         <MainNav />
         <MobileNav />
         <div className="ml-auto flex items-center md:flex-1 md:justify-end">
-          <nav className="flex items-center gap-2">
-            {/* TODO: Implement authentication */}
-            <Button className="rounded-full">Login</Button>
+          <nav className="flex items-center gap-4">
+            <LoginComponent user={user} setUser={setUser} />
             <ModeSwitcher />
           </nav>
         </div>

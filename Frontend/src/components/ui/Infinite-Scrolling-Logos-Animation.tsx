@@ -8,8 +8,9 @@ const CompanyLogoData: Array<{ src: string; alt: string }> = [
   { src: "/logos/amazon.png", alt: "Amazon Logo" },
   { src: "/logos/flipkart.png", alt: "Flipkart Logo" },
   { src: "/logos/shopify.png", alt: "Shopify Logo" },
+  { src: "/logos/jiomart.png", alt: "Jio mart  Logo" },
+  { src: "/logos/snapdeal.png", alt: "Snap deal Logo" },
   { src: "/logos/walmart.png", alt: "Walmart Logo" },
-  { src: "/logos/snapdeal.png", alt: "snapdeal Logo" },
 ];
 {
   /*TODO: Add more logos */

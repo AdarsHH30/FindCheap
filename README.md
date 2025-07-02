@@ -18,6 +18,58 @@ The project consists of two main components:
 
 ## Tech Stack
 
+## Database
+
+#### 1. Install postgres and start it .
+
+#### 2. Create Database and User
+
+```
+# Switch to the default postgres user
+sudo -i -u postgres
+
+# Enter the PostgreSQL shell
+
+psql
+
+# Create a new database
+
+CREATE DATABASE mydb;
+
+# Create a new user
+
+CREATE USER myuser WITH PASSWORD 'mypassword';
+
+# Grant privileges
+
+GRANT ALL PRIVILEGES ON DATABASE mydb TO myuser;
+
+# Grant access to schema
+
+\c mydb
+GRANT ALL ON SCHEMA public TO myuser;
+
+# Exit
+
+\q
+exit
+
+```
+
+#### 3. Update Django settings.py
+
+```DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mydb',
+        'USER': 'myuser',
+        'PASSWORD': 'mypassword',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+```
+
 ### Backend
 
 - Python
@@ -34,15 +86,17 @@ The project consists of two main components:
 ## Project Structure
 
 ```
+
 FindCheap/
-├── Backend/            # Django backend
-│   ├── api/            # API endpoints
-│   ├── backend/        # Django project settings
-│   └── scrape_utils/   # Web scraping utilities
+├── Backend/ # Django backend
+│ ├── api/ # API endpoints
+│ ├── backend/ # Django project settings
+│ └── scrape_utils/ # Web scraping utilities
 │
-└── Frontend/           # React frontend
-    ├── public/         # Static assets
-    └── src/            # React components and logic
+└── Frontend/ # React frontend
+├── public/ # Static assets
+└── src/ # React components and logic
+
 ```
 
 ## Getting Started
@@ -54,44 +108,60 @@ FindCheap/
 python -m venv venv
 
 ```
+
 cd Backend
+
 ```
 
 2. Install dependencies:
 
-   ```
-   uv pip install -r requirements.txt
-   ```
+```
+
+uv pip install -r requirements.txt
+
+```
 
 3. Run database migrations:
 
-   ```
-   python manage.py migrate
-   ```
+```
+
+python manage.py migrate
+
+```
 
 4. Start the Django server:
-   ```
-   python manage.py runserver 8000
-   ```
+
+```
+
+python manage.py runserver 8000
+
+```
 
 ### Frontend Setup
 
 1. Navigate to the Frontend directory:
 
-   ```
-   cd Frontend
-   ```
+```
+
+cd Frontend
+
+```
 
 2. Install dependencies:
 
-   ```
-   pnpm install
-   ```
+```
+
+pnpm install
+
+```
 
 3. Start the development server:
-   ```
-   pnpm dev
-   ```
+
+```
+
+pnpm dev
+
+```
 
 ## Contributing
 
@@ -100,3 +170,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the MIT License.
+
+```
+
+```

@@ -35,7 +35,7 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 # Check if we should use local SQLite database (for development)
 USE_SQLITE = os.getenv("USE_SQLITE", "False").lower() == "true"
 
-if USE_SQLITE:
+if not USE_SQLITE:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",

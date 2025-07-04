@@ -1,0 +1,80 @@
+export const dummy_data = [
+  {
+    productName: "Apple iPhone 15 Pro",
+    price: "$999",
+    url: "https://amazon.com/apple-iphone-15-pro",
+    imageUrl: "/logo_256.png",
+  },
+  {
+    productName: "Samsung Galaxy S24 Ultra",
+    price: "$1199",
+    url: "https://flipkart.com/samsung-galaxy-s24-ultra",
+    imageUrl: "/logo_256.png",
+  },
+  {
+    productName: "OnePlus 12",
+    price: "$799",
+    url: "https://snapdeal.com/oneplus-12",
+    imageUrl: "/logo_256.png",
+  },
+  {
+    productName: "Google Pixel 8 Pro",
+    price: "$899",
+    url: "https://walmart.com/google-pixel-8-pro",
+    imageUrl: "/logo_256.png",
+  },
+  {
+    productName: "Xiaomi 14 Ultra",
+    price: "$749",
+    url: "https://shopify.com/xiaomi-14-ultra",
+    imageUrl: "/logo_256.png",
+  },
+  {
+    productName: "Sony Xperia 1 VI",
+    price: "$1099",
+    url: "https://amazon.com/sony-xperia-1-vi",
+    imageUrl: "/logo_256.png",
+  },
+  {
+    productName: "Nothing Phone (2a)",
+    price: "$399",
+    url: "https://flipkart.com/nothing-phone-2a",
+    imageUrl: "/logo_256.png",
+  },
+  {
+    productName: "Realme GT 6",
+    price: "$549",
+    url: "https://snapdeal.com/realme-gt-6",
+    imageUrl: "/logo_256.png",
+  },
+  {
+    productName: "Google Pixel 8 Pro",
+    price: "$899",
+    url: "https://walmart.com/google-pixel-8-pro",
+    imageUrl: "/logo_256.png",
+  },
+  {
+    productName: "Xiaomi 14 Ultra",
+    price: "$749",
+    url: "https://shopify.com/xiaomi-14-ultra",
+    imageUrl: "/logo_256.png",
+  },
+  {
+    productName: "Sony Xperia 1 VI",
+    price: "$1099",
+    url: "https://amazon.com/sony-xperia-1-vi",
+    imageUrl: "/logo_256.png",
+  },
+  {
+    productName: "Nothing Phone (2a)",
+    price: "$399",
+    url: "https://flipkart.com/nothing-phone-2a",
+    imageUrl: "/logo_256.png",
+  },
+  {
+    productName: "Realme GT 6",
+    price: "$549",
+    url: "https://snapdeal.com/realme-gt-6",
+    imageUrl: "/logo_256.png",
+  },
+];

@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from scrape_utils import clean_data
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
 
 
 def handle_client_search_request(request):
@@ -38,17 +41,23 @@ def retrieve_scraped_data_from_database(request):
     pass
 
 
-async def display_scraped_data(request):
+from asgiref.sync import async_to_sync
+
+
+@api_view(["POST"])
+def display_scraped_data(request):
     """
-    Render a template to display the scraped data.
+    API endpoint that accepts search queries via POST request
     """
-    # Example data, replace with actual database retrieval logic
-    scraped_data = {
-        "title": "Example Title",
-        "content": "This is an example of scraped content.",
-    }
-    data = await clean_data.scrape_multiple_sites(
-        "wireless earbuds with noise cancellation"
+    search_query = request.data.get("search_query")
+
+    if not search_query:
+        return Response(
+            {"error": "search_query is required"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    data = async_to_sync(clean_data.scrape_multiple_sites)(
+        user_input=search_query,
     )
 
-    return JsonResponse(data, safe=False, json_dumps_params={"indent": 2})
+    return JsonResponse(data, status=status.HTTP_200_OK)

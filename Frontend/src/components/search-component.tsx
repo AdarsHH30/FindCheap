@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { motion } from "framer-motion";
 
 // TODO: Add search functionality and connect to backend
-const SearchComponent = () => {
+const SearchComponent = ({ onClick }: { onClick: () => void }) => {
   return (
     <motion.div
       initial={{ opacity: 0, x: -40 }}
@@ -25,7 +25,7 @@ const SearchComponent = () => {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <Button size={"lg"} className="h-full text-lg">
+        <Button size={"lg"} className="h-full text-lg" onClick={onClick}>
           Find Best Deals
         </Button>
       </motion.div>

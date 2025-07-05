@@ -28,16 +28,16 @@ export function MainNav() {
           Home
         </Link>
         <Link
-          href="/categories"
+          href="/find-products"
           className={cn(
             "transition-colors hover:text-foreground/80",
-            pathname?.startsWith("/categories") &&
+            pathname?.startsWith("/find-products") &&
               !pathname?.startsWith("/docs/component/chart")
               ? "text-foreground"
               : "text-foreground/80"
           )}
         >
-          Categories
+          Find Products
         </Link>
         <Link
           href="/how-it-works"

@@ -28,7 +28,7 @@ export function MobileNav() {
 
   const mainNav: { title: string; href: string }[] = [
     { title: "Home", href: "/" },
-    { title: "Categories", href: "/categories" },
+    { title: "Find Products", href: "/find-products" },
     { title: "How it Works", href: "/how-it-works" },
     { title: "About", href: "/about" },
   ];

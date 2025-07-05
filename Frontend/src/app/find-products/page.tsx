@@ -26,10 +26,16 @@ const FindProductsPage = () => {
   const [loading, setLoading] = useState(false);
 
   // TODO: Send search query to backend and fetch results
-  const handleSearch = async () => {
+  const handleSearch = async (searchQuery: string) => {
     setLoading(true);
     try {
-      const res = await fetch("/api/find-products");
+      const res = await fetch("/api/find-products", {
+        method: "POST",
+        body: JSON.stringify({ search_query: searchQuery }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       const data = await res.json();
       setData(data);
     } catch (err) {
@@ -41,7 +47,7 @@ const FindProductsPage = () => {
 
   return (
     <div className="flex flex-col items-center p-4 h-[calc(100vh-var(--navbar-height,57px))]">
-      <SearchComponent onClick={handleSearch} />
+      <SearchComponent handleSearch={handleSearch} />
 
       <div className="w-full flex justify-between items-center">
         <h1 className="text-2xl font-bold">Search Results</h1>

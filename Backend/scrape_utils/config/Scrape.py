@@ -55,7 +55,7 @@ class ScraperConfig:
                 "fields": [
                     {
                         "name": "title",
-                        "selector": "a.wjcEIp, a[title], ._4rR01T, .s1Q9rs, .B_NuCI",
+                        "selector": "a.wjcEIp, a[title], ._4rR01T, .s1Q9rs, .B_NuCI,KzDlHZ",
                         "type": "text",
                     },
                     {

@@ -11,7 +11,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def filter_data(data, e_commerce, search_query=None, top_n=10):
+def filter_data(data, e_commerce, search_query=None, top_n=5):
     """
     Filter and rank products based on relevance to search query or e-commerce site name.
 
@@ -25,12 +25,14 @@ def filter_data(data, e_commerce, search_query=None, top_n=10):
         str: JSON string of the top filtered results
     """
     try:
-        # Validate inputs
+
+        # print(json.dumps(data, indent=2, ensure_ascii=False))
         if e_commerce not in data:
-            logger.error(f"E-commerce site '{e_commerce}' not found in data")
+            logger.error(f"E-commerce site '{e_commerce}' not found in data ")
             return json.dumps([])
 
         # Convert to DataFrame
+
         df = pd.DataFrame(data[e_commerce])
 
         if df.empty:
@@ -40,14 +42,10 @@ def filter_data(data, e_commerce, search_query=None, top_n=10):
         # Use search query if provided, otherwise use e-commerce name
         query = [search_query if search_query else e_commerce]
 
-        # Handle missing titles
-        if df["title"].isnull().all():
-            logger.error("All titles are null, cannot compute similarity.")
-            return json.dumps([])
-
         # Calculate TF-IDF and similarity scores
         vectorizer = TfidfVectorizer(stop_words="english")
         title_matrix = vectorizer.fit_transform(df["title"].fillna(""))
+        print(title_matrix)
         query_vector = vectorizer.transform(query)
         similarities = cosine_similarity(query_vector, title_matrix).flatten()
 
@@ -61,5 +59,5 @@ def filter_data(data, e_commerce, search_query=None, top_n=10):
         return filtered_data
 
     except Exception as e:
-        logger.error(f"Error in filter_data: {str(e)}")
-        return json.dumps([])
+        logger.error(f"Error in filter_data: {str(e)} {e_commerce}")
+        return json.dumps([{"error": "An error occurred while filtering data "}])

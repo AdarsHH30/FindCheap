@@ -55,7 +55,7 @@ class ScraperConfig:
                 "fields": [
                     {
                         "name": "title",
-                        "selector": "a.wjcEIp, a[title], ._4rR01T, .s1Q9rs, .B_NuCI,KzDlHZ",
+                        "selector": "a.wjcEIp, a[title], ._4rR01T, .s1Q9rs, .B_NuCI,.KzDlHZ",
                         "type": "text",
                     },
                     {
@@ -120,56 +120,55 @@ class ScraperConfig:
                 ],
                 "limit": max_products,
             }
-        #     # TODO:fix the jio mart schema
-        # elif "jiomart" in link:
-        #     schema = {
-        #         "name": "JioMartProducts",
-        #         "baseSelector": ".plp-card-container",
-        #         "fields": [
-        #             {
-        #                 "name": "title",
-        #                 "selector": ".plp-card-details-name",
-        #                 "type": "text",
-        #             },
-        #             {
-        #                 "name": "price",
-        #                 "selector": ".plp-card-details-price span.jm-heading-xxs",
-        #                 "type": "text",
-        #             },
-        #             {
-        #                 "name": "original_price",
-        #                 "selector": ".plp-card-details-price .line-through",
-        #                 "type": "text",
-        #             },
-        #             {
-        #                 "name": "discount",
-        #                 "selector": ".plp-card-details-discount .jm-badge",
-        #                 "type": "text",
-        #             },
-        #             {
-        #                 "name": "image",
-        #                 "selector": ".plp-card-image img",
-        #                 "type": "attribute",
-        #                 "attribute": "src",
-        #             },
-        #             {
-        #                 "name": "bank_offer",
-        #                 "selector": ".payment_tag .jm-badge-offer",
-        #                 "type": "text",
-        #             },
-        #             {
-        #                 "name": "exchange_offer",
-        #                 "selector": ".plp-exchange-offer .jm-badge-offer",
-        #                 "type": "text",
-        #             },
-        #             {
-        #                 "name": "limited_deal",
-        #                 "selector": ".deal_of_day",
-        #                 "type": "text",
-        #             },
-        #         ],
-        #         "limit": max_products,
-        #     }
+        elif "jiomart" in link:
+            schema = {
+                "name": "JioMartProducts",
+                "baseSelector": ".plp-card-container",
+                "fields": [
+                    {
+                        "name": "title",
+                        "selector": ".plp-card-details-name",
+                        "type": "text",
+                    },
+                    {
+                        "name": "price",
+                        "selector": ".plp-card-details-price span.jm-heading-xxs",
+                        "type": "text",
+                    },
+                    {
+                        "name": "original_price",
+                        "selector": ".plp-card-details-price .line-through",
+                        "type": "text",
+                    },
+                    {
+                        "name": "discount",
+                        "selector": ".plp-card-details-discount .jm-badge",
+                        "type": "text",
+                    },
+                    {
+                        "name": "image",
+                        "selector": ".plp-card-image img",
+                        "type": "attribute",
+                        "attribute": "src",
+                    },
+                    {
+                        "name": "bank_offer",
+                        "selector": ".payment_tag .jm-badge-offer",
+                        "type": "text",
+                    },
+                    {
+                        "name": "exchange_offer",
+                        "selector": ".plp-exchange-offer .jm-badge-offer",
+                        "type": "text",
+                    },
+                    {
+                        "name": "limited_deal",
+                        "selector": ".deal_of_day",
+                        "type": "text",
+                    },
+                ],
+                "limit": max_products,
+            }
 
         else:
             raise ValueError(f"Unsupported website: {URL}")

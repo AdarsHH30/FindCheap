@@ -26,12 +26,9 @@ def filter_data(data, e_commerce, search_query=None, top_n=5):
     """
     try:
 
-        # print(json.dumps(data, indent=2, ensure_ascii=False))
         if e_commerce not in data:
             logger.error(f"E-commerce site '{e_commerce}' not found in data ")
             return json.dumps([])
-
-        # Convert to DataFrame
 
         df = pd.DataFrame(data[e_commerce])
 
@@ -39,21 +36,16 @@ def filter_data(data, e_commerce, search_query=None, top_n=5):
             logger.warning(f"No data found for {e_commerce}")
             return json.dumps([])
 
-        # Use search query if provided, otherwise use e-commerce name
         query = [search_query if search_query else e_commerce]
 
-        # Calculate TF-IDF and similarity scores
         vectorizer = TfidfVectorizer(stop_words="english")
         title_matrix = vectorizer.fit_transform(df["title"].fillna(""))
-        print(title_matrix)
         query_vector = vectorizer.transform(query)
         similarities = cosine_similarity(query_vector, title_matrix).flatten()
 
-        # Add scores and sort
         df["similarity_score"] = similarities
         result_df = df.sort_values(by="similarity_score", ascending=False).head(top_n)
 
-        # Convert to JSON
         filtered_data = result_df.to_json(orient="records", indent=2, force_ascii=False)
 
         return filtered_data

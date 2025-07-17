@@ -11,7 +11,12 @@ const nextConfig: NextConfig = {
       "cdn.shopify.com",
       "i.imgur.com",
       "g.sdlcdn.com",
+      "cdn.shopify.com",
+      "www.jiomart.com",
+      
     ],
+        remotePatterns: [new URL('https://assets.example.com/account123/**')],
+
   },
 };
 

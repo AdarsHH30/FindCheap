@@ -16,7 +16,35 @@ interface Product {
   image: string;
   similarity_score: number;
 }
-
+const sampleProducts: Product[] = [
+  {
+    title: "Sample Product 1",
+    price: "₹999",
+    link: "/product/sample-product-1",
+    rating: "4.5",
+    reviews: "100",
+    image: "/sample-image-1.jpg",
+    similarity_score: 0.95,
+  },
+  {
+    title: "Sample Product 2",
+    price: "₹1499",
+    link: "/product/sample-product-2",
+    rating: "4.0",
+    reviews: "50",
+    image: "/sample-image-2.jpg",
+    similarity_score: 0.9,
+  },
+  {
+    title: "Sample Product 3",
+    price: "₹1999",
+    link: "/product/sample-product-3",
+    rating: "4.2",
+    reviews: "75",
+    image: "/sample-image-3.jpg",
+    similarity_score: 0.85,
+  },
+];
 interface SearchResults {
   [platform: string]: Product[];
 }

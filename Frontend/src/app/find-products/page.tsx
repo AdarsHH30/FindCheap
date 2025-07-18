@@ -5,6 +5,7 @@ import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { ProductNotFound } from "@/components/product-notfound";
 
 // TODO: Move interfaces to a separate file
 interface Product {
@@ -16,35 +17,6 @@ interface Product {
   image: string;
   similarity_score: number;
 }
-const sampleProducts: Product[] = [
-  {
-    title: "Sample Product 1",
-    price: "₹999",
-    link: "/product/sample-product-1",
-    rating: "4.5",
-    reviews: "100",
-    image: "/sample-image-1.jpg",
-    similarity_score: 0.95,
-  },
-  {
-    title: "Sample Product 2",
-    price: "₹1499",
-    link: "/product/sample-product-2",
-    rating: "4.0",
-    reviews: "50",
-    image: "/sample-image-2.jpg",
-    similarity_score: 0.9,
-  },
-  {
-    title: "Sample Product 3",
-    price: "₹1999",
-    link: "/product/sample-product-3",
-    rating: "4.2",
-    reviews: "75",
-    image: "/sample-image-3.jpg",
-    similarity_score: 0.85,
-  },
-];
 interface SearchResults {
   [platform: string]: Product[];
 }
@@ -122,56 +94,60 @@ const FindProductsPage = () => {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5 }}
                 >
-                  {products.map((item, index) => (
-                    <motion.div
-                      key={index}
-                      className="flex flex-col gap-3 p-4 border rounded-lg hover:shadow-lg transition-shadow"
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Image
-                        height={120}
-                        width={120}
-                        src={item.image}
-                        alt={item.title}
-                        className="w-full h-48 object-contain rounded mx-auto"
-                      />
-                      <div className="flex-1">
-                        <h3 className="text-sm font-semibold line-clamp-2 mb-2">
-                          {item.title}
-                        </h3>
-                        <p className="text-lg font-bold text-green-600 mb-1">
-                          {item.price}
-                        </p>
-                        {item.rating && (
-                          <div className="flex items-center gap-1 mb-2">
-                            <span className="text-yellow-500">⭐</span>
-                            <span className="text-sm text-foreground/70">
-                              {item.rating}
-                            </span>
-                            {item.reviews && (
-                              <span className="text-xs text-foreground/50">
-                                ({item.reviews})
+                  {products.length > 0 ? (
+                    products.map((item, index) => (
+                      <motion.div
+                        key={index}
+                        className="flex flex-col gap-3 p-4 border rounded-lg hover:shadow-lg transition-shadow"
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <Image
+                          height={120}
+                          width={120}
+                          src={item.image}
+                          alt={item.title}
+                          className="w-full h-48 object-contain rounded mx-auto"
+                        />
+                        <div className="flex-1">
+                          <h3 className="text-sm font-semibold line-clamp-2 mb-2">
+                            {item.title}
+                          </h3>
+                          <p className="text-lg font-bold text-green-600 mb-1">
+                            {item.price}
+                          </p>
+                          {item.rating && (
+                            <div className="flex items-center gap-1 mb-2">
+                              <span className="text-yellow-500">⭐</span>
+                              <span className="text-sm text-foreground/70">
+                                {item.rating}
                               </span>
-                            )}
-                          </div>
-                        )}
-                        <a
-                          href={
-                            platform === "flipkart"
-                              ? `https://flipkart.com${item.link}`
-                              : platform === "amazon"
-                              ? `https://amazon.in${item.link}`
-                              : item.link
-                          }
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-accent hover:underline text-sm"
-                        >
-                          View Product
-                        </a>
-                      </div>
-                    </motion.div>
-                  ))}
+                              {item.reviews && (
+                                <span className="text-xs text-foreground/50">
+                                  ({item.reviews})
+                                </span>
+                              )}
+                            </div>
+                          )}
+                          <a
+                            href={
+                              platform === "flipkart"
+                                ? `https://flipkart.com${item.link}`
+                                : platform === "amazon"
+                                ? `https://amazon.in${item.link}`
+                                : item.link
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent hover:underline text-sm"
+                          >
+                            View Product
+                          </a>
+                        </div>
+                      </motion.div>
+                    ))
+                  ) : (
+                    <ProductNotFound platform={platform} />
+                  )}
                 </motion.div>
               </div>
             )

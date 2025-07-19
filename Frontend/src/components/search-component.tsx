@@ -1,25 +1,40 @@
+"use client";
+
 import React from "react";
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { Button } from "./ui/button";
 import { motion } from "framer-motion";
 
-const SearchComponent = ({
-  handleSearch,
-}: {
-  handleSearch: (query: string) => void;
-}) => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [error, setError] = useState("");
+interface SearchComponentProps {
+  redirect?: boolean;
+  onSearch?: (query: string) => void;
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
+const SearchComponent: React.FC<SearchComponentProps> = ({
+  redirect = true,
+  onSearch,
+}) => {
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [error, setError] = useState<string>("");
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (searchQuery.trim() === "") {
-      setError("Please enter a search term");
+
+    if (!searchQuery.trim()) {
+      setError("Please enter a search query");
       return;
     }
+
     setError("");
-    handleSearch(searchQuery);
+
+    if (redirect) {
+      window.location.href = `/find-products?query=${encodeURIComponent(
+        searchQuery
+      )}`;
+    } else if (onSearch) {
+      onSearch(searchQuery);
+    }
   };
 
   return (
@@ -38,7 +53,7 @@ const SearchComponent = ({
             placeholder="Search for products..."
             className="border-0 outline-none w-full"
             value={searchQuery}
-            onChange={(e) => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setSearchQuery(e.target.value);
               if (error) setError("");
             }}

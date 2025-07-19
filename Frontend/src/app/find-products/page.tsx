@@ -4,7 +4,7 @@ import SearchComponent from "@/components/search-component";
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ProductNotFound } from "@/components/product-notfound";
 
 // TODO: Move interfaces to a separate file
@@ -17,6 +17,7 @@ interface Product {
   image: string;
   similarity_score: number;
 }
+
 interface SearchResults {
   [platform: string]: Product[];
 }
@@ -24,57 +25,108 @@ interface SearchResults {
 const FindProductsPage = () => {
   const [data, setData] = useState<SearchResults | null>(null);
   const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   // TODO: Send search query to backend and fetch results
-  const handleSearch = async (searchQuery: string) => {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const query = urlParams.get("query");
+      if (query) {
+        setSearchQuery(query);
+        handleSearch(query);
+      }
+    }
+  }, []);
+
+  const handleSearch = async (query: string) => {
+    if (!query.trim()) {
+      console.warn("Empty search query provided");
+      return;
+    }
+
     setLoading(true);
+    setData(null); // Clear previous results
+
     try {
       const res = await fetch("/api/find-products", {
         method: "POST",
-        body: JSON.stringify({ search_query: searchQuery }),
+        body: JSON.stringify({ search_query: query }),
         headers: {
           "Content-Type": "application/json",
         },
       });
-      const data = await res.json();
-      setData(data);
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const responseData = await res.json();
+      setData(responseData);
+      setSearchQuery(query);
     } catch (err) {
       console.error("Failed to fetch products:", err);
+      // You might want to show an error message to the user here
+      setData({});
     } finally {
       setLoading(false);
     }
   };
 
+  const hasResults = data && Object.keys(data).length > 0;
+  const hasAnyProducts =
+    hasResults && Object.values(data).some((products) => products.length > 0);
+
   return (
     <div className="flex flex-col items-center p-4 h-[calc(100vh-var(--navbar-height,57px))]">
-      <SearchComponent handleSearch={handleSearch} />
+      <SearchComponent redirect={true} onSearch={handleSearch} />
 
-      <div className="w-full flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Search Results</h1>
-        <div className="flex items-center gap-2">
-          <span className="text-gray-600">Sort by:</span>
-          {/* TODO: Replace with shadcn select component */}
-          <select className="border rounded p-1">
-            <option value="relevance">Relevance</option>
-            <option value="price-low-to-high">Price: Low to High</option>
-            <option value="price-high-to-low">Price: High to Low</option>
-          </select>
+      {(hasResults || loading) && (
+        <div className="w-full flex justify-between items-center mt-4">
+          <h1 className="text-2xl font-bold">
+            {searchQuery
+              ? `Search Results for "${searchQuery}"`
+              : "Search Results"}
+          </h1>
+          <div className="flex items-center gap-2">
+            <span className="text-gray-600">Sort by:</span>
+            <select className="border rounded p-1">
+              <option value="relevance">Relevance</option>
+              <option value="price-low-to-high">Price: Low to High</option>
+              <option value="price-high-to-low">Price: High to Low</option>
+            </select>
+          </div>
         </div>
-      </div>
+      )}
+
       <div
         className="mt-4 overflow-scroll w-full"
         style={{ scrollbarWidth: "none" }}
       >
-        {/* Show loading state */}
-        {/* TODO: Make a separate loading component */}
         {loading && (
           <div className="flex justify-center items-center h-64">
-            <span className="text-gray-500">Loading products...</span>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            <span className="text-gray-500 ml-4">Loading products...</span>
           </div>
         )}
 
-        {/* Map through search results by platform and display them */}
-        {data &&
+        {/* TODO: Make a separate loading component */}
+        {!loading && hasResults && !hasAnyProducts && (
+          <div className="flex justify-center items-center h-64">
+            <div className="text-center">
+              <h3 className="text-xl font-semibold text-gray-600 mb-2">
+                No products found
+              </h3>
+              <p className="text-gray-500">
+                Try searching with different keywords
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Search results */}
+        {!loading &&
+          hasResults &&
           Object.entries(data).map(
             ([platform, products]: [string, Product[]]) => (
               <div key={platform} className="mb-8">
@@ -85,6 +137,10 @@ const FindProductsPage = () => {
                     width={24}
                     height={24}
                     className="rounded"
+                    onError={(e) => {
+                      // Fallback if logo image fails to load
+                      e.currentTarget.style.display = "none";
+                    }}
                   />
                   {platform}
                 </h2>
@@ -97,7 +153,7 @@ const FindProductsPage = () => {
                   {products.length > 0 ? (
                     products.map((item, index) => (
                       <motion.div
-                        key={index}
+                        key={`${platform}-${index}`}
                         className="flex flex-col gap-3 p-4 border rounded-lg hover:shadow-lg transition-shadow"
                         whileTap={{ scale: 0.95 }}
                       >
@@ -107,6 +163,10 @@ const FindProductsPage = () => {
                           src={item.image}
                           alt={item.title}
                           className="w-full h-48 object-contain rounded mx-auto"
+                          onError={(e) => {
+                            // Fallback for broken product images
+                            e.currentTarget.src = "/placeholder-product.png";
+                          }}
                         />
                         <div className="flex-1">
                           <h3 className="text-sm font-semibold line-clamp-2 mb-2">

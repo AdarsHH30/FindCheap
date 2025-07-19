@@ -22,7 +22,7 @@ const HeroSection = () => {
           strings={["Compare prices from 100+ retailers in seconds"]}
           className="text-2xl text-foreground/80"
         />
-        <SearchComponent />
+        <SearchComponent redirect={true} />
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

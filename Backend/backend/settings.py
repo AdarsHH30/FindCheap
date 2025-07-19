@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 import os
-from supabase import create_client, Client
 
 load_dotenv()
 
@@ -27,10 +26,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# Configure Supabase client
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Check if we should use local SQLite database (for development)
 USE_SQLITE = os.getenv("USE_SQLITE", "False").lower() == "true"

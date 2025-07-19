@@ -31,7 +31,7 @@ const ProductNotFound: React.FC<ProductNotFoundProps> = ({ platform }) => {
         No products found
       </h3>
       <p className="text-gray-500 text-center">
-        We couldn't find any products matching your search criteria on{" "}
+        We couldn&apos;t find any products matching your search criteria on{" "}
         {platform}.
       </p>
     </motion.div>

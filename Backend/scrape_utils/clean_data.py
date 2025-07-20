@@ -66,6 +66,7 @@ async def scrape_multiple_sites(user_input):
     flipkart_url = f"https://www.flipkart.com/search?q={user_input}"
     snapdeal_url = f"https://www.snapdeal.com/search?keyword={user_input}"
     jiomart_url = f"https://www.jiomart.com/search/{user_input}"
+    meessho_url = f"https://www.meesho.com/search?q={user_input}"
 
     s = Scrape.ScraperConfig(user_input, 5)
 
@@ -74,32 +75,38 @@ async def scrape_multiple_sites(user_input):
     amazon_task = s.scraper(amazon_url)
     snapdeal_task = s.scraper(snapdeal_url)
     jiomart_task = s.scraper(jiomart_url)
-    print(jiomart_task)
+    meessho_task = s.scraper(meessho_url)
 
     # Run them concurrently
-    flipkart_data, amazon_data, snapdeal_data, jiomart_data = await asyncio.gather(
-        flipkart_task,
-        amazon_task,
-        snapdeal_task,
-        jiomart_task,
-        return_exceptions=True,
+    flipkart_data, amazon_data, snapdeal_data, jiomart_data, meessho_data = (
+        await asyncio.gather(
+            flipkart_task,
+            amazon_task,
+            snapdeal_task,
+            jiomart_task,
+            meessho_task,
+            return_exceptions=True,
+        )
     )
     flipkart = Filter.filter_data(flipkart_data, "flipkart")
     amazon = Filter.filter_data(amazon_data, "amazon")
     snapdeal = Filter.filter_data(snapdeal_data, "snapdeal")
     jiomart = Filter.filter_data(jiomart_data, "jiomart")
+    meessho = Filter.filter_data(meessho_data, "meesho")
 
     # Convert to JSON
     flipkart_json = convert_to_json(flipkart)
     amazon_json = convert_to_json(amazon)
     snapdeal_json = convert_to_json(snapdeal)
     jiomart_json = convert_to_json(jiomart)
+    meessho_json = convert_to_json(meessho)
 
     return {
         "flipkart": flipkart_json,
         "amazon": amazon_json,
         "snapdeal": snapdeal_json,
         "jiomart": jiomart_json,
+        "meesho": meessho_json,
     }
 
 

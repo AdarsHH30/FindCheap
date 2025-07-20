@@ -169,7 +169,53 @@ class ScraperConfig:
                 ],
                 "limit": max_products,
             }
-
+        elif "meesho" in link:
+            schema = {
+                "name": "MeeshoProducts",
+                "baseSelector": ".ProductListItem__GridCol-sc-1baba2g-0",
+                "fields": [
+                    {
+                        "name": "title",
+                        "selector": ".NewProductCardstyled__StyledDesktopProductTitle-sc-6y2tys-5",
+                        "type": "text",
+                    },
+                    {"name": "price", "selector": "h5", "type": "text"},
+                    {
+                        "name": "original_price",
+                        "selector": ".sc-eDvSVe.drXXNP",
+                        "type": "text",
+                    },
+                    {
+                        "name": "discount",
+                        "selector": ".NewProductCardstyled__StyledDesktopSubtitle-sc-6y2tys-6",
+                        "type": "text",
+                    },
+                    {
+                        "name": "link",
+                        "selector": "a",
+                        "type": "attribute",
+                        "attribute": "href",
+                    },
+                    {
+                        "name": "image",
+                        "selector": "img.AvifImage__ImageWrapper-sc-1055enk-0",
+                        "type": "attribute",
+                        "attribute": "src",
+                    },
+                    {
+                        "name": "rating",
+                        "selector": ".Rating__StyledPill-sc-12htng8-1 span",
+                        "type": "text",
+                    },
+                    {
+                        "name": "reviews",
+                        "selector": ".NewProductCardstyled__RatingCount-sc-6y2tys-22",
+                        "type": "text",
+                    },
+                    {"name": "delivery", "selector": ".sc-jcMfQk span", "type": "text"},
+                ],
+                "limit": max_products,
+            }
         else:
             raise ValueError(f"Unsupported website: {URL}")
 
@@ -225,6 +271,8 @@ class ScraperConfig:
                 e_commerce = "snapdeal"
             elif "jiomart" in url.lower():
                 e_commerce = "jiomart"
+            elif "meesho" in url.lower():
+                e_commerce = "meesho"
 
             if result.success:
                 print(f"Extraction successful for {url}")

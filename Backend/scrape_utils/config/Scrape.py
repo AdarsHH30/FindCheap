@@ -1,4 +1,11 @@
-from crawl4ai import AsyncWebCrawler, BrowserConfig, CrawlerRunConfig, CacheMode
+from crawl4ai import (
+    AsyncWebCrawler,
+    BrowserConfig,
+    CrawlerRunConfig,
+    CacheMode,
+    ProxyConfig,
+    RoundRobinProxyStrategy,
+)
 from crawl4ai.extraction_strategy import JsonCssExtractionStrategy
 from . import Proxy_rotator
 import asyncio
@@ -222,10 +229,14 @@ class ScraperConfig:
         return JsonCssExtractionStrategy(schema)
 
     async def scraper(self, url: str):
-        PM = Proxy_rotator.ProxyManager()
-        p = PM.get_proxy()
-        print(f"Using proxy: {p}")
-        print(p)
+        proxies = ProxyConfig.from_env()
+
+        # eg: export PROXIES="ip1:port1:username1:password1,ip2:port2:username2:password2"
+        if not proxies:
+            print("No proxies found in environment. Set PROXIES env variable!")
+            return
+        proxy_strategy = RoundRobinProxyStrategy(proxies=proxies)
+        # TODO : Implement proxy rotation logic
 
         browser_conf = BrowserConfig(
             browser_type="chromium",
@@ -257,6 +268,7 @@ class ScraperConfig:
             cache_mode=CacheMode.BYPASS,
             word_count_threshold=10,
             delay_before_return_html=3,
+            proxy_rotation_strategy=proxy_strategy,
         )  # Fixed missing closing parenthesis
 
         async with AsyncWebCrawler(config=browser_conf) as crawler:

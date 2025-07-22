@@ -11,6 +11,10 @@ from . import Proxy_rotator
 import asyncio
 import json
 import random
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 
 class ScraperConfig:
@@ -134,7 +138,7 @@ class ScraperConfig:
                 "fields": [
                     {
                         "name": "title",
-                        "selector": ".plp-card-details-name",
+                        "selector": ".plp-card-details-name,.plp-card-details-name line-clamp jm-body-xs jm-fc-primary-grey-80",
                         "type": "text",
                     },
                     {
@@ -229,13 +233,12 @@ class ScraperConfig:
         return JsonCssExtractionStrategy(schema)
 
     async def scraper(self, url: str):
-        proxies = ProxyConfig.from_env()
+        # proxies = ProxyConfig.from_env()
+        # if not proxies:
+        #     print("No proxies found in environment. Set PROXIES env variable!")
+        #     return
+        # proxy_strategy = RoundRobinProxyStrategy(proxies=proxies)
 
-        # eg: export PROXIES="ip1:port1:username1:password1,ip2:port2:username2:password2"
-        if not proxies:
-            print("No proxies found in environment. Set PROXIES env variable!")
-            return
-        proxy_strategy = RoundRobinProxyStrategy(proxies=proxies)
         # TODO : Implement proxy rotation logic
 
         browser_conf = BrowserConfig(
@@ -260,16 +263,13 @@ class ScraperConfig:
                 "--disable-features=VizDisplayCompositor",
                 "--disable-ipc-flooding-protection",
             ],
-            # proxy="http://103.180.198.164:3128",
         )
 
         run_conf = CrawlerRunConfig(
             extraction_strategy=self.schema_setup(url),
             cache_mode=CacheMode.BYPASS,
-            word_count_threshold=10,
-            delay_before_return_html=3,
-            proxy_rotation_strategy=proxy_strategy,
-        )  # Fixed missing closing parenthesis
+            # proxy_rotation_strategy=proxy_strategy,
+        )
 
         async with AsyncWebCrawler(config=browser_conf) as crawler:
             result = await crawler.arun(url=url, config=run_conf)

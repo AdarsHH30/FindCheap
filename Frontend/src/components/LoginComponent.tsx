@@ -24,6 +24,30 @@ const LoginComponent: React.FC<LoginComponentProps> = ({ user, setUser }) => {
     });
   };
 
+  const [session, setSession] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    const fetchSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      const accessToken = data.session?.access_token;
+      setSession(data.session);
+
+      if (accessToken) {
+        console.log("Sending token to backend:", accessToken);
+
+        await fetch("http://localhost:8000/api/auth/verify/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+      }
+    };
+
+    fetchSession();
+  }, []);
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setUser(null);

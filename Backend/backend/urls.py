@@ -21,5 +21,6 @@ from api import views
 
 urlpatterns = [
     # path("admin/", admin.site.urls),
-    path("search/", views.display_scraped_data, name="search")
+    path("search/", views.display_scraped_data, name="search"),
+    path("api/auth/verify/", views.varify_access_tocken, name="verify_token"),
 ]

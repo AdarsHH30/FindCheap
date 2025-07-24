@@ -16,6 +16,8 @@ import json
 
 load_dotenv()
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.WARNING)
+
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
@@ -25,12 +27,8 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 @supabase_auth_required
 @api_view(["POST"])
 def varify_access_tocken(request):
-    logger.info("Entered varify_access_tocken view function")
-    logger.info("Request method: %s", request.method)
-    logger.info("Request content type: %s", request.content_type)
 
     try:
-        # Log user data from request
         user = request.user_data
         logger.info(
             "User data received: %s",

@@ -6,6 +6,7 @@ import logging
 
 load_dotenv()
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.WARNING)
 
 
 def supabase_auth_required(view_func):

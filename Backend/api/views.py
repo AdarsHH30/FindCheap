@@ -17,6 +17,7 @@ import json
 load_dotenv()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
+logging.disable(logging.CRITICAL)
 
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")

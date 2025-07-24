@@ -7,6 +7,7 @@ FindCheap is a web application that helps users find the best prices for product
 The project consists of two main components:
 
 - **Backend**: Django-based API for data management and web scraping
+  ![alt text](image/README/image.png)
 - **Frontend**: React application for the user interface
 
 ## Features

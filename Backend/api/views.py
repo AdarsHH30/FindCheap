@@ -27,41 +27,41 @@ SUPABASE_KEY = os.getenv("SUPABASE_ANON_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
-def insert_user_data(user_data, user_id):
-    """
-    Insert user data into the 'users' table in Supabase.
-    """
-    try:
-        response = supabase.table("users").insert(user_data).execute()
-        if response.status_code == 201:
-            logger.info("User data inserted successfully")
-        else:
-            logger.error("Failed to insert user data: %s", response.error)
-    except Exception as e:
-        logger.exception("Error inserting user data: %s", str(e))
-
-
-def is_user_exists(user_id):
-    """
-    Check if a user exists in the 'users' table in Supabase.
-    """
-    try:
-        response = supabase.table("users").select("*").eq("user_id", user_id).execute()
-        if response.data:
-            return True
-        else:
-            return False
-    except Exception as e:
-        return False
+def save_recent_search(user_id, search_text):
+    data = {"user_id": user_id, "search_text": search_text}
+    supabase.table("recent_searches").insert(data).execute()
 
 
 @csrf_exempt
 @supabase_auth_required
 @api_view(["POST"])
+def save_search(request):
+    """
+    API endpoint to save a user's search query.
+    """
+    try:
+        user = request.user_data
+        user_id = user.get("id")
+        search_text = request.data.get("search_text")
+
+        if not search_text:
+            return Response(
+                {"error": "search_text is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        save_recent_search(user_id, search_text)
+        logger.info(f"Search saved for user {user['email']}: {search_text}")
+
+        return JsonResponse({"message": "Search saved successfully"}, status=200)
+    except Exception as e:
+        logger.error(f"Error saving search: {str(e)}")
+        return JsonResponse({"error": f"Internal server error: {str(e)}"}, status=500)
+
+
 def varify_access_tocken(request):
     try:
         user = request.user_data
-        # is_user_exists(user["user_id"])
         logger.info(f"User {user['email']} exists in the database.")
         return JsonResponse({"message": f'Hello {user["email"]}'})
     except Exception as e:

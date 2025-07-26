@@ -6,6 +6,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { ProductNotFound } from "@/components/product-notfound";
+import useSendRecentSearch from "@/hooks/useSendRecentSearch";
 
 // TODO: Move interfaces to a separate file
 interface Product {
@@ -46,7 +47,7 @@ const FindProductsPage = () => {
     }
 
     setLoading(true);
-    setData(null); // Clear previous results
+    setData(null);
 
     try {
       const res = await fetch("/api/find-products", {

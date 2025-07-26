@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Search } from "lucide-react";
 import { Button } from "./ui/button";
 import { motion } from "framer-motion";
+import useSendRecentSearch from "@/hooks/useSendRecentSearch";
 
 interface SearchComponentProps {
   redirect?: boolean;
@@ -17,6 +18,7 @@ const SearchComponent: React.FC<SearchComponentProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const sendRecentSearch = useSendRecentSearch();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,6 +29,8 @@ const SearchComponent: React.FC<SearchComponentProps> = ({
     }
 
     setError("");
+    console.log("Search query submitted:", searchQuery);
+    sendRecentSearch(searchQuery);
 
     if (redirect) {
       window.location.href = `/find-products?query=${encodeURIComponent(

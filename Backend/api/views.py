@@ -28,13 +28,13 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
 def save_recent_search(user_id, search_text):
-    data = {"user_id": user_id, "search_text": search_text}
+    data = {"user_id": user_id, "query": search_text}
     supabase.table("recent_searches").insert(data).execute()
 
 
 @csrf_exempt
 @supabase_auth_required
-@api_view(["POST"])
+@api_view(["POST", "GET"])
 def save_search(request):
     """
     API endpoint to save a user's search query.
@@ -43,6 +43,7 @@ def save_search(request):
         user = request.user_data
         user_id = user.get("id")
         search_text = request.data.get("search_text")
+        print(f"User ID: {user_id}, Search Text: {search_text}")
 
         if not search_text:
             return Response(

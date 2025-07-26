@@ -21,16 +21,20 @@ const useSendRecentSearch = (): SendSearchFn => {
     }
 
     const userId = session.user.id;
+    const token = session.access_token;
 
     console.log("Sending recent search for user:", userId, "Search term:", searchTerm);
-    const res = await fetch("/api/search/save/", {
+    const res = await fetch("http://localhost:8000/api/search/save/", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, search: searchTerm }),
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ search_text: searchTerm }),
     });
 
     if (!res.ok) {
-      console.error("Failed to send recent search");
+      console.error("Failed to send recent search:", await res.text());
     } else {
       console.log("Recent search sent!");
     }

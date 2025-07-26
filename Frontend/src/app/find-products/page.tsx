@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { ProductNotFound } from "@/components/product-notfound";
 import useSendRecentSearch from "@/hooks/useSendRecentSearch";
+import { send } from "process";
 
 // TODO: Move interfaces to a separate file
 interface Product {
@@ -27,6 +28,7 @@ const FindProductsPage = () => {
   const [data, setData] = useState<SearchResults | null>(null);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const sendRecentSearch = useSendRecentSearch();
 
   // TODO: Send search query to backend and fetch results
   useEffect(() => {
@@ -48,6 +50,7 @@ const FindProductsPage = () => {
 
     setLoading(true);
     setData(null);
+    sendRecentSearch(query);
 
     try {
       const res = await fetch("/api/find-products", {

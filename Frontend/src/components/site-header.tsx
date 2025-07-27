@@ -8,9 +8,12 @@ import { motion } from "framer-motion";
 import { createClient } from "@/utils/supabase/client";
 import { User } from "@supabase/supabase-js";
 import LoginComponent from "./LoginComponent";
+import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 
 const SiteHeader = () => {
   const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -21,6 +24,10 @@ const SiteHeader = () => {
 
     fetchUser();
   }, []);
+
+  const handleLoginRedirect = () => {
+    router.push("/auth/login");
+  };
 
   return (
     <motion.header
@@ -34,7 +41,13 @@ const SiteHeader = () => {
         <MobileNav />
         <div className="ml-auto flex items-center md:flex-1 md:justify-end">
           <nav className="flex items-center gap-4">
-            <LoginComponent user={user} setUser={setUser} />
+            {user ? (
+              <LoginComponent user={user} setUser={setUser} />
+            ) : (
+              <Button className="rounded-full" onClick={handleLoginRedirect}>
+                Login
+              </Button>
+            )}
             <ModeSwitcher />
           </nav>
         </div>

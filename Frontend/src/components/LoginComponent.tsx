@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Icons } from "./icons";
 import {
@@ -17,40 +17,84 @@ interface LoginComponentProps {
 
 const LoginComponent: React.FC<LoginComponentProps> = ({ user, setUser }) => {
   const supabase = createClient();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-    });
+    try {
+      setIsLoading(true);
+      await supabase.auth.signInWithOAuth({
+        provider: "google",
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const [session, setSession] = React.useState<any>(null);
+  useEffect(() => {
+    // Setup auth state change listener
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        setUser(session.user);
 
-  React.useEffect(() => {
-    const fetchSession = async () => {
+        // Verify with backend if there's an access token
+        if (session.access_token) {
+          try {
+            const response = await fetch(
+              "http://localhost:8000/api/auth/verify/",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${session.access_token}`,
+                },
+              }
+            );
+
+            if (!response.ok) {
+              console.error(
+                "Backend verification failed:",
+                await response.text()
+              );
+            }
+          } catch (error) {
+            console.error("Error verifying with backend:", error);
+          }
+        }
+      } else if (event === "SIGNED_OUT") {
+        setUser(null);
+      }
+    });
+
+    // Initial session check
+    const initializeAuth = async () => {
       const { data } = await supabase.auth.getSession();
-      const accessToken = data.session?.access_token;
-      setSession(data.session);
-
-      if (accessToken) {
-        console.log("Sending token to backend:", accessToken);
-
-        await fetch("http://localhost:8000/api/auth/verify/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+      if (data.session?.user) {
+        setUser(data.session.user);
       }
     };
 
-    fetchSession();
-  }, []);
+    initializeAuth();
+
+    // Cleanup subscription on unmount
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase, setUser]);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
+    try {
+      setIsLoading(true);
+      await supabase.auth.signOut();
+      // The onAuthStateChange listener will handle setting user to null
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (user) {
@@ -73,16 +117,21 @@ const LoginComponent: React.FC<LoginComponentProps> = ({ user, setUser }) => {
             variant="destructive"
             className="w-full mt-2"
             onClick={handleLogout}
+            disabled={isLoading}
           >
-            Logout
+            {isLoading ? "Loading..." : "Logout"}
           </Button>
         </PopoverContent>
       </Popover>
     );
   } else {
     return (
-      <Button className="rounded-full" onClick={handleLogin}>
-        Login
+      <Button
+        className="rounded-full"
+        onClick={handleLogin}
+        disabled={isLoading}
+      >
+        {isLoading ? "Loading..." : "Login"}
       </Button>
     );
   }

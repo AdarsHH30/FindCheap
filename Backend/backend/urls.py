@@ -22,6 +22,7 @@ from api import views
 urlpatterns = [
     # path("admin/", admin.site.urls),
     path("search/", views.display_scraped_data, name="search"),
+    path("api/csrf/", views.csrf, name="csrf"),
     path("api/auth/verify/", views.varify_access_tocken, name="verify_token"),
     path("api/search/save/", views.save_search, name="save_search"),
 ]

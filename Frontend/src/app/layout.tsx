@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -10,9 +11,6 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-// Note: metadata export is not supported in client components
-// Move this to a separate metadata file if needed
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -20,6 +18,20 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
   const hideHeader = pathname?.startsWith("/auth");
+
+  useEffect(() => {
+    fetch("http://localhost:8000/api/csrf/", {
+      credentials: "include",
+    })
+      .then((res) => {
+        if (!res.ok) {
+          console.error("Failed to fetch CSRF token");
+        }
+      })
+      .catch((err) => {
+        console.error("CSRF fetch error:", err);
+      });
+  }, []);
 
   return (
     <html lang="en" suppressHydrationWarning>

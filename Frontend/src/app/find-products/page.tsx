@@ -137,7 +137,7 @@ const FindProductsPage = () => {
                 <h2 className="text-xl font-bold mb-4 capitalize flex items-center gap-2">
                   <Image
                     src={`/logos/${platform}.png`}
-                    alt={platform}
+                    alt={platform || "Platform Logo"}
                     width={24}
                     height={24}
                     className="rounded"
@@ -164,8 +164,8 @@ const FindProductsPage = () => {
                         <Image
                           height={120}
                           width={120}
-                          src={item.image}
-                          alt={item.title}
+                          src={item.image || "/placeholder-product.png"}
+                          alt={item.title || "Product Image"}
                           className="w-full h-48 object-contain rounded mx-auto"
                           onError={(e) => {
                             // Fallback for broken product images

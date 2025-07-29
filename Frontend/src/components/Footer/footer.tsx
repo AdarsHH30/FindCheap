@@ -1,5 +1,11 @@
 import { Separator } from "@/components/ui/separator";
-import { GithubIcon, LinkedinIcon, TwitterIcon } from "lucide-react";
+import {
+  GithubIcon,
+  LinkedinIcon,
+  TwitterIcon,
+  BriefcaseBusiness,
+} from "lucide-react";
+
 import Link from "next/link";
 
 const footerSections = [
@@ -128,6 +134,9 @@ const Footer = () => {
             </Link>
             <Link href="https://github.com/AdarsHH30" target="_blank">
               <GithubIcon className="h-5 w-5" />
+            </Link>
+            <Link href="https://www.adarshhegde.tech" target="_blank">
+              <BriefcaseBusiness className="h-5 w-5" />
             </Link>
           </div>
         </div>

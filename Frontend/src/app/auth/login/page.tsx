@@ -23,7 +23,7 @@ export default function LoginPage() {
       </div>
       <div className="bg-muted relative hidden lg:block">
         <img
-          src="/placeholder.png "
+          src="/placeholder2.png "
           alt="Image"
           className="absolute inset-0 h-full w-full object-cover"
         />

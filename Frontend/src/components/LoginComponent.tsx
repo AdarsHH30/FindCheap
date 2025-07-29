@@ -118,6 +118,13 @@ const LoginComponent: React.FC<LoginComponentProps> = ({ user, setUser }) => {
             </div>
           </div>
           <Button
+            variant="outline"
+            className="w-full mt-2"
+            onClick={() => (window.location.href = "/profile")}
+          >
+            Profile
+          </Button>
+          <Button
             variant="destructive"
             className="w-full mt-2"
             onClick={handleLogout}

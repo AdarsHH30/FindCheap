@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { ProductNotFound } from "@/components/product-notfound";
 import useSendRecentSearch from "@/hooks/useSendRecentSearch";
 import { send } from "process";
+import { getCookie } from "@/utils/csrf";
 
 // TODO: Move interfaces to a separate file
 interface Product {
@@ -58,6 +59,7 @@ const FindProductsPage = () => {
         body: JSON.stringify({ search_query: query }),
         headers: {
           "Content-Type": "application/json",
+          "X-CSRFToken": getCookie("csrftoken") || "",
         },
       });
 

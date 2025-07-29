@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { createClient } from "@/utils/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
+import { getCookie } from "@/utils/csrf";
 
 export function LoginForm({
   className,
@@ -51,6 +52,7 @@ export function LoginForm({
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
+                  "X-CSRFToken": getCookie("csrftoken") || "", // Include CSRF token from cookie
                   Authorization: `Bearer ${session.access_token}`,
                 },
               }

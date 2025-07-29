@@ -1,15 +1,18 @@
 "use client";
-import { useEffect } from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import SiteHeader from "@/components/site-header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { usePathname } from "next/navigation";
+import CSRFInit from "@/components/CSRFInit";
 
 const inter = Inter({
   subsets: ["latin"],
 });
+
+// Note: metadata export is not supported in client components
+// Move this to a separate metadata file if needed
 
 export default function RootLayout({
   children,
@@ -19,20 +22,6 @@ export default function RootLayout({
   const pathname = usePathname();
   const hideHeader = pathname?.startsWith("/auth");
 
-  useEffect(() => {
-    fetch("http://localhost:8000/api/csrf/", {
-      credentials: "include",
-    })
-      .then((res) => {
-        if (!res.ok) {
-          console.error("Failed to fetch CSRF token");
-        }
-      })
-      .catch((err) => {
-        console.error("CSRF fetch error:", err);
-      });
-  }, []);
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -40,6 +29,7 @@ export default function RootLayout({
           hideHeader ? "" : "md:px-20"
         }`}
       >
+        <CSRFInit />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

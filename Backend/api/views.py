@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie, csrf_protect
+from django.views.decorators.http import require_http_methods
 from scrape_utils import clean_data
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -13,6 +14,8 @@ from dotenv import load_dotenv
 import os
 import logging
 import json
+from django.middleware.csrf import get_token
+
 from supabase import create_client
 
 
@@ -27,9 +30,26 @@ SUPABASE_KEY = os.getenv("SUPABASE_ANON_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
+# @ensure_csrf_cookie
+# def csrf(request):
+#     return JsonResponse({"detail": "CSRF cookie set"})
+
+
 @ensure_csrf_cookie
+@require_http_methods(["GET"])
 def csrf(request):
-    return JsonResponse({"detail": "CSRF cookie set"})
+    """
+    Return CSRF token for the client.
+    This endpoint ensures the CSRF cookie is set.
+    """
+    return JsonResponse({"csrfToken": get_token(request), "message": "CSRF cookie set"})
+
+
+# varify the csrf token
+@csrf_protect
+@require_http_methods(["POST"])
+def secure_post(request):
+    return JsonResponse({"message": "POST accepted"})
 
 
 def save_recent_search(user_id, search_text):
@@ -37,7 +57,7 @@ def save_recent_search(user_id, search_text):
     supabase.table("recent_searches").insert(data).execute()
 
 
-@csrf_exempt
+@ensure_csrf_cookie
 @supabase_auth_required
 @api_view(["POST", "GET"])
 def save_search(request):
@@ -74,7 +94,7 @@ def varify_access_tocken(request):
         return JsonResponse({"error": f"Internal server error: {str(e)}"}, status=500)
 
 
-@csrf_exempt
+@ensure_csrf_cookie
 @api_view(["POST"])
 def display_scraped_data(request):
     """

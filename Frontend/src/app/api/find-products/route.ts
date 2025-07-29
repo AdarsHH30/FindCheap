@@ -4,7 +4,7 @@ export async function POST(request: Request) {
   // Parse JSON body from the incoming request
   const requestBody = await request.json();
 
-  // Forward it as JSON to your external API
+  // Forward it as JSON to your external API (no CSRF needed for server-to-server)
   const response = await fetch(url, {
     method: "POST",
     headers: {

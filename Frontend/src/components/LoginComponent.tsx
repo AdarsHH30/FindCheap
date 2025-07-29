@@ -9,6 +9,7 @@ import {
 import { User } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/client";
 import { CurrentUserAvatar } from "./current-user-avatar";
+import { getCookie } from "@/utils/csrf";
 
 interface LoginComponentProps {
   user: User | null;
@@ -40,15 +41,16 @@ const LoginComponent: React.FC<LoginComponentProps> = ({ user, setUser }) => {
       if (session?.user) {
         setUser(session.user);
 
-        // Verify with backend if there's an access token
         if (session.access_token) {
           try {
             const response = await fetch(
               "http://localhost:8000/api/auth/verify/",
               {
                 method: "POST",
+                credentials: "include",
                 headers: {
                   "Content-Type": "application/json",
+                  "X-CSRFToken": getCookie("csrftoken") || "",
                   Authorization: `Bearer ${session.access_token}`,
                 },
               }

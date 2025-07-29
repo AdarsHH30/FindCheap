@@ -1,6 +1,8 @@
 import { useCallback } from "react";
 import { createClient } from "@/utils/supabase/client"; // Import the createClient function
 type SendSearchFn = (searchTerm: string) => Promise<void>;
+import { getCookie } from '@/utils/csrf'
+
 
 const useSendRecentSearch = (): SendSearchFn => {
   const sendRecentSearch = useCallback(async (searchTerm: string) => {
@@ -28,6 +30,7 @@ const useSendRecentSearch = (): SendSearchFn => {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
+        "X-CSRFToken": getCookie("csrftoken") || "",
         "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify({ search_text: searchTerm }),

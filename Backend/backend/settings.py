@@ -44,7 +44,7 @@ else:
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -106,9 +106,9 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:3001",
 ]
-# For API endpoints that use token auth, exempt them from CSRF
-CSRF_COOKIE_SECURE = True
-CSRF_USE_SESSIONS = True
+
+CSRF_COOKIE_SECURE = DEBUG == False
+CSRF_USE_SESSIONS = False
 
 ROOT_URLCONF = "backend.urls"
 

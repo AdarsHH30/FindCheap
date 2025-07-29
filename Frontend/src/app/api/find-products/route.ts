@@ -1,5 +1,9 @@
 export async function POST(request: Request) {
-  const url = "http://127.0.0.1:8000/search/";
+  const baseUrl =
+    process.env.NODE_ENV === "production"
+      ? process.env.NEXT_PUBLIC_API_URL
+      : "http://127.0.0.1:8000";
+  const url = `${baseUrl}/search/`;
 
   // Parse JSON body from the incoming request
   const requestBody = await request.json();

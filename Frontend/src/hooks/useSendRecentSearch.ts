@@ -24,11 +24,15 @@ const useSendRecentSearch = (): SendSearchFn => {
 
     const userId = session.user.id;
     const token = session.access_token;
-
+    const baseUrl =
+      process.env.NODE_ENV === "production"
+        ? process.env.NEXT_PUBLIC_API_URL
+        : "http://127.0.0.1:8000";
     console.log("Sending recent search for user:", userId, "Search term:", searchTerm);
-    const res = await fetch("http://localhost:8000/api/search/save/", {
+    const res = await fetch(`${baseUrl}/api/search/save/`, {
       method: "POST",
-      headers: { 
+      credentials: "include",
+      headers: {
         "Content-Type": "application/json",
         "X-CSRFToken": getCookie("csrftoken") || "",
         "Authorization": `Bearer ${token}`

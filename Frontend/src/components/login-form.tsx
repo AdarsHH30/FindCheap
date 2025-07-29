@@ -10,6 +10,11 @@ import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { getCookie } from "@/utils/csrf";
 
+const baseUrl =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_API_URL
+    : "http://127.0.0.1:8000";
+
 export function LoginForm({
   className,
   ...props
@@ -46,17 +51,14 @@ export function LoginForm({
         // Verify with backend if there's an access token
         if (session.access_token) {
           try {
-            const response = await fetch(
-              "http://localhost:8000/api/auth/verify/",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  "X-CSRFToken": getCookie("csrftoken") || "", // Include CSRF token from cookie
-                  Authorization: `Bearer ${session.access_token}`,
-                },
-              }
-            );
+            const response = await fetch(`${baseUrl}/api/auth/verify/`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken") || "", // Include CSRF token from cookie
+                Authorization: `Bearer ${session.access_token}`,
+              },
+            });
 
             if (!response.ok) {
               console.error(

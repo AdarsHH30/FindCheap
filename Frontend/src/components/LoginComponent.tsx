@@ -11,6 +11,11 @@ import { createClient } from "@/utils/supabase/client";
 import { CurrentUserAvatar } from "./current-user-avatar";
 import { getCookie } from "@/utils/csrf";
 
+const baseUrl =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_API_URL
+    : "http://127.0.0.1:8000";
+
 interface LoginComponentProps {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
@@ -43,18 +48,15 @@ const LoginComponent: React.FC<LoginComponentProps> = ({ user, setUser }) => {
 
         if (session.access_token) {
           try {
-            const response = await fetch(
-              "http://localhost:8000/api/auth/verify/",
-              {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                  "Content-Type": "application/json",
-                  "X-CSRFToken": getCookie("csrftoken") || "",
-                  Authorization: `Bearer ${session.access_token}`,
-                },
-              }
-            );
+            const response = await fetch(`${baseUrl}/api/auth/verify/`, {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken") || "",
+                Authorization: `Bearer ${session.access_token}`,
+              },
+            });
 
             if (!response.ok) {
               console.error(

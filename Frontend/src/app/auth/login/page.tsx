@@ -22,10 +22,13 @@ export default function LoginPage() {
         </div>
       </div>
       <div className="bg-muted relative hidden lg:block">
-        <img
-          src="/placeholder2.png "
-          alt="Image"
+        <video
+          src="/placeholder.mp4"
           className="absolute inset-0 h-full w-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
         />
       </div>
     </div>

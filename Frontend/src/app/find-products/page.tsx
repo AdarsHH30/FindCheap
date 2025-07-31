@@ -7,7 +7,6 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { ProductNotFound } from "@/components/product-notfound";
 import useSendRecentSearch from "@/hooks/useSendRecentSearch";
-import { send } from "process";
 import { getCookie } from "@/utils/csrf";
 
 // TODO: Move interfaces to a separate file

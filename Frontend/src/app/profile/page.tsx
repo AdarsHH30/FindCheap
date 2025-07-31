@@ -63,9 +63,10 @@ export default function ProfilePage() {
           </div>
 
           <div className="mt-8">
-            <h3 className="text-xl font-medium mb-4">Account Settings</h3>
+            {/* <h3 className="text-xl font-medium mb-4">Account Settings</h3> */}
             <Button
               variant="outline"
+              className=" bg-red-500 text-white hover:bg-red-600"
               onClick={async () => {
                 await supabase.auth.signOut();
                 router.push("/");

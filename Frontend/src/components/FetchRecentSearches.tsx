@@ -6,11 +6,13 @@ interface SearchItem {
 }
 
 interface FetchRecentSearchesProps {
+  user_id: string;
   limit?: number;
   onSearchesLoaded?: (searches: SearchItem[]) => void;
 }
 
 const FetchRecentSearches: React.FC<FetchRecentSearchesProps> = ({
+  user_id,
   limit = 10,
   onSearchesLoaded,
 }) => {
@@ -22,13 +24,16 @@ const FetchRecentSearches: React.FC<FetchRecentSearchesProps> = ({
     const fetchRecentSearches = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/searches/recent`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
+        const response = await fetch(
+          `/api/searches/recent?user_id=${user_id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -56,7 +61,7 @@ const FetchRecentSearches: React.FC<FetchRecentSearchesProps> = ({
     };
 
     fetchRecentSearches();
-  }, [limit, onSearchesLoaded]);
+  }, [user_id, limit, onSearchesLoaded]);
 
   if (loading) {
     return <div className="loading">Loading recent searches...</div>;

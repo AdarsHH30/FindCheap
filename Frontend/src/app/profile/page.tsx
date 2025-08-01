@@ -6,7 +6,7 @@ import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { CurrentUserAvatar } from "@/components/current-user-avatar";
 import { Button } from "@/components/ui/button";
-
+import FetchRecentSearches from "@/components/FetchRecentSearches";
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -48,20 +48,27 @@ export default function ProfilePage() {
       <h1 className="text-3xl font-bold mb-6">Profile</h1>
 
       {user && (
-        <div className="bg-card rounded-lg p-6 shadow">
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-6 p-4">
-            <CurrentUserAvatar className="h-24 w-24 md:h-32 md:w-32" />
-            <div className="space-y-3">
-              <h2 className="text-3xl md:text-4xl font-semibold">
-                {user.user_metadata.full_name}
-              </h2>
-              <p className="text-lg text-muted-foreground">{user.email}</p>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Account ID: {user.id}
-              </p>
+        <>
+          <div className="bg-card rounded-lg p-6 shadow">
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-6 p-4">
+              <CurrentUserAvatar className="h-24 w-24 md:h-32 md:w-32" />
+              <div className="space-y-3">
+                <h2 className="text-3xl md:text-4xl font-semibold">
+                  {user.user_metadata.full_name}
+                </h2>
+                <p className="text-lg text-muted-foreground">{user.email}</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Account ID: {user.id}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+          <div className="mt-8">
+            <h2 className="text-2xl font-semibold mb-4">Recent Searches</h2>
+            {/* TO DO: FIx FetchRecentSearches component */}
+            <FetchRecentSearches user_id={user.id} />
+          </div>
+        </>
       )}
       <div className="mt-8">
         {" "}

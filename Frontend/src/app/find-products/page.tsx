@@ -93,14 +93,14 @@ const FindProductsPage = () => {
               ? `Search Results for "${searchQuery}"`
               : "Search Results"}
           </h1>
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <span className="text-gray-600">Sort by:</span>
             <select className="border rounded p-1">
               <option value="relevance">Relevance</option>
               <option value="price-low-to-high">Price: Low to High</option>
               <option value="price-high-to-low">Price: High to Low</option>
             </select>
-          </div>
+          </div> */}
         </div>
       )}
 

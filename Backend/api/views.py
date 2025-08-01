@@ -52,27 +52,39 @@ def secure_post(request):
     return JsonResponse({"message": "POST accepted"})
 
 
-def get_recent_searches(user_id):
+@api_view(["GET"])
+# @supabase_auth_required
+def get_recent_searches(request):
     """
     Retrieve recent searches for a specific user.
+
     """
     try:
+        user = request.user_data
+        user_id = user.get("id")
+
         response = (
             supabase.table("recent_searches")
             .select("query", "searched_at")
             .eq("user_id", user_id)
+            .order("searched_at", desc=True)
+            .limit(10)
             .execute()
         )
 
-        logger.info(f"Fetched recent searches for user {user_id}: {response.data}")
-        if response.status_code == 200:
-            return response.data
-        else:
-            logger.error(f"Error fetching recent searches: {response.error}")
-            return []
+        return Response(
+            {
+                "searches": response.data,
+                "message": "Recent searches fetched successfully",
+            },
+            status=status.HTTP_200_OK,
+        )
     except Exception as e:
         logger.error(f"Error fetching recent searches: {str(e)}")
-        return []
+        return Response(
+            {"error": f"Failed to fetch recent searches: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
 def save_recent_search(user_id, search_text):

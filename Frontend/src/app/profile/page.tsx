@@ -56,9 +56,9 @@ export default function ProfilePage() {
                 {user.user_metadata.full_name}
               </h2>
               <p className="text-lg text-muted-foreground">{user.email}</p>
-              {/* <p className="mt-2 text-sm text-muted-foreground">
+              <p className="mt-2 text-sm text-muted-foreground">
                 Account ID: {user.id}
-              </p> */}
+              </p>
             </div>
           </div>
         </div>

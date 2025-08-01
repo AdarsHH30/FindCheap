@@ -52,7 +52,31 @@ def secure_post(request):
     return JsonResponse({"message": "POST accepted"})
 
 
+def get_recent_searches(user_id):
+    """
+    Retrieve recent searches for a specific user.
+    """
+    try:
+        response = (
+            supabase.table("recent_searches")
+            .select("query", "searched_at")
+            .eq("user_id", user_id)
+            .execute()
+        )
+
+        logger.info(f"Fetched recent searches for user {user_id}: {response.data}")
+        if response.status_code == 200:
+            return response.data
+        else:
+            logger.error(f"Error fetching recent searches: {response.error}")
+            return []
+    except Exception as e:
+        logger.error(f"Error fetching recent searches: {str(e)}")
+        return []
+
+
 def save_recent_search(user_id, search_text):
+
     data = {"user_id": user_id, "query": search_text}
     supabase.table("recent_searches").insert(data).execute()
 
@@ -100,6 +124,7 @@ def display_scraped_data(request):
     """
     API endpoint that accepts search queries via POST request
     """
+
     try:
 
         search_query = request.data.get("search_query")

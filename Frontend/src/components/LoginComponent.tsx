@@ -9,7 +9,7 @@ import {
 import { User } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/client";
 import { CurrentUserAvatar } from "./current-user-avatar";
-import { getCookie } from "@/utils/csrf";
+import { getCSRFToken } from "@/utils/csrf";
 
 const baseUrl =
   process.env.NODE_ENV === "production"
@@ -53,7 +53,7 @@ const LoginComponent: React.FC<LoginComponentProps> = ({ user, setUser }) => {
               credentials: "include",
               headers: {
                 "Content-Type": "application/json",
-                "X-CSRFToken": getCookie("csrftoken") || "",
+                "X-CSRFToken": getCSRFToken() || "",
                 Authorization: `Bearer ${session.access_token}`,
               },
             });
@@ -93,7 +93,6 @@ const LoginComponent: React.FC<LoginComponentProps> = ({ user, setUser }) => {
     try {
       setIsLoading(true);
       await supabase.auth.signOut();
-      // The onAuthStateChange listener will handle setting user to null
     } catch (error) {
       console.error("Logout error:", error);
     } finally {

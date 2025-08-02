@@ -11,7 +11,10 @@ export default function CSRFInit() {
     fetch(`${baseUrl}/api/csrf/`, {
       credentials: "include",
     })
-      .then(() => console.log("CSRF cookie set"))
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("CSRF cookie set", data);
+      })
       .catch((error) => console.error("Failed to set CSRF cookie:", error));
   }, []);
 

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { getCSRFToken } from "@/utils/csrf";
 
 interface SearchItem {
   query: string;
@@ -7,86 +8,77 @@ interface SearchItem {
 
 interface FetchRecentSearchesProps {
   user_id: string;
-  limit?: number;
-  onSearchesLoaded?: (searches: SearchItem[]) => void;
 }
 
 const FetchRecentSearches: React.FC<FetchRecentSearchesProps> = ({
   user_id,
-  limit = 10,
-  onSearchesLoaded,
 }) => {
   const [searches, setSearches] = useState<SearchItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  console.log("User id is ", user_id);
   useEffect(() => {
-    const fetchRecentSearches = async () => {
+    if (!user_id) return;
+
+    const fetchSearches = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
+        const baseUrl =
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_API_URL
+            : "http://127.0.0.1:8000";
+
         const response = await fetch(
-          `/api/searches/recent?user_id=${user_id}`,
+          `${baseUrl}/api/search/recent/?user_id=${user_id}`,
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
+              "X-CSRFToken": getCSRFToken() || "",
             },
             credentials: "include",
           }
         );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
+        console.log(response);
         const data = await response.json();
 
-        if (data && data.searches && Array.isArray(data.searches)) {
-          const limitedSearches = data.searches.slice(0, limit);
-          setSearches(limitedSearches);
-          if (onSearchesLoaded) {
-            onSearchesLoaded(limitedSearches);
-          }
-        } else {
-          setError("Invalid response format");
+        console.log("Response data:", data);
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to fetch searches");
         }
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to fetch recent searches"
-        );
-        console.error("Error fetching recent searches:", err);
+
+        setSearches(data.searches);
+        setError(null);
+      } catch (err: any) {
+        setError(err.message || "Unknown error");
+        setSearches([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchRecentSearches();
-  }, [user_id, limit, onSearchesLoaded]);
+    fetchSearches();
+  }, [user_id]);
 
-  if (loading) {
-    return <div className="loading">Loading recent searches...</div>;
-  }
-
-  if (error) {
-    return <div className="error">Error: {error}</div>;
-  }
-
-  if (searches.length === 0) {
-    return <div className="no-searches">No recent searches found</div>;
-  }
+  if (loading) return <p>Loading recent searches...</p>;
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
-    <div className="recent-searches">
-      <h2>Recent Searches</h2>
-      <ul className="searches-list">
-        {searches.map((search, index) => (
-          <li key={index} className="search-item">
-            <span className="search-query">{search.query}</span>
-            <span className="search-timestamp">
-              {new Date(search.searched_at).toLocaleDateString()}
-            </span>
-          </li>
-        ))}
+    <div>
+      <h3 className="text-lg font-semibold mb-2">Recent Searches</h3>
+      <ul className="list-disc ml-5">
+        {searches.length === 0 ? (
+          <li>No recent searches found.</li>
+        ) : (
+          searches.map((search, index) => (
+            <li key={index}>
+              <span className="font-medium">{search.query}</span>{" "}
+              <small className="text-gray-500">
+                ({new Date(search.searched_at).toLocaleString()})
+              </small>
+            </li>
+          ))
+        )}
       </ul>
     </div>
   );

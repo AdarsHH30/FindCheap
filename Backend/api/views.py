@@ -52,7 +52,7 @@ def secure_post(request):
     return JsonResponse({"message": "POST accepted"})
 
 
-@api_view(["GET"])
+@api_view(["GET", "POST"])
 # @supabase_auth_required
 def get_recent_searches(request):
     """
@@ -60,8 +60,8 @@ def get_recent_searches(request):
 
     """
     try:
-        user = request.user_data
-        user_id = user.get("id")
+        user_id = request.GET.get("user_id")
+        print(f"User ID: {user_id}")
 
         response = (
             supabase.table("recent_searches")

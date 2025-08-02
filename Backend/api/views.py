@@ -138,6 +138,45 @@ def varify_access_tocken(request):
         return JsonResponse({"error": f"Internal server error: {str(e)}"}, status=500)
 
 
+# TODO: Fix this delete function
+@csrf_exempt
+@api_view(["DELETE"])
+@supabase_auth_required
+def delete_search(request):
+    """
+    API endpoint to delete a user's search query.
+    """
+    try:
+        user = request.user_data
+        user_id = user.get("id")
+        search_id = request.data.get("search_id")
+
+        if not search_id:
+            return Response(
+                {"error": "search_id is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        response = (
+            supabase.table("recent_searches")
+            .delete()
+            .eq("id", search_id)
+            .eq("user_id", user_id)
+            .execute()
+        )
+
+        if response.error:
+            return Response(
+                {"error": response.error.message},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+        return JsonResponse({"message": "Search deleted successfully"}, status=200)
+    except Exception as e:
+        logger.error(f"Error deleting search: {str(e)}")
+        return JsonResponse({"error": f"Internal server error: {str(e)}"}, status=500)
+
+
 @ensure_csrf_cookie
 @api_view(["POST"])
 def display_scraped_data(request):

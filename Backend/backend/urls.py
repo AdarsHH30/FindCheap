@@ -31,4 +31,9 @@ urlpatterns = [
         views.get_recent_searches,
         name="get_recent_searches",
     ),
+    path(
+        "api/search/recent/delete/",
+        views.delete_search,
+        name="delete_search",
+    ),
 ]

@@ -66,7 +66,7 @@ const FetchRecentSearches: React.FC<FetchRecentSearchesProps> = ({
           ? process.env.NEXT_PUBLIC_API_URL
           : "http://127.0.0.1:8000";
 
-      const response = await fetch(`${baseUrl}/api/search/delete/`, {
+      const response = await fetch(`${baseUrl}/api/search/recent/delete/`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

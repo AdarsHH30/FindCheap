@@ -31,7 +31,7 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
 # @ensure_csrf_cookie
-# def csrf(request):
+# def csrf(request):+
 #     return JsonResponse({"detail": "CSRF cookie set"})
 
 
@@ -52,48 +52,12 @@ def secure_post(request):
     return JsonResponse({"message": "POST accepted"})
 
 
-@api_view(["GET", "POST"])
-# @supabase_auth_required
-def get_recent_searches(request):
-    """
-    Retrieve recent searches for a specific user.
-
-    """
-    try:
-        user_id = request.GET.get("user_id")
-        print(f"User ID: {user_id}")
-
-        response = (
-            supabase.table("recent_searches")
-            .select("query", "searched_at")
-            .eq("user_id", user_id)
-            .order("searched_at", desc=True)
-            .limit(10)
-            .execute()
-        )
-
-        return Response(
-            {
-                "searches": response.data,
-                "message": "Recent searches fetched successfully",
-            },
-            status=status.HTTP_200_OK,
-        )
-    except Exception as e:
-        logger.error(f"Error fetching recent searches: {str(e)}")
-        return Response(
-            {"error": f"Failed to fetch recent searches: {str(e)}"},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
-
-
 def save_recent_search(user_id, search_text):
-
     data = {"user_id": user_id, "query": search_text}
     supabase.table("recent_searches").insert(data).execute()
 
 
-@ensure_csrf_cookie
+@csrf_exempt
 @supabase_auth_required
 @api_view(["POST", "GET"])
 def save_search(request):
@@ -119,6 +83,50 @@ def save_search(request):
     except Exception as e:
         logger.error(f"Error saving search: {str(e)}")
         return JsonResponse({"error": f"Internal server error: {str(e)}"}, status=500)
+
+
+@api_view(["GET", "POST"])
+# @supabase_auth_required
+def get_recent_searches(request):
+    """
+    Retrieve recent searches for a specific user.
+    """
+    try:
+        user_id = request.GET.get("user_id")
+        if not user_id:
+            return Response(
+                {"error": "user_id parameter is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        print(f"User ID from request: {user_id}")
+        print(f"Request method: {request.method}")
+        print(f"Request query params: {request.GET}")
+
+        response = (
+            supabase.table("recent_searches")
+            .select("query", "searched_at")
+            .eq("user_id", user_id)
+            .order("searched_at", desc=True)
+            .limit(10)
+            .execute()
+        )
+
+        print(f"Supabase response data: {response.data}")
+
+        return Response(
+            {
+                "searches": response.data,
+                "message": "Recent searches fetched successfully",
+            },
+            status=status.HTTP_200_OK,
+        )
+    except Exception as e:
+        logger.error(f"Error fetching recent searches: {str(e)}")
+        return Response(
+            {"error": f"Failed to fetch recent searches: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
 def varify_access_tocken(request):

@@ -6,6 +6,7 @@ import { ReactTyped } from "react-typed";
 import InfiniteScrollingLogosAnimation from "./ui/Infinite-Scrolling-Logos-Animation";
 import { motion } from "framer-motion";
 import ModelViewer from "./ModelViewer";
+import AnimatedText from "./ui/AnimatedText";
 
 const HeroSection = () => {
   return (
@@ -23,19 +24,11 @@ const HeroSection = () => {
           className="text-2xl text-foreground/80"
         />
         <SearchComponent redirect={true} />
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.3 }}
-        >
-          Wireless earbuds - smartwatch - yoga mat -laptop - gaming console
-        </motion.p>
+        <AnimatedText text="Wireless earbuds - smartwatch - yoga mat -laptop - gaming console" />
         <InfiniteScrollingLogosAnimation />
       </div>
-      {/* <div className="bg-teal-500 opacity-50 backdrop-blur-2xl h-full w-1/4" /> */}
       <div className="relative w-1/4 h-full">
         <ModelViewer />
-        {/* Floating Card */}
         <div className="absolute top-[60%] left-[40%] -translate-y-1/2 bg-white/95 rounded-xl shadow-xl px-4 py-3 w-52">
           <h3 className="text-sm font-semibold text-gray-700 mb-2">
             wireless earbuds

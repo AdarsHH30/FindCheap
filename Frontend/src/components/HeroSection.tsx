@@ -7,8 +7,15 @@ import InfiniteScrollingLogosAnimation from "./ui/Infinite-Scrolling-Logos-Anima
 import { motion } from "framer-motion";
 import ModelViewer from "./ModelViewer";
 import AnimatedText from "./ui/AnimatedText";
+import { useRouter } from "next/navigation";
 
 const HeroSection = () => {
+  const router = useRouter();
+
+  const handleSearch = (searchTerm: string) => {
+    router.push(`/find-products?query=${encodeURIComponent(searchTerm)}`);
+  };
+
   return (
     <section className=" h-full flex  p-20 gap-10 ">
       <div className="h-full flex flex-col justify-center items-left w-3/4 gap-5 p-10">
@@ -24,7 +31,27 @@ const HeroSection = () => {
           className="text-2xl text-foreground/80"
         />
         <SearchComponent redirect={true} />
-        <AnimatedText text="Wireless earbuds - smartwatch - yoga mat -laptop - gaming console" />
+        <div className="flex flex-wrap gap-2 text-lg">
+          {[
+            "Wireless earbuds",
+            "smartwatch",
+            "yoga mat",
+            "laptop",
+            "gaming console",
+          ].map((item, index) => (
+            <React.Fragment key={item}>
+              <AnimatedText
+                text={item}
+                delay={0.3 + index * 0.1}
+                isClickable={true}
+                searchTerm={item}
+                onSearch={handleSearch}
+                className="text-foreground/70"
+              />
+              {index < 4 && <span className="text-foreground/50">-</span>}
+            </React.Fragment>
+          ))}
+        </div>
         <InfiniteScrollingLogosAnimation />
       </div>
       <div className="relative w-1/4 h-full">

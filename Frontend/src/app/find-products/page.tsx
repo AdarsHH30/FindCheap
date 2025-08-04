@@ -8,21 +8,7 @@ import { useState, useEffect } from "react";
 import { ProductNotFound } from "@/components/product-notfound";
 import useSendRecentSearch from "@/hooks/useSendRecentSearch";
 import { getCookie } from "@/utils/csrf";
-
-// TODO: Move interfaces to a separate file
-interface Product {
-  title: string;
-  price: string;
-  link: string;
-  rating?: string;
-  reviews?: string;
-  image: string;
-  similarity_score: number;
-}
-
-interface SearchResults {
-  [platform: string]: Product[];
-}
+import { Product, SearchResults } from "@/types/product";
 
 const FindProductsPage = () => {
   const [data, setData] = useState<SearchResults | null>(null);
@@ -30,7 +16,6 @@ const FindProductsPage = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const sendRecentSearch = useSendRecentSearch();
 
-  // TODO: Send search query to backend and fetch results
   useEffect(() => {
     if (typeof window !== "undefined") {
       const urlParams = new URLSearchParams(window.location.search);

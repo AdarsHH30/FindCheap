@@ -56,7 +56,6 @@ const FindProductsPage = () => {
       setSearchQuery(query);
     } catch (err) {
       console.error("Failed to fetch products:", err);
-      // You might want to show an error message to the user here
       setData({});
     } finally {
       setLoading(false);
@@ -68,19 +67,21 @@ const FindProductsPage = () => {
     hasResults && Object.values(data).some((products) => products.length > 0);
 
   return (
-    <div className="flex flex-col items-center p-4 h-[calc(100vh-var(--navbar-height,57px))]">
-      <SearchComponent redirect={true} onSearch={handleSearch} />
+    <div className="flex flex-col items-center px-2 sm:px-4 lg:px-6 xl:px-8 py-4 h-[calc(100vh-var(--navbar-height,57px))] max-w-7xl mx-auto">
+      <div className="w-full max-w-2xl">
+        <SearchComponent redirect={true} onSearch={handleSearch} />
+      </div>
 
       {(hasResults || loading) && (
-        <div className="w-full flex justify-between items-center mt-4">
-          <h1 className="text-2xl font-bold">
+        <div className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-center mt-6 gap-4">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center sm:text-left">
             {searchQuery
               ? `Search Results for "${searchQuery}"`
               : "Search Results"}
           </h1>
-          {/* <div className="flex items-center gap-2">
-            <span className="text-gray-600">Sort by:</span>
-            <select className="border rounded p-1">
+          {/* <div className="flex items-center gap-2 justify-center sm:justify-end">
+            <span className="text-gray-600 text-sm">Sort by:</span>
+            <select className="border rounded p-1 text-sm">
               <option value="relevance">Relevance</option>
               <option value="price-low-to-high">Price: Low to High</option>
               <option value="price-high-to-low">Price: High to Low</option>
@@ -90,24 +91,25 @@ const FindProductsPage = () => {
       )}
 
       <div
-        className="mt-4 overflow-scroll w-full"
-        style={{ scrollbarWidth: "none" }}
+        className="mt-4 sm:mt-6 overflow-y-auto w-full flex-1"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {loading && (
           <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-            <span className="text-gray-500 ml-4">Loading products...</span>
+            <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-primary"></div>
+            <span className="text-gray-500 ml-4 text-sm sm:text-base">
+              Loading products...
+            </span>
           </div>
         )}
 
-        {/* TODO: Make a separate loading component */}
         {!loading && hasResults && !hasAnyProducts && (
           <div className="flex justify-center items-center h-64">
-            <div className="text-center">
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">
+            <div className="text-center px-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-600 mb-2">
                 No products found
               </h3>
-              <p className="text-gray-500">
+              <p className="text-gray-500 text-sm sm:text-base">
                 Try searching with different keywords
               </p>
             </div>
@@ -119,23 +121,22 @@ const FindProductsPage = () => {
           hasResults &&
           Object.entries(data).map(
             ([platform, products]: [string, Product[]]) => (
-              <div key={platform} className="mb-8">
-                <h2 className="text-xl font-bold mb-4 capitalize flex items-center gap-2">
+              <div key={platform} className="mb-6 sm:mb-8">
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 sm:mb-4 capitalize flex items-center gap-2 px-2 sm:px-0">
                   <Image
                     src={`/logos/${platform}.png`}
                     alt={platform || "Platform Logo"}
-                    width={24}
-                    height={24}
-                    className="rounded"
+                    width={20}
+                    height={20}
+                    className="w-5 h-5 sm:w-6 sm:h-6 rounded"
                     onError={(e) => {
-                      // Fallback if logo image fails to load
                       e.currentTarget.style.display = "none";
                     }}
                   />
                   {platform}
                 </h2>
                 <motion.div
-                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"
+                  className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4 px-2 sm:px-0"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5 }}
@@ -144,35 +145,39 @@ const FindProductsPage = () => {
                     products.map((item, index) => (
                       <motion.div
                         key={`${platform}-${index}`}
-                        className="flex flex-col gap-3 p-4 border rounded-lg hover:shadow-lg transition-shadow"
+                        className="flex flex-col gap-2 sm:gap-3 p-3 sm:p-4 border rounded-lg hover:shadow-lg transition-all duration-200 bg-white dark:bg-gray-800"
                         whileTap={{ scale: 0.95 }}
+                        whileHover={{ y: -2 }}
                       >
-                        <Image
-                          height={120}
-                          width={120}
-                          src={item.image || "/placeholder-product.png"}
-                          alt={item.title || "Product Image"}
-                          className="w-full h-48 object-contain rounded mx-auto"
-                          onError={(e) => {
-                            // Fallback for broken product images
-                            e.currentTarget.src = "/placeholder-product.png";
-                          }}
-                        />
-                        <div className="flex-1">
-                          <h3 className="text-sm font-semibold line-clamp-2 mb-2">
+                        <div className="relative aspect-square w-full">
+                          <Image
+                            fill
+                            src={item.image || "/placeholder-product.png"}
+                            alt={item.title || "Product Image"}
+                            className="object-contain rounded"
+                            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                            onError={(e) => {
+                              e.currentTarget.src = "/placeholder-product.png";
+                            }}
+                          />
+                        </div>
+                        <div className="flex-1 flex flex-col">
+                          <h3 className="text-xs sm:text-sm font-semibold line-clamp-2 mb-1 sm:mb-2 min-h-[2.5rem] sm:min-h-[3rem]">
                             {item.title}
                           </h3>
-                          <p className="text-lg font-bold text-green-600 mb-1">
+                          <p className="text-sm sm:text-lg font-bold text-green-600 mb-1">
                             {item.price}
                           </p>
                           {item.rating && (
                             <div className="flex items-center gap-1 mb-2">
-                              <span className="text-yellow-500">⭐</span>
-                              <span className="text-sm text-foreground/70">
+                              <span className="text-yellow-500 text-xs sm:text-sm">
+                                ⭐
+                              </span>
+                              <span className="text-xs sm:text-sm text-foreground/70">
                                 {item.rating}
                               </span>
                               {item.reviews && (
-                                <span className="text-xs text-foreground/50">
+                                <span className="text-xs text-foreground/50 truncate">
                                   ({item.reviews})
                                 </span>
                               )}
@@ -188,7 +193,7 @@ const FindProductsPage = () => {
                             }
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-accent hover:underline text-sm"
+                            className="text-accent hover:underline text-xs sm:text-sm mt-auto inline-block py-1"
                           >
                             View Product
                           </a>
@@ -196,7 +201,9 @@ const FindProductsPage = () => {
                       </motion.div>
                     ))
                   ) : (
-                    <ProductNotFound platform={platform} />
+                    <div className="col-span-full">
+                      <ProductNotFound platform={platform} />
+                    </div>
                   )}
                 </motion.div>
               </div>

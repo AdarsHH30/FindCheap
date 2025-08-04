@@ -40,18 +40,17 @@ const SearchComponent: React.FC<SearchComponentProps> = ({
       onSearch(searchQuery);
     }
   };
-
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full">
       <motion.form
         onSubmit={handleSubmit}
         initial={{ opacity: 0, x: -40 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3 }}
-        className="border-1 h-16 w-[600px] rounded-lg flex justify-between"
+        className="border-1 rounded-lg flex flex-col sm:flex-row justify-between w-full max-w-[600px] mx-auto"
       >
         <div className="p-4 flex gap-2 items-center w-full">
-          <Search className="text-primary" />
+          <Search className="text-primary min-w-5" />
           <input
             type="text"
             placeholder="Search for products..."
@@ -67,8 +66,13 @@ const SearchComponent: React.FC<SearchComponentProps> = ({
           initial={{ opacity: 0, x: 80 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.3 }}
+          className="w-full sm:w-auto"
         >
-          <Button size={"lg"} className="h-full text-lg" type="submit">
+          <Button
+            size={"lg"}
+            className="h-12 text-lg w-full sm:h-full rounded-t-none sm:rounded-t-lg sm:rounded-l-none"
+            type="submit"
+          >
             Find Best Deals
           </Button>
         </motion.div>
@@ -77,7 +81,7 @@ const SearchComponent: React.FC<SearchComponentProps> = ({
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-red-500 mt-1 text-sm"
+          className="text-red-500 mt-1 text-sm text-center"
         >
           {error}
         </motion.p>

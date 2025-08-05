@@ -73,7 +73,7 @@ const ModelViewer = () => {
 
   return (
     <div
-      className="w-full h-420px max-w-7xl mx-auto rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-lg"
+      className="w-full h-420px max-w-7xl mx-auto rounded-lg overflow-hidden  dark:border-gray-700"
       style={{ height }}
     >
       {/* 3D Model Canvas */}
@@ -121,14 +121,14 @@ const ModelViewer = () => {
 
         {/* Interactive camera controls */}
         <OrbitControls
-          enablePan={false}
+          enablePan={true}
           enableZoom={true}
           enableRotate={true}
           minDistance={3}
           maxDistance={8}
           minPolarAngle={Math.PI / 4}
           maxPolarAngle={Math.PI / 1.5}
-          autoRotate={false}
+          autoRotate={true}
           autoRotateSpeed={0.5}
         />
 

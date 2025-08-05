@@ -67,13 +67,13 @@ const FindProductsPage = () => {
     hasResults && Object.values(data).some((products) => products.length > 0);
 
   return (
-    <div className="flex flex-col items-center px-1 sm:px-2 lg:px-3 xl:px-4 py-4 h-[calc(100vh-var(--navbar-height,57px))] max-w-full mx-auto border border-blue-500">
+    <div className="flex flex-col items-center px-1 sm:px-2 lg:px-3 xl:px-4 py-4 h-[calc(100vh-var(--navbar-height,57px))] max-w-full mx-auto ">
       <div className="w-full max-w-2xl">
         <SearchComponent redirect={true} onSearch={handleSearch} />
       </div>
 
       {(hasResults || loading) && (
-        <div className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-center mt-6 gap-4 border border-red-700">
+        <div className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-center mt-6 gap-4 ">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center sm:text-left">
             {searchQuery
               ? `Search Results for "${searchQuery}"`
@@ -91,7 +91,7 @@ const FindProductsPage = () => {
       )}
 
       <div
-        className="mt-4 sm:mt-10 overflow-y-auto w-0-full flex-1 border border-green-400"
+        className="mt-4 sm:mt-10 overflow-y-auto w-0-full flex-1 borde"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {loading && (
@@ -136,7 +136,7 @@ const FindProductsPage = () => {
                   {platform}
                 </h2>
                 <motion.div
-                  className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 sm:gap-6 px-2 sm:px-0"
+                  className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 sm:gap-6 px-1 sm:px-4"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5 }}
@@ -145,7 +145,7 @@ const FindProductsPage = () => {
                     products.map((item, index) => (
                       <motion.div
                         key={`${platform}-${index}`}
-                        className="flex flex-col gap-2 sm:gap-3 p-3 sm:p-4 border rounded-lg hover:shadow-lg transition-all duration-200 bg-white dark:bg-gray-800"
+                        className="flex flex-col gap-2 sm:gap-3 p-3 sm:p-4 shadow-2xl rounded-lg hover:shadow-lg transition-all duration-200 var(--sidebar-accent) dark:bg-gray-800"
                         whileTap={{ scale: 0.95 }}
                         whileHover={{ y: -2 }}
                       >

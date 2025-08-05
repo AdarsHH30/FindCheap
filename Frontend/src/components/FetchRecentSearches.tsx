@@ -43,6 +43,7 @@ const FetchRecentSearches: React.FC<FetchRecentSearchesProps> = ({
         }
       );
       const data = await response.json();
+      console.log(data);
 
       if (!response.ok) {
         throw new Error(data.error || "Failed to fetch searches");
@@ -130,6 +131,7 @@ const FetchRecentSearches: React.FC<FetchRecentSearchesProps> = ({
                 <small className="text-gray-500">
                   {new Date(search.searched_at).toLocaleString()}
                 </small>
+                <small className="text-gray-500">ID: {search.id}</small>
               </div>
               <button
                 onClick={() => handleDelete(index)}

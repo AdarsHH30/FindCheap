@@ -68,7 +68,6 @@ def save_search(request):
         user = request.user_data
         user_id = user.get("id")
         search_text = request.data.get("search_text")
-        print(f"User ID: {user_id}, Search Text: {search_text}")
 
         if not search_text:
             return Response(
@@ -99,21 +98,14 @@ def get_recent_searches(request):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        print(f"User ID from request: {user_id}")
-        print(f"Request method: {request.method}")
-        print(f"Request query params: {request.GET}")
-
         response = (
             supabase.table("recent_searches")
-            .select("query", "searched_at")
+            .select("query", "searched_at", "id")
             .eq("user_id", user_id)
             .order("searched_at", desc=True)
             .limit(10)
             .execute()
         )
-
-        print(f"Supabase response data: {response.data}")
-
         return Response(
             {
                 "searches": response.data,
@@ -141,37 +133,51 @@ def varify_access_tocken(request):
 # TODO: Fix this delete function
 @csrf_exempt
 @api_view(["DELETE"])
-@supabase_auth_required
 def delete_search(request):
+    print("Entered delete_search function")
     """
     API endpoint to delete a user's search query.
     """
     try:
-        user = request.user_data
-        user_id = user.get("id")
+        user_id = request.data.get("user_id")
+        print(f"User ID: {user_id}")
+        if not user_id:
+            return Response(
+                {"error": "user_id is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         search_id = request.data.get("search_id")
-
+        print(f"Search ID: {search_id}")
         if not search_id:
             return Response(
                 {"error": "search_id is required"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        response = (
-            supabase.table("recent_searches")
-            .delete()
-            .eq("id", search_id)
-            .eq("user_id", user_id)
-            .execute()
-        )
+        try:
+            response = (
+                supabase.table("recent_searches")
+                .delete()
+                .eq("id", search_id)
+                .eq("user_id", user_id)
+                .execute()
+            )
 
-        if response.error:
+            if not response.data:
+                return Response(
+                    {"error": "No matching search found to delete"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+
+            return JsonResponse({"message": "Search deleted successfully"}, status=200)
+
+        except Exception as supabase_error:
+            print(f"Supabase error: {str(supabase_error)}")
             return Response(
-                {"error": response.error.message},
+                {"error": "Failed to delete search"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-        return JsonResponse({"message": "Search deleted successfully"}, status=200)
     except Exception as e:
         logger.error(f"Error deleting search: {str(e)}")
         return JsonResponse({"error": f"Internal server error: {str(e)}"}, status=500)

@@ -67,13 +67,13 @@ const FindProductsPage = () => {
     hasResults && Object.values(data).some((products) => products.length > 0);
 
   return (
-    <div className="flex flex-col items-center px-2 sm:px-4 lg:px-6 xl:px-8 py-4 h-[calc(100vh-var(--navbar-height,57px))] max-w-7xl mx-auto">
+    <div className="flex flex-col items-center px-1 sm:px-2 lg:px-3 xl:px-4 py-4 h-[calc(100vh-var(--navbar-height,57px))] max-w-full mx-auto border border-blue-500">
       <div className="w-full max-w-2xl">
         <SearchComponent redirect={true} onSearch={handleSearch} />
       </div>
 
       {(hasResults || loading) && (
-        <div className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-center mt-6 gap-4">
+        <div className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-center mt-6 gap-4 border border-red-700">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center sm:text-left">
             {searchQuery
               ? `Search Results for "${searchQuery}"`
@@ -91,7 +91,7 @@ const FindProductsPage = () => {
       )}
 
       <div
-        className="mt-4 sm:mt-6 overflow-y-auto w-full flex-1"
+        className="mt-4 sm:mt-10 overflow-y-auto w-0-full flex-1 border border-green-400"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {loading && (
@@ -136,7 +136,7 @@ const FindProductsPage = () => {
                   {platform}
                 </h2>
                 <motion.div
-                  className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4 px-2 sm:px-0"
+                  className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 sm:gap-6 px-2 sm:px-0"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5 }}
@@ -162,7 +162,7 @@ const FindProductsPage = () => {
                           />
                         </div>
                         <div className="flex-1 flex flex-col">
-                          <h3 className="text-xs sm:text-sm font-semibold line-clamp-2 mb-1 sm:mb-2 min-h-[2.5rem] sm:min-h-[3rem]">
+                          <h3 className="flex flex-col text-xs sm:text-sm font-semibold line-clamp-2 mb-1 sm:mb-2 min-h-[2.5rem] sm:min-h-[3rem]">
                             {item.title}
                           </h3>
                           <p className="text-sm sm:text-lg font-bold text-green-600 mb-1">

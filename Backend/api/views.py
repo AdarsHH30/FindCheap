@@ -103,7 +103,6 @@ def get_recent_searches(request):
             .select("query", "searched_at", "id")
             .eq("user_id", user_id)
             .order("searched_at", desc=True)
-            .limit(10)
             .execute()
         )
         return Response(

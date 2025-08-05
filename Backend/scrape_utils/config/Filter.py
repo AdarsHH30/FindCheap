@@ -1,7 +1,3 @@
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-import pandas as pd
-import json
 import logging
 
 # Set up logging
@@ -12,6 +8,11 @@ logger = logging.getLogger(__name__)
 
 
 def filter_data(data, e_commerce, search_query=None, top_n=5):
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.metrics.pairwise import cosine_similarity
+    import pandas as pd
+    import json
+
     """
     Filter and rank products based on relevance to search query or e-commerce site name.
 

@@ -3,16 +3,10 @@ from crawl4ai import (
     BrowserConfig,
     CrawlerRunConfig,
     CacheMode,
-    ProxyConfig,
-    RoundRobinProxyStrategy,
 )
 from crawl4ai.extraction_strategy import JsonCssExtractionStrategy
-from . import Proxy_rotator
-import asyncio
 import json
-import random
 from dotenv import load_dotenv
-import os
 
 load_dotenv()
 

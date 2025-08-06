@@ -52,7 +52,7 @@ const ModelViewer = () => {
 
       if (width < 640) {
         setHeight("280px");
-        setCameraConfig({ position: [0, 0, 6], fov: 65 });
+        setCameraConfig({ position: [0, 0, 6], fov: 35 });
       } else if (width < 768) {
         setHeight("320px");
         setCameraConfig({ position: [0, 0, 5.5], fov: 60 });
@@ -60,8 +60,8 @@ const ModelViewer = () => {
         setHeight("380px");
         setCameraConfig({ position: [0, 0, 5], fov: 55 });
       } else {
-        setHeight("420px");
-        setCameraConfig({ position: [0, 0, 4.5], fov: 55 });
+        setHeight("500px");
+        setCameraConfig({ position: [0, 0, 4.5], fov: 50 });
       }
     };
 
@@ -73,8 +73,8 @@ const ModelViewer = () => {
 
   return (
     <div
-      className="w-full h-420px max-w-7xl mx-auto rounded-lg overflow-hidden  dark:border-gray-700"
-      style={{ height }}
+      className="w-full max-w-7xl mx-auto rounded-lg overflow-hidden"
+      style={{ height, width: "99vw" }}
     >
       {/* 3D Model Canvas */}
       <Canvas
@@ -88,7 +88,7 @@ const ModelViewer = () => {
           alpha: true,
           powerPreference: "high-performance",
         }}
-        dpr={[1, 2]}
+        dpr={[2, 2]}
       >
         {/* Environment and lighting */}
         <Environment preset="studio" />

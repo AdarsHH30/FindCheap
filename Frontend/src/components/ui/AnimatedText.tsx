@@ -31,7 +31,7 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
 
   const Component = isClickable ? motion.button : motion.p;
   const clickableClasses = isClickable
-    ? "cursor-pointer hover:text-primary transition-colors duration-200 hover:underline"
+    ? "cursor-pointer bg-[var(--primary)] text-white hover:bg-var(--chart-3) transition-colors duration-200 hover:underline rounded-full px-4 py-2"
     : "";
 
   return (

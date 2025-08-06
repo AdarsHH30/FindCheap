@@ -55,8 +55,26 @@ const HeroSection = () => {
         </div>
         <InfiniteScrollingLogosAnimation />
       </div>
-      <div className="flex w-full lg:w-1/4 h-[300px] md:h-[400px] lg:h-full mt-6 lg:mt-0">
+      <div className="flex w-full lg:w-1/3 h-[300px] md:h-[400px] lg:h-full mt-6 lg:mt-0">
         <ModelViewer />
+
+        {/* <div className="absolute top-[60%] left-[50%] lg:left-[40%] -translate-x-1/2 lg:-translate-x-0 -translate-y-1/2 bg-white/95 rounded-xl shadow-xl px-4 py-3 w-52">
+            <h3 className="text-sm font-semibold text-gray-700 mb-2">
+              wireless earbuds
+            </h3>
+            <ul className="text-sm text-gray-600 space-y-1">
+              <li className="flex justify-between">
+                <span>eBay</span>{" "}
+                <span className="text-primary font-semibold">$124</span>
+              </li>
+              <li className="flex justify-between">
+                <span>Amazon</span> <span>$189</span>
+              </li>
+              <li className="flex justify-between">
+                <span>Target</span> <span>$149</span>
+              </li>
+            </ul>
+          </div> */}
       </div>
     </section>
   );

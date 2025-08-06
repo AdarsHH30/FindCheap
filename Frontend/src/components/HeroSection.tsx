@@ -9,13 +9,23 @@ import ModelViewer from "./ModelViewer";
 import AnimatedText from "./ui/AnimatedText";
 import { useRouter } from "next/navigation";
 import PriceComparisonCard from "./PriceComparisonCard";
+import { useRecentSearches } from "@/hooks/useRecentSearches";
+import { useAuthStatus } from "@/hooks/useAuthStatus";
 
 const HeroSection = () => {
   const router = useRouter();
+  const { isLoggedIn, user, loading: authLoading } = useAuthStatus();
 
   const handleSearch = (searchTerm: string) => {
     router.push(`/find-products?query=${encodeURIComponent(searchTerm)}`);
   };
+
+  const { searches, loading, error, handleDelete } = useRecentSearches(
+    user?.id || ""
+  );
+
+  console.log("Auth Status:", { isLoggedIn, userId: user?.id });
+  console.log("Recent Searches:", searches);
 
   return (
     <section className="flex flex-col lg:flex-row p-4 md:p-10 lg:p-20 gap-6 lg:gap-10">
@@ -33,26 +43,79 @@ const HeroSection = () => {
         />
         <SearchComponent redirect={true} />
         <div className="flex flex-wrap justify-center lg:justify-start gap-2 text-base md:text-lg">
-          {[
-            "Wireless earbuds",
-            "smartwatch",
-            "yoga mat",
-            "laptop",
-            "gaming console",
-          ].map((item, index) => (
-            <React.Fragment key={item}>
-              <AnimatedText
-                text={item}
-                delay={0.3 + index * 0.1}
-                isClickable={true}
-                searchTerm={item}
-                onSearch={handleSearch}
-                className="text-foreground/70"
-              />
-              {index < 4}
-            </React.Fragment>
-          ))}
+          {searches && searches.length > 0
+            ? searches.map((search) => search.term)
+            : [
+                "Wireless earbuds",
+                "smartwatch",
+                "yoga mat",
+                "laptop",
+                "gaming console",
+              ].map((item, index) => (
+                <React.Fragment key={item}>
+                  <AnimatedText
+                    text={item}
+                    delay={0.3 + index * 0.1}
+                    isClickable={true}
+                    searchTerm={item}
+                    onSearch={handleSearch}
+                    className="text-foreground/70"
+                  />
+                  {index < 4}
+                </React.Fragment>
+              ))}
         </div>
+
+        {isLoggedIn && user && (
+          <div className="w-full mt-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="bg-card rounded-lg p-3 shadow-sm"
+            >
+              <h3 className="text-sm font-medium mb-2">Your Recent Searches</h3>
+              {loading ? (
+                <p className="text-sm text-muted-foreground">
+                  Loading recent searches...
+                </p>
+              ) : error ? (
+                <p className="text-sm text-muted-foreground">
+                  Error loading searches: {error}
+                </p>
+              ) : searches && searches.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {searches.map((search, index) => (
+                    <div
+                      key={search.id || index}
+                      className="flex items-center bg-secondary/50 rounded-md px-2 py-1"
+                    >
+                      <span
+                        className="text-sm cursor-pointer hover:text-primary"
+                        onClick={() =>
+                          handleSearch(search.query || search.term)
+                        }
+                      >
+                        {search.query || search.term}
+                      </span>
+                      <button
+                        className="ml-2 text-muted-foreground hover:text-destructive"
+                        onClick={() => handleDelete(index)}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  No recent searches found
+                </p>
+              )}
+            </motion.div>
+          </div>
+        )}
+
         <InfiniteScrollingLogosAnimation />
       </div>
       <div className="flex w-full lg:w-1/3 h-[300px] md:h-[400px] lg:h-full mt-6 lg:mt-0">

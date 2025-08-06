@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { getCSRFToken } from "@/utils/csrf";
 
 export interface SearchItem {
+  term: any;
   id: string;
   query: string;
   searched_at: string;
@@ -9,11 +10,16 @@ export interface SearchItem {
 
 export function useRecentSearches(user_id: string) {
   const [searches, setSearches] = useState<SearchItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);  // Start as false
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!user_id) return;
+    if (!user_id) {
+      setLoading(false);
+      setSearches([]);
+      return;
+    }
+    
     fetchSearches();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user_id]);

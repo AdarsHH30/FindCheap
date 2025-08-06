@@ -41,7 +41,7 @@ const SearchComponent: React.FC<SearchComponentProps> = ({
     }
   };
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full rounded-lg">
       <motion.form
         onSubmit={handleSubmit}
         initial={{ opacity: 0, x: -40 }}

@@ -49,7 +49,7 @@ const HeroSection = () => {
                 onSearch={handleSearch}
                 className="text-foreground/70"
               />
-              {index < 4 && <span className="text-foreground/50">-</span>}
+              {index < 4}
             </React.Fragment>
           ))}
         </div>

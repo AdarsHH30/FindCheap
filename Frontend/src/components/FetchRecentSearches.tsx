@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { getCSRFToken } from "@/utils/csrf";
+import { useRecentSearches } from "@/hooks/useRecentSearches";
 
 interface SearchItem {
   id: string;
@@ -14,84 +15,7 @@ interface FetchRecentSearchesProps {
 const FetchRecentSearches: React.FC<FetchRecentSearchesProps> = ({
   user_id,
 }) => {
-  const [searches, setSearches] = useState<SearchItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!user_id) return;
-    fetchSearches();
-  }, [user_id]);
-
-  const fetchSearches = async () => {
-    setLoading(true);
-    try {
-      const baseUrl =
-        process.env.NODE_ENV === "production"
-          ? process.env.NEXT_PUBLIC_API_URL
-          : "http://127.0.0.1:8000";
-
-      const response = await fetch(
-        `${baseUrl}/api/search/recent/?user_id=${user_id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": getCSRFToken() || "",
-          },
-          credentials: "include",
-        }
-      );
-      const data = await response.json();
-      console.log(data);
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to fetch searches");
-      }
-
-      setSearches(data.searches);
-      setError(null);
-    } catch (err: any) {
-      setError(err.message || "Unknown error");
-      setSearches([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDelete = async (searchIndex: number) => {
-    try {
-      const searchToDelete = searches[searchIndex];
-      const baseUrl =
-        process.env.NODE_ENV === "production"
-          ? process.env.NEXT_PUBLIC_API_URL
-          : "http://127.0.0.1:8000";
-
-      const response = await fetch(`${baseUrl}/api/search/recent/delete/`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": getCSRFToken() || "",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          user_id,
-          search_id: searchToDelete.id || searchToDelete.query,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to delete search");
-      }
-
-      setSearches((prevSearches) =>
-        prevSearches.filter((_, i) => i !== searchIndex)
-      );
-    } catch (err: any) {
-      setError(err.message || "Failed to delete search");
-    }
-  };
+  const { searches, loading, error, handleDelete } = useRecentSearches(user_id);
 
   if (loading)
     return (

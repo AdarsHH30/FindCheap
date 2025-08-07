@@ -15,66 +15,86 @@ const baseUrl =
     ? process.env.NEXT_PUBLIC_API_URL
     : "http://127.0.0.1:8000";
 
-export function LoginForm({
+export function RegisterForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const supabase = createClient();
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const supabase = createClient();
+  const router = useRouter();
 
-  const handleEmailLogin = async (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
 
-    if (!email || !password) {
-      setError("Please enter both email and password");
+    if (password !== confirmPassword) {
+      setPasswordError("Passwords do not match");
       return;
     }
 
+    if (password.length < 8) {
+      setPasswordError("Password must be at least 8 characters long");
+      return;
+    }
+
+    setPasswordError("");
+
     try {
       setIsLoading(true);
-      const { data, error } = await supabase.auth.signInWithPassword({
+
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+        },
       });
 
       if (error) {
         throw error;
       }
-    } catch (error: any) {
-      console.error("Login error:", error);
 
-      if (error.message === "Email not confirmed") {
-        setError(
-          "Your email address has not been verified. Please check your inbox for a verification email or request a new one."
-        );
-
+      if (data.user) {
         try {
-          await supabase.auth.resend({
-            type: "signup",
-            email,
+          const response = await fetch(`${baseUrl}/api/auth/register/`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCookie("csrftoken") || "",
+            },
+            body: JSON.stringify({
+              email: data.user.email,
+              user_id: data.user.id,
+            }),
           });
-          setError(
-            "Your email address has not been verified. We've sent a new verification email to your address."
-          );
-        } catch (resendError) {
-          console.error("Failed to resend verification email:", resendError);
+
+          if (!response.ok) {
+            console.error(
+              "Backend registration failed:",
+              await response.text()
+            );
+          }
+        } catch (error) {
+          console.error("Error registering with backend:", error);
         }
-      } else {
-        setError(
-          error.message || "Failed to login. Please check your credentials."
+
+        alert(
+          "Registration successful! Please check your email to verify your account before logging in."
         );
+        router.push("/auth/login");
       }
+    } catch (error) {
+      console.error("Registration error:", error);
+      alert("Registration failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
-  const handleGoogleLogin = async () => {
+
+  const handleGoogleSignUp = async () => {
     try {
       setIsLoading(true);
       await supabase.auth.signInWithOAuth({
@@ -84,79 +104,40 @@ export function LoginForm({
         },
       });
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Google signup error:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        setUser(session.user);
-
-        if (session.access_token) {
-          try {
-            const response = await fetch(`${baseUrl}/api/auth/verify/`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": getCookie("csrftoken") || "",
-                Authorization: `Bearer ${session.access_token}`,
-              },
-            });
-
-            if (!response.ok) {
-              console.error(
-                "Backend verification failed:",
-                await response.text()
-              );
-            }
-          } catch (error) {
-            console.error("Error verifying with backend:", error);
-          }
-        }
-
-        router.push("/");
-      } else if (event === "SIGNED_OUT") {
-        setUser(null);
-      }
-    });
-
-    const initializeAuth = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session?.user) {
-        setUser(data.session.user);
-        router.push("/");
-      }
-    };
-
-    initializeAuth();
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [supabase, router]);
+  const handleGithubSignUp = async () => {
+    try {
+      setIsLoading(true);
+      await supabase.auth.signInWithOAuth({
+        provider: "github",
+        options: {
+          redirectTo: `${window.location.origin}/`,
+        },
+      });
+    } catch (error) {
+      console.error("GitHub signup error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <form
       className={cn("flex flex-col gap-6", className)}
       {...props}
-      onSubmit={handleEmailLogin}
+      onSubmit={handleSignUp}
     >
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Login to your account</h1>
+        <h1 className="text-2xl font-bold">Create an account</h1>
         <p className="text-muted-foreground text-sm text-balance">
-          Enter your email below to login to your account
+          Enter your details below to create your account
         </p>
       </div>
-      {error && (
-        <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-          <span className="block sm:inline">{error}</span>
-        </div>
-      )}
       <div className="grid gap-6">
         <div className="grid gap-3">
           <Label htmlFor="email">Email</Label>
@@ -169,28 +150,33 @@ export function LoginForm({
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-
         <div className="grid gap-3">
-          <div className="flex items-center">
-            <Label htmlFor="password">Password</Label>
-            <a
-              href="#"
-              className="ml-auto text-sm underline-offset-4 hover:underline"
-            >
-              Forgot your password?
-            </a>
-          </div>
+          <Label htmlFor="password">Password</Label>
           <Input
             id="password"
             type="password"
-            placeholder="Enter your password"
+            placeholder="Create a password"
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
+        <div className="grid gap-3">
+          <Label htmlFor="confirmPassword">Confirm Password</Label>
+          <Input
+            id="confirmPassword"
+            type="password"
+            placeholder="Confirm your password"
+            required
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+          {passwordError && (
+            <p className="text-sm text-red-500">{passwordError}</p>
+          )}
+        </div>
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? "Logging in..." : "Login"}
+          {isLoading ? "Creating account..." : "Create account"}
         </Button>
         <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
           <span className="bg-background text-muted-foreground relative z-10 px-2">
@@ -201,7 +187,7 @@ export function LoginForm({
           type="button"
           variant="outline"
           className="w-full"
-          onClick={handleGoogleLogin}
+          onClick={handleGoogleSignUp}
           disabled={isLoading}
         >
           <svg
@@ -214,27 +200,13 @@ export function LoginForm({
               fill="currentColor"
             />
           </svg>
-          {isLoading ? "Loading..." : "Login with Google"}
+          {isLoading ? "Loading..." : "Sign up with Google"}
         </Button>
         <Button
           type="button"
           variant="outline"
           className="w-full"
-          onClick={async () => {
-            try {
-              setIsLoading(true);
-              await supabase.auth.signInWithOAuth({
-                provider: "github",
-                options: {
-                  redirectTo: `${window.location.origin}/`,
-                },
-              });
-            } catch (error) {
-              console.error("GitHub login error:", error);
-            } finally {
-              setIsLoading(false);
-            }
-          }}
+          onClick={handleGithubSignUp}
           disabled={isLoading}
         >
           <svg
@@ -247,13 +219,13 @@ export function LoginForm({
               fill="currentColor"
             />
           </svg>
-          {isLoading ? "Loading..." : "Login with GitHub"}
+          {isLoading ? "Loading..." : "Sign up with GitHub"}
         </Button>
       </div>
       <div className="text-center text-sm">
-        Don&apos;t have an account?{" "}
-        <a href="/auth/signup" className="underline underline-offset-4">
-          Sign up
+        Already have an account?{" "}
+        <a href="/auth/login" className="underline underline-offset-4">
+          Log in
         </a>
       </div>
     </form>

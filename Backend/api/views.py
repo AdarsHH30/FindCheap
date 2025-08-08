@@ -204,6 +204,8 @@ def display_scraped_data(request):
         data = async_to_sync(clean_data.scrape_multiple_sites)(
             user_input=search_query,
         )
+        # with open("scraped_data.json", "w") as f:
+        #     json.dump(data, f, indent=4)
 
         return JsonResponse(data, status=status.HTTP_200_OK)
     except Exception as e:

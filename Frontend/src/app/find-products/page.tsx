@@ -72,6 +72,17 @@ const FindProductsPage = () => {
         <SearchComponent redirect={true} onSearch={handleSearch} />
       </div>
 
+      {!searchQuery && !loading && !hasResults && (
+        <div className="flex flex-col items-center justify-center h-[calc(100vh-200px)] text-center">
+          <div className="text-7xl mb-8">🔍</div>
+          <h2 className="text-3xl font-bold mb-4">Search for products</h2>
+          <p className="text-gray-600 mb-8 max-w-md text-lg">
+            Enter a product name above to Find the best deals across various
+            platforms.
+          </p>
+        </div>
+      )}
+
       {(hasResults || loading) && (
         <div className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-center mt-6 gap-4 ">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center sm:text-left">
@@ -117,6 +128,7 @@ const FindProductsPage = () => {
         )}
 
         {/* Search results */}
+
         {!loading &&
           hasResults &&
           Object.entries(data).map(

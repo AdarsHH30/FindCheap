@@ -1,17 +1,21 @@
 "use client";
-// TODO : fix this component so that last 4 searches are shown in the hero
 
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
+import { useRecentSearches } from "@/hooks/useRecentSearches";
+import { useAuthStatus } from "@/hooks/useAuthStatus";
 
 interface AnimatedTextProps {
-  text: string;
+  text?: string;
   delay?: number;
   duration?: number;
   className?: string;
   onSearch?: (searchTerm: string) => void;
   searchTerm?: string;
   isClickable?: boolean;
+  fetchRecentSearches?: boolean;
+  defaultSearches?: string[];
+  index?: number;
 }
 
 const AnimatedText: React.FC<AnimatedTextProps> = ({
@@ -22,10 +26,27 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
   onSearch,
   searchTerm,
   isClickable = false,
+  fetchRecentSearches = false,
+  defaultSearches = [
+    "Wireless earbuds",
+    "smartwatch",
+    "yoga mat",
+    "laptop",
+    "gaming console",
+  ],
+  index = 0,
 }) => {
+  const { isLoggedIn, user } = useAuthStatus();
+  const { searches, loading, error } = useRecentSearches(
+    fetchRecentSearches && isLoggedIn ? user?.id || "" : ""
+  );
+
   const handleClick = () => {
-    if (isClickable && onSearch && searchTerm) {
-      onSearch(searchTerm);
+    if (isClickable && onSearch) {
+      const termToSearch = searchTerm || displayText;
+      if (termToSearch) {
+        onSearch(termToSearch);
+      }
     }
   };
 
@@ -33,6 +54,21 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
   const clickableClasses = isClickable
     ? "cursor-pointer bg-[var(--primary)] text-white hover:bg-var(--chart-3) transition-colors duration-200 hover:underline rounded-full px-4 py-2"
     : "";
+
+  let displayText = text;
+
+  if (
+    fetchRecentSearches &&
+    searches &&
+    searches.length > 0 &&
+    index < searches.length
+  ) {
+    displayText = searches[index]?.term;
+  } else if (!displayText && defaultSearches?.length > 0) {
+    displayText = defaultSearches[index % defaultSearches.length];
+  }
+
+  if (!displayText) return null;
 
   return (
     <Component
@@ -43,7 +79,7 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
       onClick={isClickable ? handleClick : undefined}
       type={isClickable ? "button" : undefined}
     >
-      {text}
+      {displayText}
     </Component>
   );
 };

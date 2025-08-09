@@ -9,6 +9,7 @@ import {
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useEffect, useState, useRef } from "react";
 import * as THREE from "three";
+import PriceComparisonCard from "@/components/PriceComparisonCard";
 
 function Model() {
   const gltf = useGLTF("models/earbuds.glb");
@@ -134,6 +135,7 @@ const ModelViewer = () => {
 
         <Model />
       </Canvas>
+      {/* Price comparison overlay */}
     </div>
   );
 };

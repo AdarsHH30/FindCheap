@@ -9,6 +9,7 @@ import ModelViewer from "./ModelViewer";
 import AnimatedText from "./ui/AnimatedText";
 import { useRouter } from "next/navigation";
 import { useAuthStatus } from "@/hooks/useAuthStatus";
+import PriceComparisonCard from "@/components/PriceComparisonCard";
 
 const HeroSection = () => {
   const router = useRouter();
@@ -33,7 +34,7 @@ const HeroSection = () => {
           animate={{ opacity: 1 }}
           className="text-3xl md:text-4xl lg:text-6xl font-bold text-center lg:text-left"
         >
-          Find the Cheapest Prices Across All Stores
+          Get the Best Deals ..
         </motion.h1>
         <ReactTyped
           strings={["Compare prices from 100+ retailers in seconds"]}
@@ -73,6 +74,17 @@ const HeroSection = () => {
       </div>
       <div className="flex w-full lg:w-1/3 h-[300px] md:h-[400px] lg:h-full mt-6 lg:mt-0">
         <ModelViewer />
+        <div className="flex top-5 left-4 right-0 justify-start items-start">
+          {/* <PriceComparisonCard
+            productName="Wireless Earbuds"
+            prices={[
+              { platform: "Amazon", price: "$99.99", isLowest: true },
+              { platform: "Best Buy", price: "$109.99" },
+              { platform: "Walmart", price: "$95.00" },
+              { platform: "Target", price: "$102.50" },
+            ]}
+          /> */}
+        </div>
       </div>
     </section>
   );

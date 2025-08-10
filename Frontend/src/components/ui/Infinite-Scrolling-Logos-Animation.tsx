@@ -12,6 +12,7 @@ const CompanyLogoData: Array<{ src: string; alt: string }> = [
   { src: "/logos/snapdeal.png", alt: "Snap deal Logo" },
   { src: "/logos/walmart.png", alt: "Walmart Logo" },
   { src: "/logos/meesho.png", alt: "Meesho Logo" },
+  { src: "/logos/myntra.png", alt: "Myntra Logo" },
 ];
 {
   /*TODO: Add more logos */

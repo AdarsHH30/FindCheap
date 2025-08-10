@@ -31,6 +31,8 @@ class ScraperConfig:
             schema = schema_setup.choose_schema("jiomart", max_products)
         elif "meesho" in link:
             schema = schema_setup.choose_schema("meesho", max_products)
+        elif "myntra" in link:
+            schema = schema_setup.choose_schema("myntra", max_products)
         else:
             raise ValueError(f"Unsupported website: {URL}")
 
@@ -89,6 +91,8 @@ class ScraperConfig:
                 e_commerce = "jiomart"
             elif "meesho" in url.lower():
                 e_commerce = "meesho"
+            elif "myntra" in url.lower():
+                e_commerce = "myntra"
 
             if result.success:
                 print(f"Extraction successful for {url}")

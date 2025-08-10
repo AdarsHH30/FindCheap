@@ -200,8 +200,13 @@ def choose_schema(query: str, max_products: int):
             "baseSelector": ".product-base",
             "fields": [
                 {
+                    "name": "brand",
+                    "selector": ".product-brand",
+                    "type": "text",
+                },
+                {
                     "name": "title",
-                    "selector": ".product-productMetaInfo h1",
+                    "selector": ".product-product",
                     "type": "text",
                 },
                 {
@@ -211,7 +216,7 @@ def choose_schema(query: str, max_products: int):
                 },
                 {
                     "name": "original_price",
-                    "selector": ".product-strikePrice",
+                    "selector": ".product-strike",
                     "type": "text",
                 },
                 {
@@ -221,24 +226,19 @@ def choose_schema(query: str, max_products: int):
                 },
                 {
                     "name": "link",
-                    "selector": ".product-productMetaInfo a",
+                    "selector": "a",
                     "type": "attribute",
                     "attribute": "href",
                 },
                 {
                     "name": "image",
-                    "selector": ".product-imageContainer img",
+                    "selector": ".img-responsive",
                     "type": "attribute",
                     "attribute": "src",
                 },
                 {
-                    "name": "rating",
-                    "selector": ".product-rating span",
-                    "type": "text",
-                },
-                {
-                    "name": "reviews",
-                    "selector": ".product-reviewsCount span",
+                    "name": "sizes",
+                    "selector": ".product-sizes",
                     "type": "text",
                 },
             ],

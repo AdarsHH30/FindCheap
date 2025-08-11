@@ -3,7 +3,7 @@
 import SearchComponent from "@/components/search-component";
 import React from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { ProductNotFound } from "@/components/product-notfound";
 import useSendRecentSearch from "@/hooks/useSendRecentSearch";
@@ -68,14 +68,14 @@ const FindProductsPage = () => {
     hasResults && Object.values(data).some((products) => products.length > 0);
 
   return (
-    <>
-      <div className="flex flex-col items-center px-1 sm:px-2 lg:px-3 xl:px-4 py-4 h-[calc(100vh-var(--navbar-height,57px))] max-w-full mx-auto ">
+    <div className="min-h-screen flex flex-col">
+      <div className="flex-1 flex flex-col items-center px-1 sm:px-2 lg:px-3 xl:px-4 py-4 max-w-full mx-auto">
         <div className="w-full max-w-2xl">
           <SearchComponent redirect={true} onSearch={handleSearch} />
         </div>
 
         {!searchQuery && !loading && !hasResults && (
-          <div className="flex flex-col items-center justify-center h-[calc(100vh-200px)] text-center">
+          <div className="flex flex-col items-center justify-center flex-1 text-center min-h-[400px]">
             <div className="text-7xl mb-8">🔍</div>
             <h2 className="text-3xl font-bold mb-4">Search for products</h2>
             <p className="text-gray-600 mb-8 max-w-md text-lg">
@@ -104,20 +104,43 @@ const FindProductsPage = () => {
         )}
 
         <div
-          className="mt-4 sm:mt-10 overflow-y-auto w-0-full flex-1 borde"
+          className="mt-4 sm:mt-10 overflow-y-auto w-full flex-1"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {loading && (
-            <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-primary"></div>
-              <span className="text-gray-500 ml-4 text-sm sm:text-base">
+            <motion.div
+              className="flex justify-center items-center h-64"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-primary"
+                animate={{ rotate: 360 }}
+                transition={{
+                  duration: 1,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              ></motion.div>
+              <motion.span
+                className="text-gray-500 ml-4 text-sm sm:text-base"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2, duration: 0.4 }}
+              >
                 Loading products...
-              </span>
-            </div>
+              </motion.span>
+            </motion.div>
           )}
 
           {!loading && hasResults && !hasAnyProducts && (
-            <div className="flex justify-center items-center h-64">
+            <motion.div
+              className="flex justify-center items-center h-64"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+            >
               <div className="text-center px-4">
                 <h3 className="text-lg sm:text-xl font-semibold text-gray-600 mb-2">
                   No products found
@@ -126,7 +149,7 @@ const FindProductsPage = () => {
                   Try searching with different keywords
                 </p>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* Search results */}
@@ -134,9 +157,28 @@ const FindProductsPage = () => {
           {!loading &&
             hasResults &&
             Object.entries(data).map(
-              ([platform, products]: [string, Product[]]) => (
-                <div key={platform} className="mb-6 sm:mb-8">
-                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 sm:mb-4 capitalize flex items-center gap-2 px-2 sm:px-0">
+              ([platform, products]: [string, Product[]], platformIndex) => (
+                <motion.div
+                  key={platform}
+                  className="mb-6 sm:mb-8"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: platformIndex * 0.15,
+                    ease: "easeOut",
+                  }}
+                >
+                  <motion.h2
+                    className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 sm:mb-4 capitalize flex items-center gap-2 px-2 sm:px-0"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      duration: 0.4,
+                      delay: platformIndex * 0.15 + 0.1,
+                      ease: "easeOut",
+                    }}
+                  >
                     <Image
                       src={`/logos/${platform}.png`}
                       alt={platform || "Platform Logo"}
@@ -148,34 +190,58 @@ const FindProductsPage = () => {
                       }}
                     />
                     {platform}
-                  </h2>
+                  </motion.h2>
                   <motion.div
                     className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 sm:gap-6 px-1 sm:px-4"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.6,
+                      ease: "easeOut",
+                      staggerChildren: 0.1,
+                      delayChildren: 0.1,
+                    }}
                   >
                     {products.length > 0 ? (
                       products.map((item, index) => (
                         <motion.div
                           key={`${platform}-${index}`}
                           className="flex flex-col gap-2 sm:gap-3 p-3 sm:p-4 shadow-2xl rounded-lg hover:shadow-lg transition-all duration-200 var(--sidebar-accent) dark:bg-gray-800"
-                          whileTap={{ scale: 0.95 }}
-                          whileHover={{ y: -2 }}
+                          initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          transition={{
+                            duration: 0.4,
+                            ease: [0.25, 0.46, 0.45, 0.94],
+                            delay: index * 0.05,
+                          }}
+                          whileTap={{
+                            scale: 0.95,
+                            transition: { duration: 0.1, ease: "easeOut" },
+                          }}
+                          whileHover={{
+                            y: -4,
+                            scale: 1.02,
+                            transition: { duration: 0.2, ease: "easeOut" },
+                          }}
                         >
-                          <div className="relative aspect-square w-full">
+                          <motion.div
+                            className="relative aspect-square w-full overflow-hidden rounded"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: index * 0.05 + 0.2 }}
+                          >
                             <Image
                               fill
                               src={item.image || "/placeholder-product.png"}
                               alt={item.title || "Product Image"}
-                              className="object-contain rounded"
+                              className="object-contain rounded transition-opacity duration-300"
                               sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
                               onError={(e) => {
                                 e.currentTarget.src =
                                   "/placeholder-product.png";
                               }}
                             />
-                          </div>
+                          </motion.div>
                           <div className="flex-1 flex flex-col">
                             <h3 className="flex flex-col text-xs sm:text-sm font-semibold line-clamp-2 mb-1 sm:mb-2 min-h-[2.5rem] sm:min-h-[3rem]">
                               {item.title}
@@ -221,15 +287,14 @@ const FindProductsPage = () => {
                       </div>
                     )}
                   </motion.div>
-                </div>
+                </motion.div>
               )
             )}
         </div>
       </div>
-      <div className="py-8">
-        <Footer01Page />
-      </div>
-    </>
+
+      <Footer01Page />
+    </div>
   );
 };
 

@@ -127,7 +127,7 @@ def choose_schema(query: str, max_products: int):
                 },
                 {
                     "name": "image",
-                    "selector": ".plp-card-image img",
+                    "selector": ".plp-card-image img, .plp-card-image .lazyload",
                     "type": "attribute",
                     "attribute": "src",
                 },

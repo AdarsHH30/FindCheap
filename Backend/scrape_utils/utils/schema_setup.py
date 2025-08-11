@@ -107,7 +107,7 @@ def choose_schema(query: str, max_products: int):
             "fields": [
                 {
                     "name": "title",
-                    "selector": ".plp-card-details-name,.plp-card-details-name line-clamp jm-body-xs jm-fc-primary-grey-80",
+                    "selector": ".plp-card-details-name",
                     "type": "text",
                 },
                 {
@@ -130,6 +130,12 @@ def choose_schema(query: str, max_products: int):
                     "selector": ".plp-card-image img",
                     "type": "attribute",
                     "attribute": "src",
+                },
+                {
+                    "name": "image_lazy",
+                    "selector": ".plp-card-image img",
+                    "type": "attribute",
+                    "attribute": "data-src",
                 },
                 {
                     "name": "bank_offer",
@@ -232,7 +238,7 @@ def choose_schema(query: str, max_products: int):
                 },
                 {
                     "name": "image",
-                    "selector": ".img-responsive",
+                    "selector": ".product-base img",
                     "type": "attribute",
                     "attribute": "src",
                 },

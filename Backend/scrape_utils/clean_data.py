@@ -66,57 +66,59 @@ async def scrape_multiple_sites(user_input):
     flipkart_url = f"https://www.flipkart.com/search?q={user_input}"
     snapdeal_url = f"https://www.snapdeal.com/search?keyword={user_input}"
     jiomart_url = f"https://www.jiomart.com/search/{user_input}"
-    meessho_url = f"https://www.meesho.com/search?q={user_input}"
+    meesho_url = f"https://www.meesho.com/search?q={user_input}"
     myntra_url = f"https://www.myntra.com/{user_input}?rawQuery={user_input}"
 
     s = Scrape.ScraperConfig(user_input, 5)
 
-    # Get coroutine objects (DO NOT await here)
     flipkart_task = s.scraper(flipkart_url)
     amazon_task = s.scraper(amazon_url)
     snapdeal_task = s.scraper(snapdeal_url)
     jiomart_task = s.scraper(jiomart_url)
-    meessho_task = s.scraper(meessho_url)
+    meesho_task = s.scraper(meesho_url)
     myntra_task = s.scraper(myntra_url)
 
-    # Run them concurrently
     (
         flipkart_data,
         amazon_data,
         snapdeal_data,
         jiomart_data,
-        meessho_data,
+        meesho_data,
         myntra_data,
     ) = await asyncio.gather(
         flipkart_task,
         amazon_task,
         snapdeal_task,
         jiomart_task,
-        meessho_task,
+        meesho_task,
         myntra_task,
         return_exceptions=True,
     )
-    flipkart = Filter.filter_data(flipkart_data, "flipkart")
-    amazon = Filter.filter_data(amazon_data, "amazon")
-    snapdeal = Filter.filter_data(snapdeal_data, "snapdeal")
-    jiomart = Filter.filter_data(jiomart_data, "jiomart")
-    meessho = Filter.filter_data(meessho_data, "meesho")
-    myntra = Filter.filter_data(myntra_data, "myntra")
+    print("Jiomart data:", jiomart_data)
+    flipkart = Filter.filter_data(flipkart_data, "flipkart", user_input)
+    amazon = Filter.filter_data(amazon_data, "amazon", user_input)
+    snapdeal = Filter.filter_data(snapdeal_data, "snapdeal", user_input)
+    jiomart = Filter.filter_data(jiomart_data, "jiomart", user_input)
+    meesho = Filter.filter_data(meesho_data, "meesho", user_input)
+    myntra = Filter.filter_data(myntra_data, "myntra", user_input)
 
     # Convert to JSON
     flipkart_json = convert_to_json(flipkart)
     amazon_json = convert_to_json(amazon)
     snapdeal_json = convert_to_json(snapdeal)
     jiomart_json = convert_to_json(jiomart)
-    meessho_json = convert_to_json(meessho)
+    meesho_json = convert_to_json(meesho)
     myntra_json = convert_to_json(myntra)
+    print("Jiomart JSON:", jiomart_json)
+
+    print("meeshoo JSON:", meesho_json)
 
     return {
         "flipkart": flipkart_json,
         "amazon": amazon_json,
         "snapdeal": snapdeal_json,
         "jiomart": jiomart_json,
-        "meesho": meessho_json,
+        "meesho": meesho_json,
         "myntra": myntra_json,
     }
 

@@ -14,8 +14,9 @@ const nextConfig: NextConfig = {
       "cdn.shopify.com",
       "www.jiomart.com",
       "www.meesho.com",
-      "images.meesho.com"
-    ],
+      "images.meesho.com",
+      "assets.myntassets.com"
+        ],
         remotePatterns: [new URL('https://assets.example.com/account123/**')],
 
   },

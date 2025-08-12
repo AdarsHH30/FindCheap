@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { CurrentUserAvatar } from "@/components/current-user-avatar";
 import { Button } from "@/components/ui/button";
 import FetchRecentSearches from "@/components/FetchRecentSearches";
+import Footer01Page from "@/components/Footer/footer";
+
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -83,6 +85,7 @@ export default function ProfilePage() {
           Sign Out
         </Button>
       </div>
+      <Footer01Page />
     </div>
   );
 }

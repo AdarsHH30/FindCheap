@@ -97,6 +97,7 @@ const LoginComponent: React.FC<LoginComponentProps> = ({ user, setUser }) => {
       console.error("Logout error:", error);
     } finally {
       setIsLoading(false);
+      window.location.reload();
     }
   };
 

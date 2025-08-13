@@ -119,14 +119,14 @@ const LoginComponent: React.FC<LoginComponentProps> = ({ user, setUser }) => {
           </div>
           <Button
             variant="outline"
-            className="w-full mt-2"
+            className="w-full gap-0"
             onClick={() => (window.location.href = "/profile")}
           >
             Profile
           </Button>
           <Button
             variant="destructive"
-            className="w-full mt-2"
+            className="w-full gap-0"
             onClick={handleLogout}
             disabled={isLoading}
           >

@@ -10,6 +10,10 @@ import useSendRecentSearch from "@/hooks/useSendRecentSearch";
 import { getCookie } from "@/utils/csrf";
 import { Product, SearchResults } from "@/types/product";
 import Footer01Page from "@/components/Footer/footer";
+import ProductPlaceholder from "@/components/FindProductPlaceholder";
+import CircularProgress, {
+  CircularProgressProps,
+} from "@mui/material/CircularProgress";
 
 const FindProductsPage = () => {
   const [data, setData] = useState<SearchResults | null>(null);
@@ -74,20 +78,11 @@ const FindProductsPage = () => {
           <SearchComponent redirect={true} onSearch={handleSearch} />
         </div>
 
-        {!searchQuery && !loading && !hasResults && (
-          <div className="flex flex-col items-center justify-center flex-1 text-center min-h-[400px]">
-            <div className="text-7xl mb-8">🔍</div>
-            <h2 className="text-3xl font-bold mb-4">Search for products</h2>
-            <p className="text-gray-600 mb-8 max-w-md text-lg">
-              Enter a product name above to Find the best deals across various
-              platforms.
-            </p>
-          </div>
-        )}
+        {!searchQuery && !loading && !data && <ProductPlaceholder />}
 
         {(hasResults || loading) && (
-          <div className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-center mt-6 gap-4 ">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center sm:text-left">
+          <div className="w-full flex flex-col sm:flex-row sm:justify-between sm: mt-6 gap-4 ">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold sm:text-left">
               {searchQuery
                 ? `Search Results for "${searchQuery}"`
                 : "Search Results"}
@@ -108,30 +103,13 @@ const FindProductsPage = () => {
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {loading && (
-            <motion.div
-              className="flex justify-center items-center h-64"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <motion.div
-                className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-primary"
-                animate={{ rotate: 360 }}
-                transition={{
-                  duration: 1,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-              ></motion.div>
-              <motion.span
-                className="text-gray-500 ml-4 text-sm sm:text-base"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2, duration: 0.4 }}
-              >
-                Loading products...
-              </motion.span>
-            </motion.div>
+            <div className="flex justify-center items-center relative-center">
+              <CircularProgress
+                size={40}
+                thickness={4.5}
+                className="text-accent"
+              />
+            </div>
           )}
 
           {!loading && hasResults && !hasAnyProducts && (
@@ -192,7 +170,7 @@ const FindProductsPage = () => {
                     {platform}
                   </motion.h2>
                   <motion.div
-                    className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 sm:gap-6 px-1 sm:px-4"
+                    className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 sm:gap-6 px-1 sm:px-4"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{
@@ -206,7 +184,7 @@ const FindProductsPage = () => {
                       products.map((item, index) => (
                         <motion.div
                           key={`${platform}-${index}`}
-                          className="flex flex-col gap-2 sm:gap-3 p-3 sm:p-4 shadow-2xl rounded-lg hover:shadow-lg transition-all duration-200 var(--sidebar-accent) dark:bg-gray-800"
+                          className="flex flex-col gap-2 sm:gap-3 p-3 sm:p-4 shadow-2xl rounded-lg hover:shadow-lg transition-all duration-200 var(--sidebar-cent) dark:bg-gray-800"
                           initial={{ opacity: 0, y: 30, scale: 0.9 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           transition={{
@@ -297,5 +275,4 @@ const FindProductsPage = () => {
     </div>
   );
 };
-
 export default FindProductsPage;

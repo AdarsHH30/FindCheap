@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useRecentSearches } from "@/hooks/useRecentSearches";
 import { useAuthStatus } from "@/hooks/useAuthStatus";
-
+// TODO : make sure it takes the data from recent searches
 interface AnimatedTextProps {
   text?: string;
   delay?: number;

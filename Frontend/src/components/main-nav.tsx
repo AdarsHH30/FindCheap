@@ -10,7 +10,11 @@ export function MainNav() {
 
   return (
     <div className="mr-4 hidden md:flex w-full justify-between">
-      <Link href="/" className="mr-4 flex items-center gap-2 lg:mr-6">
+      <Link
+        href="/"
+        className="mr-4 flex items-center gap-2 lg:mr-6"
+        prefetch={true}
+      >
         {/* TODO:  Add logo here. Better configure logo in the icons component */}
         <Icons.logo />
         <span className="hidden text-2xl font-semibold lg:inline-block">
@@ -24,6 +28,7 @@ export function MainNav() {
             "transition-colors hover:text-foreground/80",
             pathname === "/" ? "text-foreground" : "text-foreground/80"
           )}
+          prefetch={true}
         >
           Home
         </Link>
@@ -36,6 +41,7 @@ export function MainNav() {
               ? "text-foreground"
               : "text-foreground/80"
           )}
+          prefetch={true}
         >
           Find Products
         </Link>
@@ -47,6 +53,7 @@ export function MainNav() {
               ? "text-foreground"
               : "text-foreground/80"
           )}
+          prefetch={true}
         >
           How it Works
         </Link>
@@ -58,6 +65,7 @@ export function MainNav() {
               ? "text-foreground"
               : "text-foreground/80"
           )}
+          prefetch={true}
         >
           About
         </Link>

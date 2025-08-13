@@ -2,65 +2,60 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
 
-const CompanyLogoData: Array<{ src: string; alt: string }> = [
+const CompanyLogoData = [
   { src: "/logos/amazon.png", alt: "Amazon Logo" },
   { src: "/logos/flipkart.png", alt: "Flipkart Logo" },
   { src: "/logos/shopify.png", alt: "Shopify Logo" },
-  { src: "/logos/jiomart.png", alt: "Jio mart  Logo" },
+  { src: "/logos/jiomart.png", alt: "Jio mart Logo" },
   { src: "/logos/snapdeal.png", alt: "Snap deal Logo" },
   { src: "/logos/walmart.png", alt: "Walmart Logo" },
   { src: "/logos/meesho.png", alt: "Meesho Logo" },
   { src: "/logos/myntra.png", alt: "Myntra Logo" },
 ];
-{
-  /*TODO: Add more logos */
-}
 
 const InfiniteScrollingLogosAnimation = () => {
-  // TODO:Fix the animation break
+  const duplicatedLogos = [...CompanyLogoData, ...CompanyLogoData];
+
   return (
     <div className="container p-5 overflow-hidden">
       <motion.div
-        initial={{ opacity: 0, x: -300 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5 }}
-        className="flex relative overflow-hidden before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-10  before:to-transparent before:content-[''] after:absolute after:right-0 after:top-0 after:h-full after:w-10 after:to-transparent after:content-['']"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="relative overflow-hidden"
       >
+        <div className="absolute left-0 top-0 z-10 h-full w-24 bg-gradient-to-r from-background via-background/80 to-transparent pointer-events-none" />
+        <div className="absolute right-0 top-0 z-10 h-full w-24 bg-gradient-to-l from-background via-background/80 to-transparent pointer-events-none" />
+
         <motion.div
+          animate={{ x: "-50%" }}
           transition={{
-            duration: 8,
+            duration: 25,
             ease: "linear",
             repeat: Infinity,
           }}
-          initial={{ translateX: -1 }}
-          animate={{ translateX: "-50%" }}
-          className="flex flex-none gap-9 pr-14"
+          className="flex gap-0 w-max py-4"
         >
-          {[...new Array(2)].fill(0).map((_, index) => (
-            <React.Fragment key={index}>
-              {CompanyLogoData.map(({ src, alt }, index) => (
-                <Image
-                  key={`first-${index}`}
-                  src={src}
-                  alt={alt}
-                  width={100}
-                  height={100}
-                  className="h-16 w-auto flex-none"
-                />
-              ))}
-              {CompanyLogoData.map(({ src, alt }, index) => (
-                <Image
-                  key={`second-${index}`}
-                  src={src}
-                  alt={alt}
-                  width={100}
-                  height={100}
-                  className="h-16 w-auto flex-none"
-                />
-              ))}
-            </React.Fragment>
+          {duplicatedLogos.map((logo, index) => (
+            <div
+              key={index}
+              className="flex-shrink-0 h-20 w-32 flex items-center justify-center bg-card rounded-xl border border-border hover:border-primary/50 hover:shadow-lg hover:scale-105 transition-all duration-300 group"
+            >
+              <img
+                src={logo.src}
+                alt={logo.alt}
+                className="h-12 w-auto object-contain brightness-100 contrast-100 group-hover:scale-110 transition-transform duration-300 dark:brightness-90 dark:contrast-110"
+                loading="lazy"
+                onError={(e) => {
+                  e.currentTarget.src = `data:image/svg+xml,${encodeURIComponent(
+                    `<svg width="48" height="48" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="hsl(var(--muted))" rx="6" stroke="hsl(var(--border))" stroke-width="1"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="hsl(var(--muted-foreground))" font-family="system-ui" font-size="10" font-weight="500">${
+                      logo.alt.split(" ")[0]
+                    }</text></svg>`
+                  )}`;
+                }}
+              />
+            </div>
           ))}
         </motion.div>
       </motion.div>

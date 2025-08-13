@@ -190,7 +190,7 @@ export function MainNav({
                 <Link
                   href={item.href}
                   className={cn(
-                    "transition-all duration-200 relative group px-3 py-2 rounded-lg font-medium focus:text-white focus:outline-none",
+                    "transition-all duration-200 relative group px-3 py-2 rounded-lg font-medium focus:text-black focus:outline-none",
                     isActive
                       ? "text-primary"
                       : "text-foreground hover:text-primary hover:bg-accent/50"

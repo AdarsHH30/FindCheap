@@ -105,7 +105,7 @@ const Testimonials = () => {
                       .map((n) => n[0])
                       .join("")}
                   </div>
-                  <div className="absolute -bottom-1 -right-1 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                  <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded-full">
                     -{testimonial.savings}
                   </div>
                 </div>
@@ -122,8 +122,8 @@ const Testimonials = () => {
                         key={i}
                         className={`w-4 h-4 ${
                           i < testimonial.rating
-                            ? "text-yellow-400 fill-current"
-                            : "text-gray-300"
+                            ? "text-accent fill-current"
+                            : "text-muted"
                         }`}
                       />
                     ))}

@@ -76,7 +76,7 @@ export default function ProfilePage() {
         {" "}
         <Button
           variant="outline"
-          className=" bg-red-500 text-white hover:bg-red-600"
+          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           onClick={async () => {
             await supabase.auth.signOut();
             router.push("/");

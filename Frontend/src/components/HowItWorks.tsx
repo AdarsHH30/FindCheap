@@ -88,12 +88,12 @@ const HowItWorks = () => {
               >
                 <div className="relative mb-6">
                   <div className={`w-20 h-20 mx-auto rounded-full bg-gradient-to-br ${step.color} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110`}>
-                    <IconComponent className="w-10 h-10 text-white" />
+                    <IconComponent className="w-10 h-10 text-primary-foreground" />
                   </div>
                   {index < steps.length - 1 && (
                     <div className="hidden lg:block absolute top-10 left-full w-full h-0.5 bg-gradient-to-r from-primary/50 to-accent/50 -z-10" />
                   )}
-                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">
+                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">
                     {index + 1}
                   </div>
                 </div>

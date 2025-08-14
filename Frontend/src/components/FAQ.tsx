@@ -128,7 +128,7 @@ const FAQ = () => {
           className="text-center mt-12"
         >
           <p className="text-foreground/70 mb-4">Still have questions?</p>
-          <button className="px-8 py-3 bg-gradient-to-r from-primary to-accent text-white rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105">
+          <button className="px-8 py-3 bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105">
             Contact Support
           </button>
         </motion.div>

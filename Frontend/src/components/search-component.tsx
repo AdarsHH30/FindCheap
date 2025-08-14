@@ -81,7 +81,7 @@ const SearchComponent: React.FC<SearchComponentProps> = ({
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-red-500 mt-1 text-sm text-center"
+          className="text-destructive mt-1 text-sm text-center"
         >
           {error}
         </motion.p>

@@ -74,7 +74,7 @@ const StatsSection = () => {
                 <div
                   className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110`}
                 >
-                  <IconComponent className="w-8 h-8 text-white" />
+                  <IconComponent className="w-8 h-8 text-primary-foreground" />
                 </div>
                 <motion.div
                   initial={{ scale: 0 }}

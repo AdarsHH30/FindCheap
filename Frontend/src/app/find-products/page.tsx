@@ -88,7 +88,7 @@ const FindProductsPage = () => {
                 : "Search Results"}
             </h1>
             {/* <div className="flex items-center gap-2 justify-center sm:justify-end">
-            <span className="text-gray-600 text-sm">Sort by:</span>
+            <span className="text-muted-foreground text-sm">Sort by:</span>
             <select className="border rounded p-1 text-sm">
               <option value="relevance">Relevance</option>
               <option value="price-low-to-high">Price: Low to High</option>
@@ -120,10 +120,10 @@ const FindProductsPage = () => {
               transition={{ duration: 0.4 }}
             >
               <div className="text-center px-4">
-                <h3 className="text-lg sm:text-xl font-semibold text-gray-600 mb-2">
+                <h3 className="text-lg sm:text-xl font-semibold text-muted-foreground mb-2">
                   No products found
                 </h3>
-                <p className="text-gray-500 text-sm sm:text-base">
+                <p className="text-muted-foreground/70 text-sm sm:text-base">
                   Try searching with different keywords
                 </p>
               </div>
@@ -184,7 +184,7 @@ const FindProductsPage = () => {
                       products.map((item, index) => (
                         <motion.div
                           key={`${platform}-${index}`}
-                          className="flex flex-col gap-2 sm:gap-3 p-3 sm:p-4 shadow-2xl rounded-lg hover:shadow-lg transition-all duration-200 var(--sidebar-cent) dark:bg-gray-800"
+                          className="flex flex-col gap-2 sm:gap-3 p-3 sm:p-4 shadow-2xl rounded-lg hover:shadow-lg transition-all duration-200 bg-card border"
                           initial={{ opacity: 0, y: 30, scale: 0.9 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           transition={{
@@ -224,12 +224,12 @@ const FindProductsPage = () => {
                             <h3 className="flex flex-col text-xs sm:text-sm font-semibold line-clamp-2 mb-1 sm:mb-2 min-h-[2.5rem] sm:min-h-[3rem]">
                               {item.title}
                             </h3>
-                            <p className="text-sm sm:text-lg font-bold text-green-600 mb-1">
+                            <p className="text-sm sm:text-lg font-bold text-primary mb-1">
                               {item.price}
                             </p>
                             {item.rating && (
                               <div className="flex items-center gap-1 mb-2">
-                                <span className="text-yellow-500 text-xs sm:text-sm">
+                                <span className="text-accent text-xs sm:text-sm">
                                   ⭐
                                 </span>
                                 <span className="text-xs sm:text-sm text-foreground/70">

@@ -21,7 +21,7 @@ export function MobileNav() {
   const onOpenChange = React.useCallback(
     (open: boolean) => {
       setOpen(open);
-      setMetaColor(open ? "#09090b" : metaColor);
+      setMetaColor(open ? "hsl(var(--background))" : metaColor);
     },
     [setMetaColor, metaColor]
   );

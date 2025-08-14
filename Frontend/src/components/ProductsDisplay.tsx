@@ -31,7 +31,7 @@ const ProductGrid = ({ products, platform }: ProductGridProps) => {
         products.map((item, index) => (
           <motion.div
             key={`${platform}-${index}`}
-            className="flex flex-col gap-2 sm:gap-3 p-3 sm:p-4 shadow-2xl rounded-lg hover:shadow-lg transition-all duration-200 var(--sidebar-accent) dark:bg-gray-800"
+            className="flex flex-col gap-2 sm:gap-3 p-3 sm:p-4 shadow-2xl rounded-lg hover:shadow-lg transition-all duration-200 bg-card border"
             whileTap={{ scale: 0.95 }}
             whileHover={{ y: -2 }}
           >

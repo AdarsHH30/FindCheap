@@ -25,18 +25,18 @@ const PriceComparisonCard: React.FC<PriceComparisonCardProps> = ({
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
-      className={`absolute top-[60%] left-[50%] lg:left-[40%] -translate-x-1/2 lg:-translate-x-0 -translate-y-1/2 bg-white/95 backdrop-blur-sm rounded-xl shadow-xl px-4 py-3 w-52 border border-gray-200/50 ${className}`}
+      className={`absolute top-[60%] left-[50%] lg:left-[40%] -translate-x-1/2 lg:-translate-x-0 -translate-y-1/2 bg-card/95 backdrop-blur-sm rounded-xl shadow-xl px-4 py-3 w-52 border ${className}`}
     >
-      <h3 className="text-sm font-semibold text-gray-700 mb-2">
+      <h3 className="text-sm font-semibold text-card-foreground mb-2">
         {productName}
       </h3>
-      <ul className="text-sm text-gray-600 space-y-1">
+      <ul className="text-sm text-muted-foreground space-y-1">
         {prices.map((item, index) => (
           <li key={index} className="flex justify-between">
             <span>{item.platform}</span>
             <span
               className={
-                item.isLowest ? "text-primary font-semibold" : "text-gray-600"
+                item.isLowest ? "text-primary font-semibold" : "text-muted-foreground"
               }
             >
               {item.price}

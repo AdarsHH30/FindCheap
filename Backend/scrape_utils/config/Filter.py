@@ -25,6 +25,7 @@ def filter_data(data, e_commerce, search_query=None, top_n=5):
     Returns:
         str: JSON string of the top filtered results
     """
+    print(f"Filtering data for e-commerce site: {e_commerce} with data: {data}\n\n\n")
     try:
 
         if e_commerce not in data:
@@ -48,6 +49,7 @@ def filter_data(data, e_commerce, search_query=None, top_n=5):
         result_df = df.sort_values(by="similarity_score", ascending=False).head(top_n)
 
         filtered_data = result_df.to_json(orient="records", indent=2, force_ascii=False)
+        print(f"Filtered data for {e_commerce}: {filtered_data}\n\n\n")
 
         return filtered_data
 

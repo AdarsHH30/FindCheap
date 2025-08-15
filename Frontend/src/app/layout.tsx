@@ -23,11 +23,7 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${inter.className} antialiased ${
-          hideHeader ? "" : "md:px-20"
-        }`}
-      >
+      <body className={`${inter.className} antialiased`}>
         <CSRFInit />
         <ThemeProvider
           attribute="class"

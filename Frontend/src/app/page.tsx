@@ -14,7 +14,7 @@ export default function Home() {
         titleComponent={
           <>
             <h1 className="text-4xl font-semibold text-black dark:text-white">
-              Find the Right Deal At
+              Find the Right Deal At the Right Time
               <br />
               <span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none">
                 Find Cheap
@@ -24,7 +24,7 @@ export default function Home() {
         }
       >
         <img
-          src={`/linear.webp`}
+          src={`/find-prod.png`}
           alt="hero"
           height={720}
           width={1400}

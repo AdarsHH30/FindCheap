@@ -10,26 +10,26 @@ const HowItWorks = () => {
       icon: Search,
       title: "Search for a product",
       description: "Enter the product you're looking for in our search bar",
-      color: "from-primary to-primary/80"
+      color: "from-primary to-primary/80",
     },
     {
       icon: BarChart3,
       title: "Compare prices",
       description: "We instantly compare prices from 100+ trusted retailers",
-      color: "from-accent to-accent/80"
+      color: "from-accent to-accent/80",
     },
     {
       icon: ShoppingCart,
       title: "Pick the best deal",
       description: "Choose the retailer with the best price and features",
-      color: "from-primary to-accent"
+      color: "from-primary to-accent",
     },
     {
       icon: Shield,
       title: "Purchase securely",
       description: "Buy directly from the retailer with confidence",
-      color: "from-accent to-primary"
-    }
+      color: "from-accent to-primary",
+    },
   ];
 
   const containerVariants = {
@@ -37,9 +37,9 @@ const HowItWorks = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2
-      }
-    }
+        staggerChildren: 0.2,
+      },
+    },
   };
 
   const itemVariants = {
@@ -48,13 +48,13 @@ const HowItWorks = () => {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.6
-      }
-    }
+        duration: 0.6,
+      },
+    },
   };
 
   return (
-    <section className="py-16 md:py-20 px-4 md:px-8 lg:px-16 bg-muted/30">
+    <section className="py-16 md:py-0 px-4 md:px-0 lg:px-16 bg-muted/30">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -67,7 +67,8 @@ const HowItWorks = () => {
             How It Works
           </h2>
           <p className="text-lg text-foreground/80 max-w-2xl mx-auto">
-            Getting the best deals has never been easier. Follow these simple steps to save money on every purchase.
+            Getting the best deals has never been easier. Follow these simple
+            steps to save money on every purchase.
           </p>
         </motion.div>
 
@@ -87,7 +88,9 @@ const HowItWorks = () => {
                 className="text-center group"
               >
                 <div className="relative mb-6">
-                  <div className={`w-20 h-20 mx-auto rounded-full bg-gradient-to-br ${step.color} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110`}>
+                  <div
+                    className={`w-20 h-20 mx-auto rounded-full bg-gradient-to-br ${step.color} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110`}
+                  >
                     <IconComponent className="w-10 h-10 text-primary-foreground" />
                   </div>
                   {index < steps.length - 1 && (

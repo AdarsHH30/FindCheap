@@ -11,7 +11,10 @@ import { getCookie } from "@/utils/csrf";
 import { Product, SearchResults } from "@/types/product";
 import Footer01Page from "@/components/Footer/footer";
 import ProductPlaceholder from "@/components/FindProductPlaceholder";
-import LoadingAnimation from "@/components/LoadingAnimation";
+import CircularProgress, {
+  CircularProgressProps,
+} from "@mui/material/CircularProgress";
+import TruckLoader from "@/components/LoadingAnimation";
 
 const FindProductsPage = () => {
   const [data, setData] = useState<SearchResults | null>(null);
@@ -79,20 +82,27 @@ const FindProductsPage = () => {
         {!searchQuery && !loading && !data && <ProductPlaceholder />}
 
         {(hasResults || loading) && (
-          <div className="w-full flex flex-col sm:flex-row sm:justify-between sm: mt-6 gap-4 ">
+          <div className="w-full  flex flex-col sm:flex-row sm:justify-between mt-6 gap-4">
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold sm:text-left">
-              {searchQuery
-                ? `Search Results for "${searchQuery}"`
-                : "Search Results"}
+              {loading ? (
+                <>
+                  Searching for{" "}
+                  <span className="text-primary">
+                    {searchQuery.toUpperCase()}
+                  </span>
+                  ...
+                </>
+              ) : searchQuery ? (
+                <>
+                  Search Results for{" "}
+                  <span className="text-primary">
+                    {searchQuery.toUpperCase()}
+                  </span>{" "}
+                </>
+              ) : (
+                "Search Results"
+              )}
             </h1>
-            {/* <div className="flex items-center gap-2 justify-center sm:justify-end">
-            <span className="text-muted-foreground text-sm">Sort by:</span>
-            <select className="border rounded p-1 text-sm">
-              <option value="relevance">Relevance</option>
-              <option value="price-low-to-high">Price: Low to High</option>
-              <option value="price-high-to-low">Price: High to Low</option>
-            </select>
-          </div> */}
           </div>
         )}
 
@@ -100,7 +110,11 @@ const FindProductsPage = () => {
           className="mt-4 sm:mt-10 overflow-y-auto w-full flex-1"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          {loading && <LoadingAnimation />}
+          {loading && (
+            <div className="flex justify-center items-center relative-center">
+              <TruckLoader />
+            </div>
+          )}
 
           {!loading && hasResults && !hasAnyProducts && (
             <motion.div

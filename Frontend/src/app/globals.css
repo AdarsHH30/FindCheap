@@ -1,6 +1,29 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+
+/* for Truck animation */
+@tailwind utilities;
+
+@layer utilities {
+  @keyframes truck-motion {
+    0%,100% { transform: translateY(0px); }
+    50%     { transform: translateY(3px); }
+  }
+  .animate-truck-motion {
+    animation: truck-motion 1s linear infinite;
+  }
+
+  @keyframes road {
+    0%   { transform: translateX(0px); }
+    100% { transform: translateX(-350px); }
+  }
+  .animate-road {
+    animation: road 1.4s linear infinite;
+  }
+}
+
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

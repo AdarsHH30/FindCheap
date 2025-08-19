@@ -11,9 +11,7 @@ import { getCookie } from "@/utils/csrf";
 import { Product, SearchResults } from "@/types/product";
 import Footer01Page from "@/components/Footer/footer";
 import ProductPlaceholder from "@/components/FindProductPlaceholder";
-import CircularProgress, {
-  CircularProgressProps,
-} from "@mui/material/CircularProgress";
+import LoadingAnimation from "@/components/LoadingAnimation";
 
 const FindProductsPage = () => {
   const [data, setData] = useState<SearchResults | null>(null);
@@ -102,15 +100,7 @@ const FindProductsPage = () => {
           className="mt-4 sm:mt-10 overflow-y-auto w-full flex-1"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          {loading && (
-            <div className="flex justify-center items-center relative-center">
-              <CircularProgress
-                size={40}
-                thickness={4.5}
-                className="text-accent"
-              />
-            </div>
-          )}
+          {loading && <LoadingAnimation />}
 
           {!loading && hasResults && !hasAnyProducts && (
             <motion.div

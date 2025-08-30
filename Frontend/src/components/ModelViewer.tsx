@@ -62,7 +62,7 @@ const ModelViewer = () => {
         setCameraConfig({ position: [0, 0, 5], fov: 55 });
       } else {
         setHeight("500px");
-        setCameraConfig({ position: [0, 0, 4.5], fov: 50 });
+        setCameraConfig({ position: [0, 0, 4.5], fov: 42 });
       }
     };
 

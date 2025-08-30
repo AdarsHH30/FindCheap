@@ -82,8 +82,8 @@ const FindProductsPage = () => {
         {!searchQuery && !loading && !data && <ProductPlaceholder />}
 
         {(hasResults || loading) && (
-          <div className="w-full  flex flex-col sm:flex-row sm:justify-between mt-6 gap-4">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold sm:text-left">
+          <div className="w-full flex flex-col sm:flex-row left mt-6 gap-4 ">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold sm:text-right">
               {loading ? (
                 <>
                   Searching for{" "}
@@ -174,7 +174,7 @@ const FindProductsPage = () => {
                     {platform}
                   </motion.h2>
                   <motion.div
-                    className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 sm:gap-6 px-1 sm:px-4"
+                    className="grid grid-cols-3 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-2 sm:gap-3 px-1 sm:px-4"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{
@@ -188,7 +188,7 @@ const FindProductsPage = () => {
                       products.map((item, index) => (
                         <motion.div
                           key={`${platform}-${index}`}
-                          className="flex flex-col gap-2 sm:gap-3 p-3 sm:p-4 shadow-2xl rounded-lg hover:shadow-lg transition-all duration-200 bg-card border"
+                          className="flex flex-col gap-1 sm:gap-2 p-2 sm:p-3 shadow-lg rounded-lg hover:shadow-xl transition-all duration-200 bg-card border"
                           initial={{ opacity: 0, y: 30, scale: 0.9 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           transition={{
@@ -201,8 +201,8 @@ const FindProductsPage = () => {
                             transition: { duration: 0.1, ease: "easeOut" },
                           }}
                           whileHover={{
-                            y: -4,
-                            scale: 1.02,
+                            y: -2,
+                            scale: 1.01,
                             transition: { duration: 0.2, ease: "easeOut" },
                           }}
                         >
@@ -225,18 +225,16 @@ const FindProductsPage = () => {
                             />
                           </motion.div>
                           <div className="flex-1 flex flex-col">
-                            <h3 className="flex flex-col text-xs sm:text-sm font-semibold line-clamp-2 mb-1 sm:mb-2 min-h-[2.5rem] sm:min-h-[3rem]">
+                            <h3 className="text-xs sm:text-sm font-semibold line-clamp-2 mb-1 min-h-[2rem] sm:min-h-[2.5rem]">
                               {item.title}
                             </h3>
-                            <p className="text-sm sm:text-lg font-bold text-primary mb-1">
+                            <p className="text-xs sm:text-sm font-bold text-primary mb-1">
                               {item.price}
                             </p>
                             {item.rating && (
-                              <div className="flex items-center gap-1 mb-2">
-                                <span className="text-accent text-xs sm:text-sm">
-                                  ⭐
-                                </span>
-                                <span className="text-xs sm:text-sm text-foreground/70">
+                              <div className="flex items-center gap-1 mb-1">
+                                <span className="text-accent text-xs">⭐</span>
+                                <span className="text-xs text-foreground/70">
                                   {item.rating}
                                 </span>
                                 {item.reviews && (
@@ -256,7 +254,7 @@ const FindProductsPage = () => {
                               }
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-accent hover:underline text-xs sm:text-sm mt-auto inline-block py-1"
+                              className="text-accent hover:underline text-xs mt-auto inline-block py-1"
                             >
                               View Product
                             </a>

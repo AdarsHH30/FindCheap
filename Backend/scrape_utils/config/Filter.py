@@ -1,13 +1,12 @@
 import logging
 
-# Set up logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
 
-def filter_data(data, e_commerce, search_query=None, top_n=5):
+def filter_data(data, e_commerce, search_query=None, top_n=8):
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.metrics.pairwise import cosine_similarity
     import pandas as pd

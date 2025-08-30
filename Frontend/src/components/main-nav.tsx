@@ -26,7 +26,7 @@ export function MainNav({
   useEffect(() => {
     const timer = setTimeout(() => {
       setInternalLoading(false);
-    }, 800);
+    }, 2);
 
     return () => clearTimeout(timer);
   }, [pathname]);

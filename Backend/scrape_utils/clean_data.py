@@ -4,128 +4,83 @@ import asyncio
 import sys
 import json
 import os
-
-# from groq import Groq
 from dotenv import load_dotenv
+import logging
 
 load_dotenv()
 instructions = os.getenv("GROQ_INSTRUCTIONS")
 
-
-# def __Groq(data, user_input):
-#     client = Groq(
-#         api_key=os.environ.get("GROQ_API_KEY"),
-#     )
-#     chat_completion = client.chat.completions.create(
-#         messages=[
-#             {
-#                 "role": "user",
-#                 "content": f" Just return the JSON data not any other extra data.{instructions}",
-#             },
-#             {
-#                 "role": "user",
-#                 "content": f"{user_input}{data}",
-#             },
-#         ],
-#         model="llama-3.3-70b-versatile",
-#     )
-#     print("Chat completion response:", chat_completion)
-#     return convert_to_json(chat_completion.choices[0].message.content)
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 def convert_to_json(data):
-    if isinstance(data, str):
-        try:
+    try:
+        if isinstance(data, str):
             return json.loads(data)
-        except json.JSONDecodeError:
-            print("Error decoding JSON from string")
-            return []
-    elif isinstance(data, list):
-        return data
-    elif isinstance(data, dict):
-        return [data]
-    else:
-        print("Unsupported data type for conversion to JSON")
-        return []
+        elif isinstance(data, (list, dict)):
+            return data
+    except json.JSONDecodeError:
+        logger.error("Error decoding JSON")
+    return []
 
 
 def save_to_json(data, filename):
     with open(filename, "w") as f:
         json.dump(data, f, indent=2)
-    print(f"Data saved to {filename}")
+    logger.info(f"Data saved to {filename}")
 
 
-async def scrape_multiple_sites(user_input):
+async def scrape_site(s, url, semaphore):
+    """Helper to scrape a single site with concurrency limit."""
+    async with semaphore:
+        try:
+            return await s.scraper(url)
+        except Exception as e:
+            logger.error(f"Error scraping {url}: {e}")
+            return {}
+
+
+async def scrape_multiple_sites(user_input, concurrency_limit=5):
     """
-    This function takes the user input and sends it to th
-    e scraper with different URLs.
-
+    Scrapes multiple e-commerce websites asynchronously with concurrency control.
     """
+    urls = {
+        "amazon": f"https://www.amazon.in/s?k={user_input}",
+        "flipkart": f"https://www.flipkart.com/search?q={user_input}",
+        "snapdeal": f"https://www.snapdeal.com/search?keyword={user_input}",
+        "jiomart": f"https://www.jiomart.com/search/{user_input}",
+        "meesho": f"https://www.meesho.com/search?q={user_input}",
+        "myntra": f"https://www.myntra.com/{user_input}?rawQuery={user_input}",
+    }
 
-    amazon_url = f"https://www.amazon.in/s?k={user_input}"
-    flipkart_url = f"https://www.flipkart.com/search?q={user_input}"
-    snapdeal_url = f"https://www.snapdeal.com/search?keyword={user_input}"
-    jiomart_url = f"https://www.jiomart.com/search/{user_input}"
-    meesho_url = f"https://www.meesho.com/search?q={user_input}"
-    myntra_url = f"https://www.myntra.com/{user_input}?rawQuery={user_input}"
-
+    semaphore = asyncio.Semaphore(concurrency_limit)
     s = Scrape.ScraperConfig(user_input, 5)
 
-    flipkart_task = s.scraper(flipkart_url)
-    amazon_task = s.scraper(amazon_url)
-    snapdeal_task = s.scraper(snapdeal_url)
-    jiomart_task = s.scraper(jiomart_url)
-    meesho_task = s.scraper(meesho_url)
-    myntra_task = s.scraper(myntra_url)
+    tasks = [scrape_site(s, url, semaphore) for _, url in urls.items()]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
 
-    (
-        flipkart_data,
-        amazon_data,
-        snapdeal_data,
-        jiomart_data,
-        meesho_data,
-        myntra_data,
-    ) = await asyncio.gather(
-        flipkart_task,
-        amazon_task,
-        snapdeal_task,
-        jiomart_task,
-        meesho_task,
-        myntra_task,
-        return_exceptions=True,
-    )
-    print("Jiomart data:", jiomart_data)
-    flipkart = Filter.filter_data(flipkart_data, "flipkart", user_input)
-    amazon = Filter.filter_data(amazon_data, "amazon", user_input)
-    snapdeal = Filter.filter_data(snapdeal_data, "snapdeal", user_input)
-    jiomart = Filter.filter_data(jiomart_data, "jiomart", user_input)
-    meesho = Filter.filter_data(meesho_data, "meesho", user_input)
-    myntra = Filter.filter_data(myntra_data, "myntra", user_input)
+    final_data = {}
+    for (site, _), result in zip(urls.items(), results):
+        if isinstance(result, Exception):
+            logger.error(f"Error fetching {site}: {result}")
+            final_data[site] = []
+            continue
 
-    # Convert to JSON
-    flipkart_json = convert_to_json(flipkart)
-    amazon_json = convert_to_json(amazon)
-    snapdeal_json = convert_to_json(snapdeal)
-    jiomart_json = convert_to_json(jiomart)
-    meesho_json = convert_to_json(meesho)
-    myntra_json = convert_to_json(myntra)
-    print("Jiomart JSON:", jiomart_json)
+        filtered = Filter.filter_data(result, site, user_input)
+        final_data[site] = convert_to_json(filtered)
 
-    print("meeshoo JSON:", meesho_json)
-
-    return {
-        "flipkart": flipkart_json,
-        "amazon": amazon_json,
-        "snapdeal": snapdeal_json,
-        "jiomart": jiomart_json,
-        "meesho": meesho_json,
-        "myntra": myntra_json,
-    }
+    return final_data
 
 
 if __name__ == "__main__":
-    input_args = sys.argv[1:]
-    string = "+".join(input_args)
-    print("Input arguments:", string)
+    if len(sys.argv) < 2:
+        print("Usage: python scraper.py <search_query>")
+        sys.exit(1)
+
+    string = "+".join(sys.argv[1:])
+    logger.info(f"Scraping for: {string}")
 
     asyncio.run(scrape_multiple_sites(string))

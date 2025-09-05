@@ -48,7 +48,7 @@ async def scrape_multiple_sites(user_input, concurrency_limit=5):
     Scrapes multiple e-commerce websites asynchronously with concurrency control.
     """
     urls = {
-        "amazon": f"https://www.amazon.in/s?k={user_input}",
+        "amazon": f"https://www.amazon.in/s?k={user_input}&s=price-dses-rank",
         "flipkart": f"https://www.flipkart.com/search?q={user_input}",
         "snapdeal": f"https://www.snapdeal.com/search?keyword={user_input}",
         "jiomart": f"https://www.jiomart.com/search/{user_input}",

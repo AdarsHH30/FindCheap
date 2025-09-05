@@ -1,4 +1,7 @@
 import logging
+import json
+import pandas as pd
+from rapidfuzz import fuzz, process
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -7,26 +10,21 @@ logger = logging.getLogger(__name__)
 
 
 def filter_data(data, e_commerce, search_query=None, top_n=8):
-    from sklearn.feature_extraction.text import TfidfVectorizer
-    from sklearn.metrics.pairwise import cosine_similarity
-    import pandas as pd
-    import json
-
     """
-    Filter and rank products based on relevance to search query or e-commerce site name.
+    Filter and rank products based on relevance to search query or e-commerce site name
+    using fuzzy string matching.
 
     Args:
         data (dict): Dictionary with e-commerce site names as keys and lists of product dictionaries as values
         e_commerce (str): Name of the e-commerce site to filter by
         search_query (str, optional): Query to compare product titles against. If None, uses e-commerce name.
-        top_n (int, optional): Number of top results to return. Defaults to 10.
+        top_n (int, optional): Number of top results to return. Defaults to 50.
 
     Returns:
         str: JSON string of the top filtered results
     """
     print(f"Filtering data for e-commerce site: {e_commerce} with data: {data}\n\n\n")
     try:
-
         if e_commerce not in data:
             logger.error(f"E-commerce site '{e_commerce}' not found in data ")
             return json.dumps([])
@@ -37,14 +35,16 @@ def filter_data(data, e_commerce, search_query=None, top_n=8):
             logger.warning(f"No data found for {e_commerce}")
             return json.dumps([])
 
-        query = [search_query if search_query else e_commerce]
+        query = search_query if search_query else e_commerce
 
-        vectorizer = TfidfVectorizer(stop_words="english")
-        title_matrix = vectorizer.fit_transform(df["title"].fillna(""))
-        query_vector = vectorizer.transform(query)
-        similarities = cosine_similarity(query_vector, title_matrix).flatten()
+        # Compute fuzzy similarity scores
+        df["similarity_score"] = (
+            df["title"]
+            .fillna("")
+            .apply(lambda x: fuzz.partial_ratio(query.lower(), x.lower()))
+        )
 
-        df["similarity_score"] = similarities
+        # Sort by similarity score
         result_df = df.sort_values(by="similarity_score", ascending=False).head(top_n)
 
         filtered_data = result_df.to_json(orient="records", indent=2, force_ascii=False)

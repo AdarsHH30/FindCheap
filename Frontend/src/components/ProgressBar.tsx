@@ -72,7 +72,7 @@ export function ProgressBar({
       />
 
       <motion.div
-        className="absolute top-0 left-0 h-full w-20 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+        className="absolute top-0 left-0 h-full w-20 bg-gradient-to-r from-transparent  to-transparent"
         animate={{
           x: [-80, 380],
         }}

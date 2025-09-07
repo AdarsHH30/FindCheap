@@ -17,7 +17,7 @@ export default function Home() {
               Find the Right Deal At the Right Time
               <br />
               <span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none">
-                Find Cheap
+                FindCheap
               </span>
             </h1>
           </>

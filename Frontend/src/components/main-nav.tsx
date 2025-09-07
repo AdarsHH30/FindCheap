@@ -60,14 +60,14 @@ export function MainNav({
     variant?: "shimmer" | "pulse";
   }) => (
     <motion.div
-      className={`${height} ${width} ${className} relative overflow-hidden rounded-md bg-muted`}
+      className={`${height} ${width} ${className} relative overflow-hidden rounded-md `}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3, delay }}
     >
       {variant === "shimmer" ? (
         <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-transparent via-muted-foreground/40 to-transparent"
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-muted-foreground/40 to-transparent "
           animate={{
             x: ["-100%", "100%"],
           }}
@@ -80,7 +80,7 @@ export function MainNav({
         />
       ) : (
         <motion.div
-          className="absolute inset-0 bg-muted-foreground/60"
+          className="absolute inset-0 bg-muted-foreground/60 "
           animate={{
             opacity: [0.5, 1, 0.5],
           }}
@@ -98,7 +98,7 @@ export function MainNav({
   if (shouldShowSkeleton) {
     return (
       <motion.div
-        className="mr-4 hidden md:flex w-full justify-between"
+        className="mr-4 md:flex w-full justify-center bg-background"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -130,19 +130,22 @@ export function MainNav({
       <ProgressBar isLoading={isNavigating || isPending} />
 
       <motion.div
-        className="mr-4 hidden md:flex w-full justify-between"
+        className="flex mr-4 hidden md:flex w-full justify-between items-center px-6 py-3"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
+        {/* Logo Section - Transparent Background */}
         <motion.div
+          className="flex items-center space-x-2"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
+          whileHover={{ scale: 1.05 }}
         >
           <Link
             href="/"
-            className="mr-4 flex items-center gap-2 lg:mr-6 group"
+            className="flex items-center gap-2 group"
             prefetch={true}
             onClick={() => handleNavigation("/")}
           >
@@ -150,11 +153,13 @@ export function MainNav({
               whileHover={{ scale: 1.1, rotate: 5 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
+              className="h-8 w-8"
             >
-              <Icons.logo />
+              <Icons.logo className="h-full w-full" />
             </motion.div>
+
             <motion.span
-              className="hidden text-2xl font-semibold lg:inline-block group-hover:text-primary transition-colors duration-200"
+              className="text-2xl font-semibold group-hover:text-primary transition-colors duration-200 whitespace-nowrap"
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
             >
@@ -162,8 +167,10 @@ export function MainNav({
             </motion.span>
           </Link>
         </motion.div>
+
+        {/* Center Navigation - Background with Shadow */}
         <motion.nav
-          className="flex items-center gap-4 text-sm xl:gap-6"
+          className="flex items-center gap-4 text-sm xl:gap-6 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg bg-sidebar"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -190,12 +197,13 @@ export function MainNav({
                 <Link
                   href={item.href}
                   className={cn(
-                    "transition-all duration-200 relative group px-3 py-2 rounded-lg font-medium focus:text-black focus:outline-none",
+                    "transition-all duration-200 relative group px-3 py-2 rounded-lg font-medium focus:text-primary focus:outline-none",
                     isActive
                       ? "text-primary"
-                      : "text-foreground hover:text-primary hover:bg-accent/50"
+                      : "text-foreground hover:text-primary hover:bg-accent"
                   )}
                   prefetch={true}
+                  onClick={() => handleNavigation(item.href)}
                 >
                   <span className="relative z-10">{item.label}</span>
 
@@ -217,6 +225,14 @@ export function MainNav({
             );
           })}
         </motion.nav>
+
+        {/* Profile/Dark Mode Section - Transparent Background */}
+        <motion.div
+          className="flex items-center gap-2"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        ></motion.div>
       </motion.div>
     </>
   );

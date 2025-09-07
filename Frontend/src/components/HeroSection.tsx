@@ -140,14 +140,14 @@ const HeroSection = () => {
               <ModelViewer />
               <div className="flex top-5 left-4 right-0 justify-start items-start">
                 {/* <PriceComparisonCard
-                productName="Wireless Earbuds"
-                prices={[
-                  { platform: "Amazon", price: "$99.99", isLowest: true },
-                  { platform: "Best Buy", price: "$109.99" },
-                  { platform: "Walmart", price: "$95.00" },
-                  { platform: "Target", price: "$102.50" },
+                  productName="Wireless Earbuds"
+                  prices={[
+                    { platform: "Amazon", price: "$99.99", isLowest: true },
+                    { platform: "Best Buy", price: "$109.99" },
+                    { platform: "Walmart", price: "$95.00" },
+                    { platform: "Target", price: "$102.50" },
                   ]}
-                  /> */}
+                /> */}
               </div>
             </>
           )}

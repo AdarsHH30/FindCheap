@@ -49,9 +49,10 @@ class ScraperConfig:
 
         browser_conf = BrowserConfig(
             browser_type="chromium",
-            headless=True,
+            headless=False,
             extra_args=[
                 "--disable-blink-features=AutomationControlled",
+                "--disable-popups",
                 "--disable-infobars",
                 "--no-sandbox",
                 "--disable-dev-shm-usage",
@@ -95,7 +96,7 @@ class ScraperConfig:
                 e_commerce = "myntra"
 
             if result.success:
-                print(f"Extraction successful for {url}")
+                # print(f"Extraction successful for {url}")
                 if result.extracted_content:
                     try:
                         extracted_data = json.loads(result.extracted_content)
@@ -107,7 +108,7 @@ class ScraperConfig:
                             )
                         }
                     except json.JSONDecodeError as e:
-                        print(f"Failed to parse extracted content: {str(e)}")
+                        print(f"Failed to parse extracted content: {str(e)} for {url} ")
                         return {
                             "products": [],
                             "error": f"Failed to parse extracted content: {str(e)}",

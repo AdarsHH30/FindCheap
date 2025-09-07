@@ -23,7 +23,6 @@ def filter_data(data, e_commerce, search_query=None, top_n=8):
     Returns:
         str: JSON string of the top filtered results
     """
-    print(f"Filtering data for e-commerce site: {e_commerce} with data: {data}\n\n\n")
     try:
         if e_commerce not in data:
             logger.error(f"E-commerce site '{e_commerce}' not found in data ")
@@ -48,10 +47,12 @@ def filter_data(data, e_commerce, search_query=None, top_n=8):
         result_df = df.sort_values(by="similarity_score", ascending=False).head(top_n)
 
         filtered_data = result_df.to_json(orient="records", indent=2, force_ascii=False)
-        print(f"Filtered data for {e_commerce}: {filtered_data}\n\n\n")
+
+        if e_commerce == "jiomart" or e_commerce == "meesho":
+            print(f"Raw data for {e_commerce}: {data[e_commerce]}\n\n\n")
+            print(f"Filtered data for {e_commerce}: {filtered_data}\n\n\n")
 
         return filtered_data
 
     except Exception as e:
-        logger.error(f"Error in filter_data: {str(e)} {e_commerce}")
         return json.dumps([{"error": "An error occurred while filtering data "}])

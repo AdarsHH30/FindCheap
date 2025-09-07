@@ -34,7 +34,7 @@ const SiteHeader = () => {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+      className="sticky top-0 z-50 w-full bg-background/95 supports-[backdrop-filter]:bg-background/60"
     >
       <div className="flex h-14 md:pt-16 md:pb-8 md:px-10 items-center gap-2 md:gap-4 ">
         <MainNav />

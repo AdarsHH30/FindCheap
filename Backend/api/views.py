@@ -210,3 +210,36 @@ def display_scraped_data(request):
         return JsonResponse(data, status=status.HTTP_200_OK)
     except Exception as e:
         return JsonResponse({"error": f"Internal server error: {str(e)}"}, status=500)
+
+
+@csrf_exempt
+@api_view(["GET"])
+def get_auth_status(request):
+    """
+    API endpoint to get the authentication status of the user.
+    Returns authentication status and user data if authenticated.
+    """
+    try:
+        auth_header = request.headers.get("Authorization", "")
+        if auth_header.startswith("Bearer "):
+            access_token = auth_header.split(" ")[1]
+            response = supabase.auth.get_user(access_token)
+            user = response.user if hasattr(response, "user") else None
+
+            if user:
+                return JsonResponse(
+                    {
+                        "is_authenticated": True,
+                        "user": {
+                            "id": user.id,
+                            "email": user.email,
+                            "user_metadata": user.user_metadata,
+                        },
+                    },
+                    status=200,
+                )
+
+        return JsonResponse({"is_authenticated": False}, status=200)
+    except Exception as e:
+        logger.error(f"Authentication status error: {str(e)}")
+        return JsonResponse({"error": f"Internal server error: {str(e)}"}, status=500)

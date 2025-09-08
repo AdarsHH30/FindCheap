@@ -245,13 +245,29 @@ const FindProductsPage = () => {
                               </div>
                             )}
                             <a
-                              href={
-                                platform === "flipkart"
-                                  ? `https://flipkart.com${item.link}`
-                                  : platform === "amazon"
-                                  ? `https://amazon.in${item.link}`
-                                  : item.link
-                              }
+                              href={(() => {
+                                // Base URLs for each platform
+                                const baseUrls = {
+                                  flipkart: "https://flipkart.com/",
+                                  amazon: "https://amazon.in/",
+                                  meesho: "https://meesho.com/",
+                                  ajio: "https://ajio.com/",
+                                  myntra: "https://myntra.com/",
+                                  snapdeal: "https://snapdeal.com/",
+                                };
+
+                                const baseUrl =
+                                  baseUrls[platform as keyof typeof baseUrls] ||
+                                  "";
+
+                                if (!item.link) return baseUrl;
+
+                                if (item.link.startsWith("http")) {
+                                  return item.link;
+                                } else {
+                                  return `${baseUrl}${item.link}`;
+                                }
+                              })()}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-accent hover:underline text-xs mt-auto inline-block py-1"

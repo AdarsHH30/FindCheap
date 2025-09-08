@@ -13,7 +13,6 @@ interface MainNavProps {
   isLoading?: boolean;
   showSkeleton?: boolean;
 }
-
 export function MainNav({
   isLoading: externalLoading,
   showSkeleton = true,
@@ -168,63 +167,65 @@ export function MainNav({
           </Link>
         </motion.div>
 
-        {/* Center Navigation - Background with Shadow */}
-        <motion.nav
-          className="flex items-center gap-4 text-sm xl:gap-6 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg bg-sidebar"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          {[
-            { href: "/", label: "Home" },
-            { href: "/find-products", label: "Find Products" },
-            { href: "/how-it-works", label: "How it Works" },
-            { href: "/about", label: "About" },
-          ].map((item, index) => {
-            const isActive =
-              pathname === item.href ||
-              (item.href !== "/" && pathname?.startsWith(item.href));
+        {/* Navigation - Hidden on /find-products page */}
+        {pathname !== "/find-products" && (
+          <motion.nav
+            className="flex items-center gap-4 text-sm xl:gap-6 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg bg-sidebar"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            {[
+              { href: "/", label: "Home" },
+              { href: "/find-products", label: "Find Products" },
+              { href: "/how-it-works", label: "How it Works" },
+              { href: "/about", label: "About" },
+            ].map((item, index) => {
+              const isActive =
+                pathname === item.href ||
+                (item.href !== "/" && pathname?.startsWith(item.href));
 
-            return (
-              <motion.div
-                key={item.href}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.3 + index * 0.1 }}
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Link
-                  href={item.href}
-                  className={cn(
-                    "transition-all duration-200 relative group px-3 py-2 rounded-lg font-medium focus:text-primary focus:outline-none",
-                    isActive
-                      ? "text-primary"
-                      : "text-foreground hover:text-primary hover:bg-accent"
-                  )}
-                  prefetch={true}
-                  onClick={() => handleNavigation(item.href)}
+              return (
+                <motion.div
+                  key={item.href}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.3 + index * 0.1 }}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <span className="relative z-10">{item.label}</span>
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "transition-all duration-200 relative group px-3 py-2 rounded-lg font-medium focus:text-primary focus:outline-none",
+                      isActive
+                        ? "text-primary"
+                        : "text-foreground hover:text-primary hover:bg-accent"
+                    )}
+                    prefetch={true}
+                    onClick={() => handleNavigation(item.href)}
+                  >
+                    <span className="relative z-10">{item.label}</span>
 
-                  <motion.div
-                    className="absolute inset-0 bg-muted/50 rounded-lg opacity-0 group-hover:opacity-100"
-                    transition={{ duration: 0.2 }}
-                  />
-
-                  {isActive && (
                     <motion.div
-                      className="absolute bottom-0 left-1/2 w-1 h-1 bg-secondary rounded-full"
-                      initial={{ scale: 0, x: "-50%" }}
-                      animate={{ scale: 1, x: "-50%" }}
-                      transition={{ delay: 0.2 }}
+                      className="absolute inset-0 bg-muted/50 rounded-lg opacity-0 group-hover:opacity-100"
+                      transition={{ duration: 0.2 }}
                     />
-                  )}
-                </Link>
-              </motion.div>
-            );
-          })}
-        </motion.nav>
+
+                    {isActive && (
+                      <motion.div
+                        className="absolute bottom-0 left-1/2 w-1 h-1 bg-secondary rounded-full"
+                        initial={{ scale: 0, x: "-50%" }}
+                        animate={{ scale: 1, x: "-50%" }}
+                        transition={{ delay: 0.2 }}
+                      />
+                    )}
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </motion.nav>
+        )}
 
         {/* Profile/Dark Mode Section - Transparent Background */}
         <motion.div

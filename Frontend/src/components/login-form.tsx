@@ -117,7 +117,6 @@ export function LoginForm({
             console.error("Error verifying with backend:", error);
           }
         }
-
         router.push("/");
       } else if (event === "SIGNED_OUT") {
         setUser(null);

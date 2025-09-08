@@ -36,4 +36,5 @@ urlpatterns = [
         views.delete_search,
         name="delete_search",
     ),
+    path("api/auth/status/", views.get_auth_status, name="auth_status"),
 ]

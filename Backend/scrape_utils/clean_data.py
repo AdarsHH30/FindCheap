@@ -52,7 +52,7 @@ async def scrape_multiple_sites(user_input, concurrency_limit=5):
         "flipkart": f"https://www.flipkart.com/search?q={user_input}",
         "snapdeal": f"https://www.snapdeal.com/search?keyword={user_input}",
         "jiomart": f"https://www.jiomart.com/search/{user_input}",
-        "meesho": f"https://www.meesho.com/search?q={user_input}",
+        "meesho": f"https://www.meesho.com/search?q={user_input}&searchType=manual&searchIdentifier=text_search",
         "myntra": f"https://www.myntra.com/{user_input}?rawQuery={user_input}",
     }
 

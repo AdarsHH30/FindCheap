@@ -138,54 +138,58 @@ const FindProductsPage = () => {
 
           {!loading &&
             hasResults &&
-            Object.entries(data).map(
-              ([platform, products]: [string, Product[]], platformIndex) => (
-                <motion.div
-                  key={platform}
-                  className="mb-6 sm:mb-8"
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.5,
-                    delay: platformIndex * 0.15,
-                    ease: "easeOut",
-                  }}
-                >
-                  <motion.h2
-                    className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 sm:mb-4 capitalize flex items-center gap-2 px-2 sm:px-0"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{
-                      duration: 0.4,
-                      delay: platformIndex * 0.15 + 0.1,
-                      ease: "easeOut",
-                    }}
-                  >
-                    <Image
-                      src={`/logos/${platform}.png`}
-                      alt={platform || "Platform Logo"}
-                      width={20}
-                      height={20}
-                      className="w-5 h-5 sm:w-6 sm:h-6 rounded"
-                      onError={(e) => {
-                        e.currentTarget.style.display = "none";
-                      }}
-                    />
-                    {platform}
-                  </motion.h2>
+            Object.entries(data)
+              .filter(
+                ([platform, products]: [string, Product[]]) =>
+                  products.length > 0
+              ) // Add this filter
+              .map(
+                ([platform, products]: [string, Product[]], platformIndex) => (
                   <motion.div
-                    className="grid grid-cols-3 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-2 sm:gap-3 px-1 sm:px-4"
-                    initial={{ opacity: 0, y: 20 }}
+                    key={platform}
+                    className="mb-6 sm:mb-8"
+                    initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{
-                      duration: 0.6,
+                      duration: 0.5,
+                      delay: platformIndex * 0.15,
                       ease: "easeOut",
-                      staggerChildren: 0.1,
-                      delayChildren: 0.1,
                     }}
                   >
-                    {products.length > 0 ? (
-                      products.map((item, index) => (
+                    <motion.h2
+                      className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 sm:mb-4 capitalize flex items-center gap-2 px-2 sm:px-0"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{
+                        duration: 0.4,
+                        delay: platformIndex * 0.15 + 0.1,
+                        ease: "easeOut",
+                      }}
+                    >
+                      <Image
+                        src={`/logos/${platform}.png`}
+                        alt={platform || "Platform Logo"}
+                        width={20}
+                        height={20}
+                        className="w-5 h-5 sm:w-6 sm:h-6 rounded"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                        }}
+                      />
+                      {platform}
+                    </motion.h2>
+                    <motion.div
+                      className="grid grid-cols-3 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-2 sm:gap-3 px-1 sm:px-4"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.6,
+                        ease: "easeOut",
+                        staggerChildren: 0.1,
+                        delayChildren: 0.1,
+                      }}
+                    >
+                      {products.map((item, index) => (
                         <motion.div
                           key={`${platform}-${index}`}
                           className="flex flex-col gap-1 sm:gap-2 p-2 sm:p-3 shadow-lg rounded-lg hover:shadow-xl transition-all duration-200 bg-card border"
@@ -246,9 +250,8 @@ const FindProductsPage = () => {
                             )}
                             <a
                               href={(() => {
-                                // Base URLs for each platform
                                 const baseUrls = {
-                                  flipkart: "https://flipkart.com/",
+                                  flipkart: "https://flipkart.com",
                                   amazon: "https://amazon.in/",
                                   meesho: "https://meesho.com/",
                                   ajio: "https://ajio.com/",
@@ -276,19 +279,13 @@ const FindProductsPage = () => {
                             </a>
                           </div>
                         </motion.div>
-                      ))
-                    ) : (
-                      <div className="col-span-full">
-                        <ProductNotFound platform={platform} />
-                      </div>
-                    )}
+                      ))}
+                    </motion.div>
                   </motion.div>
-                </motion.div>
-              )
-            )}
+                )
+              )}
         </div>
       </div>
-
       <Footer01Page />
     </div>
   );

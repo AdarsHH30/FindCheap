@@ -254,7 +254,7 @@ def choose_schema(query: str, max_products: int):
         },
         "meesho": {
             "name": "MeeshoProducts",
-            "baseSelector": ".ProductListItem__GridCol-sc-1baba2g-0, .product-card, [data-testid='product-card']",
+            "baseSelector": ".ProductListItem__GridCol-sc-1baba2g-0, .VirtualizedListstyled__VirtualItem-sc-b039ul-2 .ProductListItem__GridCol-sc-1baba2g-0, a[href*='/p/']",
             "fields": [
                 {
                     "name": "title",
@@ -263,40 +263,46 @@ def choose_schema(query: str, max_products: int):
                 },
                 {
                     "name": "price",
-                    "selector": "h5, .current-price, .selling-price, .price",
+                    "selector": "h5.sc-eDvSVe.dwCrSh, .NewProductCardstyled__PriceRow-sc-6y2tys-7 h5, h5, .current-price, .selling-price, .price",
                     "type": "text",
                 },
                 {
                     "name": "original_price",
-                    "selector": ".sc-eDvSVe.drXXNP, .original-price, .mrp, del",
+                    "selector": ".sc-eDvSVe.drXXNP, .sc-jSUZER.eSuFsQ, .original-price, .mrp, del",
                     "type": "text",
                 },
                 {
                     "name": "discount",
-                    "selector": ".NewProductCardstyled__StyledDesktopSubtitle-sc-6y2tys-6, .discount-percent, .offer-text",
+                    "selector": ".NewProductCardstyled__StyledDesktopSubtitle-sc-6y2tys-6, .sc-eDvSVe.cBaVUX, .discount-percent, .offer-text",
                     "type": "text",
                 },
                 {
                     "name": "link",
-                    "selector": "a, .product-link",
+                    "selector": "a",
                     "type": "attribute",
                     "attribute": "href",
                 },
                 {
                     "name": "image",
-                    "selector": "img.AvifImage__ImageWrapper-sc-1055enk-0, img, .product-image img",
+                    "selector": ".NewProductCardstyled__ProductImage-sc-6y2tys-19 img, img.AvifImage__ImageWrapper-sc-1055enk-0, picture img, img",
                     "type": "attribute",
                     "attribute": "src",
                 },
                 {
-                    "name": "image_data_src",
-                    "selector": "img.AvifImage__ImageWrapper-sc-1055enk-0, img, .product-image img",
+                    "name": "image_avif",
+                    "selector": "picture source[type='image/avif']",
                     "type": "attribute",
-                    "attribute": "data-src",
+                    "attribute": "srcset",
+                },
+                {
+                    "name": "image_alt",
+                    "selector": ".NewProductCardstyled__ProductImage-sc-6y2tys-19 img, img",
+                    "type": "attribute",
+                    "attribute": "alt",
                 },
                 {
                     "name": "rating",
-                    "selector": ".Rating__StyledPill-sc-12htng8-1 span, .rating-value, .star-rating",
+                    "selector": ".Rating__StyledPill-sc-12htng8-1 .sc-eDvSVe.laVOtN, .Rating__StyledPill-sc-12htng8-1 .sc-eDvSVe.jkpPSq, .rating-value, .star-rating",
                     "type": "text",
                 },
                 {
@@ -305,17 +311,28 @@ def choose_schema(query: str, max_products: int):
                     "type": "text",
                 },
                 {
-                    "name": "delivery",
-                    "selector": ".sc-jcMfQk span, .delivery-info, .shipping-info",
+                    "name": "supplier_badge",
+                    "selector": ".sc-eDvSVe.hishtg, .supplier-badge",
                     "type": "text",
                 },
                 {
-                    "name": "free_delivery",
-                    "selector": ".free-delivery, [data-testid='free-delivery']",
+                    "name": "delivery_info",
+                    "selector": ".sc-idXgbr.fpepJa span.sc-eDvSVe.fkvMlU, .NewProductCardstyled__BadgeRow-sc-6y2tys-16 span, .delivery-info, .shipping-info",
                     "type": "text",
                 },
+                {
+                    "name": "offer_timer",
+                    "selector": "[data-testid='offer-timer-text'], .OfferTimer__Caption2Styled-sc-dfvdiq-0",
+                    "type": "text",
+                },
+                {
+                    "name": "rating_label",
+                    "selector": ".Rating__StyledPill-sc-12htng8-1",
+                    "type": "attribute",
+                    "attribute": "label",
+                },
             ],
-            "limit": max_products,
+            "limit": "max_products",
         },
         "myntra": {
             "name": "MyntraProducts",

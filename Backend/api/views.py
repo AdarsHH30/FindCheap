@@ -120,6 +120,8 @@ def get_recent_searches(request):
         )
 
 
+@csrf_exempt
+@supabase_auth_required
 def varify_access_tocken(request):
     try:
         user = request.user_data

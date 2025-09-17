@@ -37,4 +37,5 @@ urlpatterns = [
         name="delete_search",
     ),
     path("api/auth/status/", views.get_auth_status, name="auth_status"),
+    path("api/test/", views.scrape_test, name="test_endpoint"),
 ]

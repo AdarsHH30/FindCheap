@@ -245,3 +245,15 @@ def get_auth_status(request):
     except Exception as e:
         logger.error(f"Authentication status error: {str(e)}")
         return JsonResponse({"error": f"Internal server error: {str(e)}"}, status=500)
+
+
+@api_view(["GET"])
+def scrape_test(request):
+    try:
+        test_query = "laptop"
+        data = async_to_sync(clean_data.scrape_multiple_sites)(
+            user_input=test_query,
+        )
+        return JsonResponse(data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return JsonResponse({"error": f"Internal server error: {str(e)}"}, status=500)

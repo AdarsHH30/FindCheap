@@ -5,18 +5,15 @@ export async function POST(request: Request) {
       : "http://127.0.0.1:8000";
   const url = `${baseUrl}/search/`;
 
-  // Parse JSON body from the incoming request
   const requestBody = await request.json();
 
   try {
-    // Forward it as JSON to your external API with increased timeout
     const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(requestBody),
-      // Increase timeout to handle longer scraping operations
       signal: AbortSignal.timeout(360000), // 6 minutes
     });
 
@@ -32,7 +29,6 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Error in find-products API route:", error);
     
-    // Return a more detailed error response
     if (error instanceof Error) {
       if (error.name === 'TimeoutError') {
         return new Response(

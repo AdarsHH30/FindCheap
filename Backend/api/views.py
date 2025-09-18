@@ -21,7 +21,7 @@ from supabase import create_client
 
 load_dotenv()
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.WARNING)
+logger.setLevel(logging.CRITICAL)
 
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")

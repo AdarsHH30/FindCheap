@@ -10,6 +10,7 @@ from crawl4ai import AsyncWebCrawler, BrowserConfig
 import logging
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.CRITICAL)
 
 
 class BrowserContextManager:

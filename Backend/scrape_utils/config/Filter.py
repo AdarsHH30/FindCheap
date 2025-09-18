@@ -7,6 +7,7 @@ logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.CRITICAL)
 
 
 def filter_data(data, e_commerce, search_query=None, top_n=8):
@@ -36,14 +37,12 @@ def filter_data(data, e_commerce, search_query=None, top_n=8):
 
         query = search_query if search_query else e_commerce
 
-        # Compute fuzzy similarity scores
         df["similarity_score"] = (
             df["title"]
             .fillna("")
             .apply(lambda x: fuzz.partial_ratio(query.lower(), x.lower()))
         )
 
-        # Sort by similarity score
         result_df = df.sort_values(by="similarity_score", ascending=False).head(top_n)
 
         filtered_data = result_df.to_json(orient="records", indent=2, force_ascii=False)

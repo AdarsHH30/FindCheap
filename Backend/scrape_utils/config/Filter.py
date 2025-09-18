@@ -47,9 +47,9 @@ def filter_data(data, e_commerce, search_query=None, top_n=8):
 
         filtered_data = result_df.to_json(orient="records", indent=2, force_ascii=False)
 
-        if e_commerce == "jiomart" or e_commerce == "meesho":
-            print(f"Raw data for {e_commerce}: {data[e_commerce]}\n\n\n")
-            print(f"Filtered data for {e_commerce}: {filtered_data}\n\n\n")
+        # if e_commerce == "jiomart" or e_commerce == "meesho":
+        #     print(f"Raw data for {e_commerce}: {data[e_commerce]}\n\n\n")
+        #     print(f"Filtered data for {e_commerce}: {filtered_data}\n\n\n")
 
         return filtered_data
 

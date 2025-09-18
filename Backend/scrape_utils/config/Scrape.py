@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 from scrape_utils.utils import schema_setup
 from ..browser_pool import get_global_browser_pool
 
+
 load_dotenv()
 
 
@@ -71,7 +72,7 @@ class ScraperConfig:
 
         return config
 
-    async def scraper(self, url: str, max_retries: int = 3):
+    async def scraper(self, url: str, max_retries: int = 1):
         """Enhanced scraper using browser pool"""
 
         site_config = self._get_site_specific_config(url)

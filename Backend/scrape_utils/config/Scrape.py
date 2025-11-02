@@ -1,8 +1,5 @@
 import asyncio
 import random
-import tempfile
-import os
-from pathlib import Path
 from crawl4ai import (
     AsyncWebCrawler,
     BrowserConfig,
@@ -13,24 +10,15 @@ from crawl4ai.extraction_strategy import JsonCssExtractionStrategy
 import json
 from dotenv import load_dotenv
 from scrape_utils.utils import schema_setup
-from ..browser_pool import get_global_browser_pool
 
 
 load_dotenv()
 
 
 class ScraperConfig:
-    def __init__(self, user_input: str, max_products: int = 5, pool_size: int = 4):
+    def __init__(self, user_input: str, max_products: int = 5):
         self.user_input = user_input
         self.max_products = max_products
-        self.pool_size = pool_size
-        self.browser_pool = None
-
-    async def get_browser_pool(self):
-        """Get or initialize the browser pool"""
-        if self.browser_pool is None:
-            self.browser_pool = await get_global_browser_pool(self.pool_size)
-        return self.browser_pool
 
     def schema_setup(self, URL: str):
         link = URL.lower()
@@ -72,11 +60,58 @@ class ScraperConfig:
 
         return config
 
+    def _get_random_user_agent(self):
+        """Get a random user agent string"""
+        user_agents = [
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:120.0) Gecko/20100101 Firefox/120.0",
+        ]
+        return random.choice(user_agents)
+
+    def _create_browser_config(self) -> BrowserConfig:
+        """Create browser configuration"""
+        return BrowserConfig(
+            browser_type="chromium",
+            headless=True,
+            extra_args=[
+                "--disable-blink-features=AutomationControlled",
+                "--disable-popups",
+                "--disable-infobars",
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu",
+                "--disable-setuid-sandbox",
+                "--disable-web-security",
+                "--allow-running-insecure-content",
+                "--ignore-certificate-errors",
+                "--disable-extensions",
+                "--disable-popup-blocking",
+                "--disable-background-networking",
+                "--disable-sync",
+                "--disable-translate",
+                f"--user-agent={self._get_random_user_agent()}",
+                "--disable-features=VizDisplayCompositor",
+                "--disable-ipc-flooding-protection",
+                "--window-size=1920,1080",
+                "--disable-logging",
+                "--disable-dev-tools",
+                "--no-first-run",
+                "--disable-default-apps",
+                "--disable-background-timer-throttling",
+                "--disable-renderer-backgrounding",
+                "--disable-backgrounding-occluded-windows",
+                "--disable-field-trial-config",
+            ],
+        )
+
     async def scraper(self, url: str, max_retries: int = 1):
-        """Enhanced scraper using browser pool"""
+        """Simplified scraper using direct AsyncWebCrawler"""
 
         site_config = self._get_site_specific_config(url)
-        browser_pool = await self.get_browser_pool()
 
         for attempt in range(max_retries):
             try:
@@ -86,25 +121,22 @@ class ScraperConfig:
                     await asyncio.sleep(delay)
 
                 try:
+                    browser_config = self._create_browser_config()
 
-                    async def scrape_with_browser():
-                        async with browser_pool.get_browser() as crawler:
-                            run_conf = CrawlerRunConfig(
-                                extraction_strategy=self.schema_setup(url),
-                                cache_mode=CacheMode.BYPASS,
-                                wait_for_images=site_config["wait_for_images"],
-                                delay_before_return_html=site_config[
-                                    "delay_before_return_html"
-                                ],
-                            )
+                    async with AsyncWebCrawler(config=browser_config) as crawler:
+                        run_conf = CrawlerRunConfig(
+                            extraction_strategy=self.schema_setup(url),
+                            cache_mode=CacheMode.BYPASS,
+                            wait_for_images=site_config["wait_for_images"],
+                            delay_before_return_html=site_config[
+                                "delay_before_return_html"
+                            ],
+                        )
 
-                            result = await asyncio.wait_for(
-                                crawler.arun(url=url, config=run_conf),
-                                timeout=45.0,
-                            )
-                            return result
-
-                    result = await asyncio.wait_for(scrape_with_browser(), timeout=60.0)
+                        result = await asyncio.wait_for(
+                            crawler.arun(url=url, config=run_conf),
+                            timeout=45.0,
+                        )
                     e_commerce = self._get_ecommerce_platform(url)
 
                     if result.success:

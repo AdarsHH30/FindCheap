@@ -6,11 +6,6 @@ import json
 import os
 from dotenv import load_dotenv
 import logging
-from .browser_pool import (
-    shutdown_global_browser_pool,
-    get_global_browser_pool,
-    reset_global_browser_pool,
-)
 
 load_dotenv()
 instructions = os.getenv("GROQ_INSTRUCTIONS")
@@ -52,16 +47,13 @@ async def scrape_site(s, url, semaphore):
             return {}
 
 
-async def scrape_multiple_sites(
-    user_input, concurrency_limit=4, pool_size=4, max_retries=2
-):
+async def scrape_multiple_sites(user_input, concurrency_limit=4, max_retries=2):
     """
-    Scrapes multiple e-commerce websites asynchronously with browser pool.
+    Scrapes multiple e-commerce websites asynchronously.
 
     Args:
         user_input: Search query
-        concurrency_limit: Max concurrent scraping tasks (should match pool_size)
-        pool_size: Number of browsers in the pool
+        concurrency_limit: Max concurrent scraping tasks
         max_retries: Number of times to retry if scraping fails
     """
     urls = {
@@ -81,22 +73,10 @@ async def scrape_multiple_sites(
                 logger.warning(
                     f"Retrying scraping attempt {attempt + 1}/{max_retries + 1}"
                 )
-                # Reset browser pool on retry
-                browser_pool = await reset_global_browser_pool(pool_size)
-            else:
-                # Initialize browser pool first
-                logger.info(f"Initializing browser pool with {pool_size} browsers...")
-                browser_pool = await get_global_browser_pool(pool_size)
 
-            # Print pool stats
-            stats = await browser_pool.get_pool_stats()
-            logger.info(
-                f"Browser pool ready - Available: {stats['available']}, Total: {stats['total_browsers']}"
-            )
-
-            # Use semaphore to match pool size
+            # Use semaphore for concurrency control
             semaphore = asyncio.Semaphore(concurrency_limit)
-            s = Scrape.ScraperConfig(user_input, max_products=5, pool_size=pool_size)
+            s = Scrape.ScraperConfig(user_input, max_products=5)
 
             # Set a timeout for the entire scraping operation
             tasks = [scrape_site(s, url, semaphore) for _, url in urls.items()]
@@ -121,10 +101,6 @@ async def scrape_multiple_sites(
 
                 if final_data[site]:  # If we got data
                     success_count += 1
-
-            # Print final pool stats
-            final_stats = await browser_pool.get_pool_stats()
-            logger.info(f"Scraping complete - Pool stats: {final_stats}")
 
             # If we got at least some results, return them
             if success_count > 0:
@@ -156,12 +132,6 @@ async def scrape_multiple_sites(
     return {site: [] for site in urls.keys()}
 
 
-async def cleanup_on_shutdown():
-    """Call this when your application is shutting down"""
-    logger.info("Shutting down browser pool...")
-    await shutdown_global_browser_pool()
-
-
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python scraper.py <search_query>")
@@ -179,7 +149,3 @@ if __name__ == "__main__":
         logger.info("Received interrupt signal")
     except Exception as e:
         logger.error(f"Scraping failed: {e}")
-    finally:
-        # Cleanup browser pool on exit
-        logger.info("Cleaning up...")
-        asyncio.run(cleanup_on_shutdown())

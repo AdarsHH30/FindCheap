@@ -22,6 +22,7 @@ from api import views
 urlpatterns = [
     # path("admin/", admin.site.urls),
     path("search/", views.display_scraped_data, name="search"),
+    path("search/stream/", views.stream_scraped_data, name="search_stream"),
     path("api/csrf/", views.csrf, name="csrf"),
     path("api/post/", views.secure_post, name="secure_post"),
     path("api/auth/verify/", views.varify_access_tocken, name="verify_token"),
@@ -37,5 +38,6 @@ urlpatterns = [
         name="delete_search",
     ),
     path("api/auth/status/", views.get_auth_status, name="auth_status"),
-    path("api/test/", views.scrape_test, name="test_endpoint"),
+    path("api/cache-check/", views.check_cache_status, name="cache_check"),
+    path("test/", views.scrape_test, name="scrape_test"),
 ]

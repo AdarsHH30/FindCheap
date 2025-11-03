@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, StreamingHttpResponse
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie, csrf_protect
 from django.views.decorators.http import require_http_methods
 from scrape_utils import clean_data
@@ -15,13 +15,16 @@ import os
 import logging
 import json
 from django.middleware.csrf import get_token
+import asyncio
+import threading
+import queue
 
 from supabase import create_client
 
 
 load_dotenv()
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.CRITICAL)
+logger.setLevel(logging.WARNING)  # Changed from CRITICAL to see cache logs
 
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -187,6 +190,9 @@ def delete_search(request):
 @ensure_csrf_cookie
 @api_view(["POST"])
 def display_scraped_data(request):
+    from django.middleware.csrf import get_token
+    from django.core.cache import cache
+
     """
     API endpoint that accepts search queries via POST request
     """
@@ -195,7 +201,7 @@ def display_scraped_data(request):
 
         search_query = request.data.get("search_query")
 
-        search_query = search_query.replace(" ", "+") if search_query else None
+        search_query = search_query.replace(" ", "+").lower() if search_query else None
 
         if not search_query:
             return Response(
@@ -203,14 +209,138 @@ def display_scraped_data(request):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        cache_key = f"search_{search_query}"
+
+        # Try to get from cache with error handling
+        try:
+            cached = cache.get(cache_key)
+            if cached:
+                logger.info(f"Cache hit for query: {search_query}")
+                return JsonResponse(cached, status=status.HTTP_200_OK)
+        except Exception as cache_error:
+            logger.warning(f"Cache retrieval failed: {str(cache_error)}")
+            # Continue to scrape if cache fails
+
+        # Scrape the data
         data = async_to_sync(clean_data.scrape_multiple_sites)(
             user_input=search_query,
         )
-        # with open("scraped_data.json", "w") as f:
-        #     json.dump(data, f, indent=4)
+
+        # Try to set cache with error handling
+        try:
+            cache.set(cache_key, data, timeout=600)
+            logger.info(f"Cached results for query: {search_query}")
+        except Exception as cache_error:
+            logger.warning(f"Cache storage failed: {str(cache_error)}")
+            # Return data even if caching fails
 
         return JsonResponse(data, status=status.HTTP_200_OK)
     except Exception as e:
+        logger.error(f"Error in display_scraped_data: {str(e)}")
+        return JsonResponse({"error": f"Internal server error: {str(e)}"}, status=500)
+
+
+@csrf_exempt
+def stream_scraped_data(request):
+    """
+    SSE endpoint that streams each site's results as soon as they're ready.
+    Usage: GET /search/stream/?q=iphone+15
+    """
+    from django.core.cache import cache
+
+    try:
+        search_query = request.GET.get("q")
+        search_query = search_query.replace(" ", "+").lower() if search_query else None
+
+        if not search_query:
+            return StreamingHttpResponse(
+                iter([b'event: error\ndata: {"error":"q is required"}\n\n']),
+                content_type="text/event-stream",
+            )
+
+        def sse(data: dict, event: str = "result") -> bytes:
+            return f"event: {event}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n".encode(
+                "utf-8"
+            )
+
+        # Check cache first
+        cache_key = f"search_{search_query}"
+        cached_data = None
+        try:
+            cached_data = cache.get(cache_key)
+            if cached_data:
+                logger.warning(f"Stream cache hit for query: {search_query}")
+        except Exception as cache_error:
+            logger.warning(f"Stream cache retrieval failed: {str(cache_error)}")
+
+        def generator():
+            # If we have cached data, stream it immediately
+            if cached_data:
+                yield b": keep-alive\n\n"
+                yield sse({"status": "started", "cached": True}, event="start")
+                # Stream each cached site result
+                if isinstance(cached_data, list):
+                    for site_data in cached_data:
+                        yield sse(site_data, event="result")
+                else:
+                    # Backward compatibility - single result
+                    yield sse(cached_data, event="result")
+                yield sse({"status": "done", "cached": True}, event="done")
+                return
+
+            # Otherwise, scrape and cache
+            out: "queue.Queue[dict | None]" = queue.Queue()
+            all_results = []  # Collect all site results for caching
+
+            def on_result(payload: dict):
+                all_results.append(payload)
+                out.put(payload)
+
+            def run():
+                try:
+                    # Enforce a global timeout so the stream always ends
+                    async_to_sync(asyncio.wait_for)(
+                        clean_data.scrape_multiple_sites_stream(
+                            user_input=search_query,
+                            on_result=on_result,
+                            total_timeout=90.0,
+                        ),
+                        timeout=95.0,
+                    )
+                finally:
+                    # Cache ALL results (all e-commerce sites)
+                    if all_results:
+                        try:
+                            cache.set(cache_key, all_results, timeout=600)
+                            logger.warning(
+                                f"Stream cached {len(all_results)} site results for query: {search_query}"
+                            )
+                        except Exception as cache_error:
+                            logger.warning(
+                                f"Stream cache storage failed: {str(cache_error)}"
+                            )
+                    out.put(None)
+
+            threading.Thread(target=run, daemon=True).start()
+
+            # Initial keep-alive and start event
+            yield b": keep-alive\n\n"
+            yield sse({"status": "started", "cached": False}, event="start")
+
+            while True:
+                item = out.get()
+                if item is None:
+                    break
+                yield sse(item, event="result")
+
+            yield sse({"status": "done", "cached": False}, event="done")
+
+        response = StreamingHttpResponse(generator(), content_type="text/event-stream")
+        response["Cache-Control"] = "no-cache"
+        response["X-Accel-Buffering"] = "no"  # disable proxy buffering if any
+        return response
+    except Exception as e:
+        logger.error(f"SSE stream error: {str(e)}")
         return JsonResponse({"error": f"Internal server error: {str(e)}"}, status=500)
 
 
@@ -257,3 +387,77 @@ def scrape_test(request):
         return JsonResponse(data, status=status.HTTP_200_OK)
     except Exception as e:
         return JsonResponse({"error": f"Internal server error: {str(e)}"}, status=500)
+
+
+@csrf_exempt
+@api_view(["GET"])
+def check_cache_status(request):
+    """
+    Debug endpoint to check if a query is cached
+    Usage: GET /api/cache-check/?q=iphone+15
+    """
+    from django.core.cache import cache
+
+    try:
+        search_query = request.GET.get("q", "")
+        if not search_query:
+            return JsonResponse({"error": "q parameter required"}, status=400)
+
+        search_query = search_query.replace(" ", "+").lower()
+        cache_key = f"search_{search_query}"
+
+        # Check if cached
+        cached_data = cache.get(cache_key)
+
+        if cached_data:
+            # Determine data structure and count
+            if isinstance(cached_data, list):
+                # Streaming format: list of site results
+                sites_cached = [item.get("site", "unknown") for item in cached_data]
+                total_products = sum(
+                    len(item.get("results", [])) for item in cached_data
+                )
+                data_info = {
+                    "format": "streaming",
+                    "sites": sites_cached,
+                    "site_count": len(cached_data),
+                    "total_products": total_products,
+                }
+            elif isinstance(cached_data, dict):
+                # Regular format: dict of {site: results}
+                sites_cached = list(cached_data.keys())
+                total_products = sum(
+                    len(results)
+                    for results in cached_data.values()
+                    if isinstance(results, list)
+                )
+                data_info = {
+                    "format": "regular",
+                    "sites": sites_cached,
+                    "site_count": len(sites_cached),
+                    "total_products": total_products,
+                }
+            else:
+                data_info = {"format": "unknown", "data": str(type(cached_data))}
+
+            return JsonResponse(
+                {
+                    "cached": True,
+                    "cache_key": cache_key,
+                    "query": search_query,
+                    "has_data": True,
+                    **data_info,
+                    "message": f"This query is cached with {data_info.get('site_count', 0)} e-commerce sites",
+                }
+            )
+        else:
+            return JsonResponse(
+                {
+                    "cached": False,
+                    "cache_key": cache_key,
+                    "query": search_query,
+                    "message": "This query is not cached and will require scraping",
+                }
+            )
+    except Exception as e:
+        return JsonResponse({"error": f"Error checking cache: {str(e)}"}, status=500)

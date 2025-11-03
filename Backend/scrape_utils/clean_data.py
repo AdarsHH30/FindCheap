@@ -132,6 +132,98 @@ async def scrape_multiple_sites(user_input, concurrency_limit=4, max_retries=2):
     return {site: [] for site in urls.keys()}
 
 
+async def scrape_multiple_sites_stream(
+    user_input: str,
+    on_result,
+    concurrency_limit: int = 4,
+    total_timeout: float = 120.0,
+):
+    """
+    Stream results per site as they complete via the provided callback.
+
+    Args:
+        user_input: Search query
+        on_result: Callable receiving dict payloads like
+                   {"site": str, "results": list, "error": Optional[str]}
+        concurrency_limit: Max concurrent scraping tasks
+    """
+    urls = {
+        "amazon": f"https://www.amazon.in/s?k={user_input}&s=price-dses-rank",
+        "flipkart": f"https://www.flipkart.com/search?q={user_input}",
+        "snapdeal": f"https://www.snapdeal.com/search?keyword={user_input}",
+        "jiomart": f"https://www.jiomart.com/search/{user_input}",
+        "meesho": f"https://www.meesho.com/search?q={user_input}&searchType=manual&searchIdentifier=text_search",
+        "myntra": f"https://www.myntra.com/{user_input}?rawQuery={user_input}",
+    }
+
+    logger.info(f"[stream] Generated URLs for scraping: {list(urls.values())}")
+
+    semaphore = asyncio.Semaphore(concurrency_limit)
+    s = Scrape.ScraperConfig(user_input, max_products=5)
+
+    async def run_site(site: str, url: str):
+        async with semaphore:
+            try:
+                logger.info(f"[stream] Starting to scrape: {site}")
+                result = await s.scraper(url)
+                logger.info(f"[stream] Completed scraping: {site}")
+                return site, result, None
+            except Exception as e:
+                logger.error(f"[stream] Error scraping {site}: {e}")
+                return site, None, str(e)
+
+    loop = asyncio.get_running_loop()
+    tasks = {asyncio.create_task(run_site(site, url)) for site, url in urls.items()}
+    deadline = loop.time() + float(total_timeout)
+
+    pending = set(tasks)
+    while pending:
+        remaining = max(0.0, deadline - loop.time())
+        if remaining == 0.0:
+            break
+
+        done, pending = await asyncio.wait(
+            pending,
+            timeout=remaining,
+            return_when=asyncio.FIRST_COMPLETED,
+        )
+
+        if not done:
+            # timeout without any completed task in this iteration
+            break
+
+        for fut in done:
+            try:
+                site, result, error = await fut
+                if error is not None:
+                    on_result({"site": site, "results": [], "error": error})
+                    continue
+
+                try:
+                    filtered = Filter.filter_data(result, site, user_input)
+                    payload = {
+                        "site": site,
+                        "results": convert_to_json(filtered),
+                        "error": None,
+                    }
+                except Exception as e:
+                    payload = {"site": site, "results": [], "error": str(e)}
+
+                on_result(payload)
+            except Exception as e:
+                # Defensive: if task result retrieval fails
+                on_result({"site": "unknown", "results": [], "error": str(e)})
+
+    # Cancel any remaining tasks on timeout and do not wait indefinitely
+    if pending:
+        for t in pending:
+            t.cancel()
+        try:
+            await asyncio.gather(*pending, return_exceptions=True)
+        except Exception:
+            pass
+
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python scraper.py <search_query>")

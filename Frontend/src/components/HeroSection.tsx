@@ -51,13 +51,13 @@ const HeroSection = () => {
   return (
     <>
       <section className="relative isolate overflow-hidden mt-0">
-        <div className="pointer-events-none absolute -top-24 left-[-10%] h-72 w-72 rounded-full bg-primary/20 blur-3xl lg:h-96 lg:w-96" />
-        <div className="pointer-events-none absolute -bottom-32 right-[-15%] h-80 w-80 rounded-full bg-primary/10 blur-3xl lg:h-[420px] lg:w-[420px]" />
-        <div className="relative mx-auto w-full max-w-7xl px-4 pt-12 pb-10 sm:px-6 lg:px-8">
-          <div className="grid gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center lg:gap-16">
+        <div className="pointer-events-none absolute -top-28 left-[-12%] h-80 w-80 rounded-full bg-primary/25 blur-[140px] lg:h-[420px] lg:w-[420px]" />
+        <div className="pointer-events-none absolute -bottom-36 right-[-18%] h-[380px] w-[380px] rounded-full bg-primary/10 blur-[160px] lg:h-[460px] lg:w-[460px]" />
+        <div className="relative mx-auto w-full max-w-[1400px] px-6 pt-16 pb-12 sm:px-8 lg:px-12">
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-center lg:gap-14 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
             <div className="flex w-full flex-col items-center gap-6 text-center lg:items-start lg:text-left">
               {loading ? (
-                <div className="flex w-full max-w-2xl flex-col gap-6">
+                <div className="flex w-full max-w-3xl flex-col gap-6">
                   <Skeleton
                     variant="text"
                     width="40%"
@@ -84,7 +84,7 @@ const HeroSection = () => {
                     width="100%"
                     height={56}
                     animation="wave"
-                    className="mx-auto w-full max-w-xl rounded-xl lg:mx-0"
+                    className="mx-auto w-full max-w-2xl rounded-xl lg:mx-0"
                   />
                   <div className="flex flex-wrap justify-center gap-3 lg:justify-start">
                     {searchChipIndices.map((index) => (
@@ -145,7 +145,7 @@ const HeroSection = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.3 }}
-                    className="w-full max-w-xl"
+                    className="w-full max-w-2xl"
                   >
                     <SearchComponent redirect={true} />
                   </motion.div>
@@ -199,14 +199,14 @@ const HeroSection = () => {
                 <Skeleton
                   variant="rectangular"
                   animation="wave"
-                  className="h-[300px] w-full max-w-sm rounded-3xl sm:h-[360px] sm:max-w-md lg:h-[520px] lg:max-w-xl"
+                  className="h-[320px] w-full max-w-md rounded-3xl sm:h-[380px] sm:max-w-lg lg:h-[540px] lg:max-w-[620px]"
                 />
               ) : (
                 <motion.div
                   initial={{ opacity: 0, y: 40 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.7, delay: 0.2 }}
-                  className="relative w-full max-w-sm sm:max-w-md lg:max-w-xl"
+                  className="relative w-full max-w-md sm:max-w-lg lg:max-w-[620px]"
                 >
                   <ModelViewer
                     className="shadow-2xl"

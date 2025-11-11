@@ -32,7 +32,7 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
     "smartwatch",
     "yoga mat",
     "laptop",
-    "gaming console",
+    // "gaming console",
   ],
   index = 0,
 }) => {

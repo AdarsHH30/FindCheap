@@ -15,6 +15,10 @@ module.exports = {
         "truck-motion": "truck-motion 1s linear infinite",
         road: "road 1.4s linear infinite",
       },
+              shimmer: {
+          '0%': { backgroundPosition: '200% 0' },
+          '100%': { backgroundPosition: '-200% 0' },
+        },
     },
   },
 };

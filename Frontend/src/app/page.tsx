@@ -10,31 +10,36 @@ export default function Home() {
   return (
     <main className="min-h-screen w-full">
       <HeroSection />
-      <ContainerScroll
-        titleComponent={
-          <>
-            <h1 className="text-4xl font-semibold text-black dark:text-white">
-              Find the Right Deal At the Right Time
-              <br />
-              <span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none">
-                FindCheap
-              </span>
-            </h1>
-          </>
-        }
-      >
-        <img
-          src={`/find-prod.png`}
-          alt="hero"
-          height={720}
-          width={1400}
-          className="mx-auto rounded-2xl object-cover h-full object-left-top"
-          draggable={false}
-        />
-      </ContainerScroll>{" "}
+      <section id="demo" className="scroll-mt-24">
+        <ContainerScroll
+          titleComponent={
+            <>
+              <h1 className="text-4xl font-semibold text-black dark:text-white">
+                See FindCheap in Action
+                <br />
+                <span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none">
+                  Product Demo
+                </span>
+              </h1>
+            </>
+          }
+        >
+          <video
+            src="/demo.mp4"
+            className="mx-auto h-full w-full rounded-2xl object-cover"
+            height={720}
+            width={1400}
+            autoPlay
+            loop
+            muted
+            playsInline
+            controls
+          />
+        </ContainerScroll>
+      </section>
       {/* <StatsSection /> */}
       {/* <MacbookScroll /> */}
-      <HowItWorks />
+      {/* <HowItWorks /> */}
       <Testimonials />
       <FAQ />
       <Footer01Page />

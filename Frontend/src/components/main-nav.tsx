@@ -97,9 +97,8 @@ export function MainNav({
   if (shouldShowSkeleton) {
     return (
       <motion.div
-        className="mr-4 md:flex w-full justify-center bg-background"
+        className="mt-0 md:flex w-full justify-center bg-background"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
       >
@@ -129,7 +128,7 @@ export function MainNav({
       <ProgressBar isLoading={isNavigating || isPending} />
 
       <motion.div
-        className="flex mr-4 hidden md:flex w-full justify-between items-center px-6 py-3"
+        className="flex mr-4 hidden md:flex w-full justify-between items-center px-4 py-2"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
@@ -170,7 +169,7 @@ export function MainNav({
         {/* Navigation - Hidden on /find-products page */}
         {pathname !== "/find-products" && (
           <motion.nav
-            className="flex items-center gap-4 text-sm xl:gap-6 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg bg-sidebar"
+            className="flex items-center gap-3 text-sm xl:gap-5 rounded-full px-4 py-2 shadow-md bg-sidebar/90"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -178,12 +177,13 @@ export function MainNav({
             {[
               { href: "/", label: "Home" },
               { href: "/find-products", label: "Find Products" },
-              { href: "/how-it-works", label: "How it Works" },
-              { href: "/about", label: "About" },
+              { href: "#demo", label: "Demo" },
             ].map((item, index) => {
-              const isActive =
-                pathname === item.href ||
-                (item.href !== "/" && pathname?.startsWith(item.href));
+              const isAnchor = item.href.startsWith("#");
+              const isActive = isAnchor
+                ? false
+                : pathname === item.href ||
+                  (item.href !== "/" && pathname?.startsWith(item.href));
 
               return (
                 <motion.div
@@ -191,35 +191,35 @@ export function MainNav({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: 0.3 + index * 0.1 }}
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ y: -2 }}
                 >
                   <Link
                     href={item.href}
                     className={cn(
-                      "transition-all duration-200 relative group px-3 py-2 rounded-lg font-medium focus:text-primary focus:outline-none",
+                      "group relative flex items-center gap-2 px-3 py-1.5 font-medium transition-colors duration-200",
                       isActive
                         ? "text-primary"
-                        : "text-foreground hover:text-primary hover:bg-accent"
+                        : "text-foreground/80 hover:text-primary"
                     )}
                     prefetch={true}
                     onClick={() => handleNavigation(item.href)}
                   >
-                    <span className="relative z-10">{item.label}</span>
-
-                    <motion.div
-                      className="absolute inset-0 bg-muted/50 rounded-lg opacity-0 group-hover:opacity-100"
-                      transition={{ duration: 0.2 }}
-                    />
-
-                    {isActive && (
-                      <motion.div
-                        className="absolute bottom-0 left-1/2 w-1 h-1 bg-secondary rounded-full"
-                        initial={{ scale: 0, x: "-50%" }}
-                        animate={{ scale: 1, x: "-50%" }}
-                        transition={{ delay: 0.2 }}
+                    {isActive ? (
+                      <motion.span
+                        layoutId="nav-pill"
+                        className="absolute inset-0 -z-10 rounded-full bg-primary/15 shadow-inner"
+                        transition={{
+                          type: "spring",
+                          stiffness: 350,
+                          damping: 30,
+                        }}
                       />
+                    ) : (
+                      <span className="absolute inset-0 -z-10 rounded-full bg-primary/10 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
                     )}
+                    <span className="relative z-10 flex items-center gap-2">
+                      {item.label}
+                    </span>
                   </Link>
                 </motion.div>
               );

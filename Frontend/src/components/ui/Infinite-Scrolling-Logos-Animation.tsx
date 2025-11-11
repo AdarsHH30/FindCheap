@@ -18,15 +18,15 @@ const InfiniteScrollingLogosAnimation = () => {
   const duplicatedLogos = [...CompanyLogoData, ...CompanyLogoData];
 
   return (
-    <div className="container p-5 overflow-hidden">
+    <div className="container overflow-hidden py-2">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="relative overflow-hidden"
       >
-        <div className="absolute left-0 top-0 z-10 h-full w-24 bg-gradient-to-r from-background via-background/80 to-transparent pointer-events-none" />
-        <div className="absolute right-0 top-0 z-10 h-full w-24 bg-gradient-to-l from-background via-background/80 to-transparent pointer-events-none" />
+        <div className="pointer-events-none absolute top-0 -left-16 z-10 h-full w-32 bg-gradient-to-r from-background via-background/80 to-transparent" />
+        <div className="pointer-events-none absolute top-0 -right-16 z-10 h-full w-32 bg-gradient-to-l from-background via-background/80 to-transparent" />
 
         <motion.div
           animate={{ x: "-50%" }}
@@ -35,17 +35,17 @@ const InfiniteScrollingLogosAnimation = () => {
             ease: "linear",
             repeat: Infinity,
           }}
-          className="flex gap-0 w-max py-4"
+          className="flex gap-0 w-max py-1"
         >
           {duplicatedLogos.map((logo, index) => (
             <div
               key={index}
-              className="flex-shrink-0 h-20 w-32 flex items-center justify-center bg-card rounded-xl border border-border hover:border-primary/50 hover:shadow-lg hover:scale-105 transition-all duration-300 group"
+              className="group flex h-20 w-auto items-center justify-center px-10 transition-transform duration-300 hover:scale-105"
             >
               <img
                 src={logo.src}
                 alt={logo.alt}
-                className="h-12 w-auto object-contain brightness-100 contrast-100 group-hover:scale-110 transition-transform duration-300 dark:brightness-90 dark:contrast-110"
+                className="h-14 w-auto object-contain brightness-100 contrast-105 transition-transform duration-300 group-hover:scale-110 dark:brightness-90 dark:contrast-110"
                 loading="lazy"
                 onError={(e) => {
                   e.currentTarget.src = `data:image/svg+xml,${encodeURIComponent(

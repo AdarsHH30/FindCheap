@@ -10,7 +10,6 @@ import useSendRecentSearch from "@/hooks/useSendRecentSearch";
 // import { getCookie } from "@/utils/csrf";
 import { Product, SearchResults } from "@/types/product";
 import Footer01Page from "@/components/Footer/footer";
-import ProductPlaceholder from "@/components/FindProductPlaceholder";
 import CircularProgress, {
   CircularProgressProps,
 } from "@mui/material/CircularProgress";
@@ -80,8 +79,6 @@ const FindProductsPage = () => {
         <div className="w-full max-w-3xl mb-3">
           <SearchComponent redirect={true} onSearch={handleSearch} />
         </div>
-
-        {!searchQuery && !loading && !data && <ProductPlaceholder />}
 
         {(hasResults || loading) && (
           <div className="w-full mx-auto flex flex-col sm:flex-row left mb-3 gap-2 px-1">
@@ -232,16 +229,20 @@ const FindProductsPage = () => {
                                     ⭐
                                   </span>
                                   <span className="text-[10px] font-semibold text-foreground">
-                                    {typeof item.rating === 'string' 
-                                      ? item.rating.split(' ')[0]
+                                    {typeof item.rating === "string"
+                                      ? item.rating.split(" ")[0]
                                       : item.rating}
                                   </span>
                                 </div>
                                 {item.reviews && (
                                   <span className="text-[10px] text-muted-foreground truncate">
-                                    ({typeof item.reviews === 'string' 
-                                      ? item.reviews.replace(/\s*bought/i, '').trim()
-                                      : item.reviews})
+                                    (
+                                    {typeof item.reviews === "string"
+                                      ? item.reviews
+                                          .replace(/\s*bought/i, "")
+                                          .trim()
+                                      : item.reviews}
+                                    )
                                   </span>
                                 )}
                               </div>

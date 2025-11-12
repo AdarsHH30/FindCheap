@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { cn } from "@/lib/utils";
 import { useRecentSearches } from "@/hooks/useRecentSearches";
 
 interface SearchItem {
@@ -7,36 +8,34 @@ interface SearchItem {
   searched_at: string;
 }
 
+interface ExternalSearchState {
+  searches: SearchItem[];
+  loading: boolean;
+  error: string | null;
+  handleDelete: (index: number) => void;
+  refetch?: (() => Promise<void> | void) | null;
+}
+
 interface FetchRecentSearchesProps {
   user_id: string;
+  className?: string;
+  state?: ExternalSearchState;
 }
 
 const FetchRecentSearches: React.FC<FetchRecentSearchesProps> = ({
   user_id,
+  className,
+  state,
 }) => {
-  const { searches, loading, error, handleDelete } = useRecentSearches(user_id);
+  const hookState = useRecentSearches(user_id);
+  const searches = state?.searches ?? hookState.searches;
+  const loading = state?.loading ?? hookState.loading;
+  const error = state?.error ?? hookState.error;
+  const handleDelete = state?.handleDelete ?? hookState.handleDelete;
+  const refetch =
+    state?.refetch !== undefined ? state.refetch : hookState.fetchSearches;
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
-
-  if (loading)
-    return (
-      <div className="flex justify-center p-4">
-        <div className="animate-pulse text-muted-foreground">
-          Loading recent searches...
-        </div>
-      </div>
-    );
-
-  if (error)
-    return (
-      <div
-        className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded relative"
-        role="alert"
-        aria-live="polite"
-      >
-        <span className="block sm:inline">{error}</span>
-      </div>
-    );
 
   const timeAgo = (iso: string) => {
     try {
@@ -58,11 +57,16 @@ const FetchRecentSearches: React.FC<FetchRecentSearchesProps> = ({
     window.setTimeout(() => setActionMessage(null), 1800);
   };
 
+  const handleRefresh = async () => {
+    if (!refetch) return;
+    setActionMessage("Refreshing...");
+    await Promise.resolve(refetch());
+    notify("Latest data ready");
+  };
+
   const onDelete = (index: number, query: string) => {
-    const confirmed = window.confirm(`Delete recent search "${query}"?`);
-    if (!confirmed) return;
     handleDelete(index);
-    notify("Deleted");
+    notify(`Removed "${query}"`);
   };
 
   const onCopy = async (query: string, id: string) => {
@@ -86,20 +90,82 @@ const FetchRecentSearches: React.FC<FetchRecentSearchesProps> = ({
     notify("Cleared all");
   };
 
+  if (loading)
+    return (
+      <div
+        className={cn(
+          "bg-card rounded-xl border p-4 shadow-sm sm:p-6",
+          className
+        )}
+      >
+        <div className="flex justify-center">
+          <div className="animate-pulse text-muted-foreground">
+            Loading recent searches...
+          </div>
+        </div>
+      </div>
+    );
+
+  if (error)
+    return (
+      <div
+        className={cn(
+          "bg-card rounded-xl border border-destructive/30 p-4 text-destructive shadow-sm sm:p-6",
+          className
+        )}
+        role="alert"
+        aria-live="polite"
+      >
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <span className="text-sm font-medium">{error}</span>
+          {refetch && (
+            <button
+              onClick={handleRefresh}
+              className="w-fit rounded-md border border-destructive/40 bg-destructive/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-destructive-foreground transition-colors hover:bg-destructive/20"
+            >
+              Try again
+            </button>
+          )}
+        </div>
+      </div>
+    );
+
   return (
-    <div className="bg-card rounded-lg shadow-md p-4 border">
-      <div className="flex items-start justify-between mb-3">
-        <h3 className="text-lg font-semibold text-card-foreground">Recent Searches</h3>
+    <div
+      className={cn(
+        "bg-card rounded-xl border p-4 shadow-sm sm:p-6",
+        className
+      )}
+    >
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h3 className="text-lg font-semibold text-card-foreground">
+            Recent Searches
+          </h3>
+          <p className="text-muted-foreground text-sm">
+            Your latest searches sync across devices.
+          </p>
+        </div>
         <div className="flex items-center gap-2">
           {actionMessage && (
-            <div className="text-sm text-muted-foreground mr-2" aria-live="polite">
+            <div className="text-sm text-muted-foreground" aria-live="polite">
               {actionMessage}
             </div>
+          )}
+          {refetch && (
+            <button
+              onClick={handleRefresh}
+              className="text-sm text-muted-foreground border border-border/70 bg-muted/60 hover:bg-muted px-3 py-1 rounded-md transition-colors disabled:opacity-50"
+              disabled={loading}
+              aria-label="Refresh recent searches"
+            >
+              Refresh
+            </button>
           )}
           <button
             onClick={clearAll}
             disabled={searches.length === 0}
-            className="text-sm text-muted-foreground disabled:opacity-50 disabled:cursor-not-allowed bg-muted hover:bg-muted/80 px-2 py-1 rounded-md"
+            className="text-sm text-muted-foreground disabled:opacity-50 disabled:cursor-not-allowed border border-border/70 bg-muted/60 hover:bg-muted px-3 py-1 rounded-md transition-colors"
             aria-label="Clear all recent searches"
             title="Clear all"
           >
@@ -110,7 +176,9 @@ const FetchRecentSearches: React.FC<FetchRecentSearchesProps> = ({
 
       {searches.length === 0 ? (
         <div className="text-center py-8">
-          <div className="text-muted-foreground mb-2">No recent searches yet</div>
+          <div className="text-muted-foreground mb-2">
+            No recent searches yet
+          </div>
           <div className="text-sm text-muted-foreground/70">
             Try searching for a product to see it here.
           </div>

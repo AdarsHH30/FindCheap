@@ -74,15 +74,15 @@ const FindProductsPage = () => {
     hasResults && Object.values(data).some((products) => products.length > 0);
 
   return (
-    <div className="min-h-screen flex flex-col w-screen">
-      <div className="flex-1 flex flex-col items-center px-3 sm:px-6 lg:px-8 py-3 w-full">
-        <div className="w-full max-w-3xl mb-3">
+    <div className="min-h-screen flex flex-col w-full">
+      <div className="flex-1 flex flex-col items-center px-4 sm:px-6 lg:px-8 py-4 w-full">
+        <div className="w-full max-w-3xl mb-4">
           <SearchComponent redirect={true} onSearch={handleSearch} />
         </div>
 
         {(hasResults || loading) && (
-          <div className="w-full mx-auto flex flex-col sm:flex-row left mb-3 gap-2 px-1">
-            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-center sm:text-left">
+          <div className="w-full max-w-screen-xl mx-auto mb-4 px-1 text-center sm:text-left">
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold">
               {loading ? (
                 <>
                   Searching for{" "}
@@ -105,7 +105,7 @@ const FindProductsPage = () => {
           </div>
         )}
 
-        <div className="overflow-y-auto w-full mx-auto flex-1 px-1">
+        <div className="w-full max-w-screen-xl mx-auto flex-1 px-1 sm:px-2">
           {/* Inline per-platform skeletons mixed with products */}
 
           {hasResults && !hasAnyProducts && !loading && (
@@ -174,7 +174,7 @@ const FindProductsPage = () => {
                     </motion.h2>
 
                     <motion.div
-                      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-5 md:gap-6"
+                      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-5 md:gap-6"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{

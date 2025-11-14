@@ -104,7 +104,7 @@ const Footer = () => {
       transition={{ duration: 0.8 }}
     >
       <div className="max-w-screen-xl mx-auto">
-        <div className="py-12 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-8 gap-y-10 px-6 xl:px-0">
+        <div className="py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-x-8 gap-y-10 px-6 xl:px-0">
           <motion.div
             className="col-span-full xl:col-span-2"
             initial={{ opacity: 0, scale: 0.8 }}
@@ -214,7 +214,7 @@ const Footer = () => {
           </motion.span>
 
           <motion.div
-            className="flex items-center gap-5 text-muted-foreground"
+            className="flex flex-wrap items-center justify-center gap-5 text-muted-foreground sm:justify-end"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}

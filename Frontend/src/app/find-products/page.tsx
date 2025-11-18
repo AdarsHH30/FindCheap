@@ -26,7 +26,7 @@ const FindProductsPage = () => {
     () => ["amazon", "flipkart", "snapdeal", "jiomart", "meesho", "myntra"],
     []
   );
-  const CARDS_PER_PLATFORM = 6;
+  const CARDS_PER_PLATFORM = 5;
 
   useEffect(() => {
     if (typeof window !== "undefined") {

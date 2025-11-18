@@ -228,7 +228,7 @@ const Footer = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.3, delay: 1.0 }}
             >
-              <Link href="https://x.com/Adarsh13673751" target="_blank">
+              <Link href="https://x.com/adarshhh30" target="_blank">
                 <TwitterIcon className="h-5 w-5" />
               </Link>
             </motion.div>
